@@ -12,7 +12,7 @@ type Props = {
   placeholder?: string
   icon?: IconDefinition
   events?: {
-    onChange: (e: ChangeEvent<HTMLInputElement>) => any
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => any
   }
 }
 

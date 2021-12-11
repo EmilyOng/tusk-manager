@@ -1,31 +1,37 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import InputField from '../molecules/InputField'
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
-import './form-sign-up.css'
 
-export type SignUpForm = {
-  name: string
+export type Form = {
+  name?: string
   email: string
   password: string
 }
 
-type Props = {
-  onSignUp: (form: SignUpForm) => any
+export enum FormMode {
+  SignUp = 'SignUp',
+  Login = 'Login'
 }
 
-const FormSignUp: React.FC<Props> = ({ onSignUp, children }) => {
-  const [form, setForm] = useState<SignUpForm>({
-    name: '',
+type Props = {
+  mode: FormMode
+  onSubmit: (form: Form) => any
+}
+
+const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
+  const isSignUp = mode === FormMode.SignUp
+  const [form, setForm] = useState<Form>({
+    ...(isSignUp ? { name: '' } : {}),
     email: '',
-    password: '',
+    password: ''
   })
 
-  function onSignUp_(e: FormEvent<HTMLFormElement>) {
+  function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    onSignUp(form)
+    onSubmit(form)
   }
 
-  function onInputChange(e: ChangeEvent<HTMLInputElement>) {
+  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
     setForm({
       ...form,
@@ -33,15 +39,15 @@ const FormSignUp: React.FC<Props> = ({ onSignUp, children }) => {
     })
   }
   return (
-    <form className="box control form-sign-up" onSubmit={onSignUp_}>
-      <InputField
+    <form className="control" onSubmit={onSubmit_}>
+      {isSignUp && <InputField
         name="name"
         label="Name"
         type="text"
         icon={faUser}
-        value={form.name}
+        value={form.name!}
         events={{ onChange: onInputChange }}
-      />
+      />}
       <InputField
         name="email"
         label="Email"
@@ -59,8 +65,8 @@ const FormSignUp: React.FC<Props> = ({ onSignUp, children }) => {
         events={{ onChange: onInputChange }}
       />
       <div className="control">
-        <button type="submit" className="button is-link">
-          Sign Up
+        <button type="submit" className="button is-light is-link">
+          {isSignUp ? "Sign Up" : "Login" }
         </button>
       </div>
       {children}
@@ -68,4 +74,4 @@ const FormSignUp: React.FC<Props> = ({ onSignUp, children }) => {
   )
 }
 
-export default FormSignUp
+export default FormAuthentication
