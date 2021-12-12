@@ -6,6 +6,7 @@ import (
 	"main/db"
 	"main/models"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,10 +17,21 @@ func main() {
 	}
 	db.DB.AutoMigrate(&models.User{}, &models.Task{}, &models.Tag{}, &models.Category{})
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST"},
+		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "accept", "credentials", "origin", "Cache-Control"},
+		AllowCredentials: true,
+	}))
 
 	api := router.Group("/api")
 	{
-		api.GET("/", controllers.FindUser)
+		auth := api.Group("/auth")
+		{
+			auth.POST("/login", controllers.Login)
+			auth.POST("/signup", controllers.SignUp)
+			auth.GET("/token", controllers.Token)
+		}
 	}
 
 	router.Run(":5000")
