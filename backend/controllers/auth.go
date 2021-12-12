@@ -13,19 +13,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type UserResponse struct {
-	name  string
-	email string
-}
-
 type LoginPayload struct {
 	Email    string
 	Password string
 }
-
-type LoginResponse = UserResponse
-type TokenResponse = UserResponse
-type SignUpResponse = UserResponse
 
 func getSecretKey() (secretKey string, err error) {
 	err = godotenv.Load()
@@ -62,7 +53,7 @@ func Token(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, TokenResponse{name: claims.Name, email: claims.Email})
+	c.JSON(http.StatusOK, models.User{ID: claims.UserID, Name: claims.UserName, Email: claims.UserEmail})
 }
 
 func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err error) {
@@ -77,7 +68,7 @@ func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err
 		SecretKey: secretKey,
 	}
 
-	signedToken, err = jwtAuth.GenerateToken(user.Name, user.Email)
+	signedToken, err = jwtAuth.GenerateToken(user)
 	if err != nil {
 		return
 	}
@@ -123,7 +114,7 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		c.Abort()
 	}
-	c.JSON(http.StatusOK, LoginResponse{name: user.Name, email: user.Email})
+	c.JSON(http.StatusOK, models.User{ID: user.ID, Name: user.Name, Email: user.Email})
 }
 
 func SignUp(c *gin.Context) {
@@ -161,5 +152,5 @@ func SignUp(c *gin.Context) {
 		c.Abort()
 	}
 
-	c.JSON(http.StatusOK, SignUpResponse{name: user.Name, email: user.Email})
+	c.JSON(http.StatusOK, models.User{ID: user.ID, Name: user.Name, Email: user.Email})
 }

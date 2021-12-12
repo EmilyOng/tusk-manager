@@ -2,6 +2,7 @@ package auth
 
 import (
 	"errors"
+	"main/models"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -13,15 +14,17 @@ type JWTAuth struct {
 
 type Claim struct {
 	jwt.StandardClaims
-	Name  string
-	Email string
+	UserID    uint8
+	UserName  string
+	UserEmail string
 }
 
-func (j *JWTAuth) GenerateToken(name string, email string) (signedToken string, err error) {
+func (j *JWTAuth) GenerateToken(user models.User) (signedToken string, err error) {
 	// Token expires in 24 hours
 	claims := &Claim{
-		Name:  name,
-		Email: email,
+		UserID:    user.ID,
+		UserName:  user.Name,
+		UserEmail: user.Email,
 		StandardClaims: jwt.StandardClaims{
 			// Express in unix milliseconds
 			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),

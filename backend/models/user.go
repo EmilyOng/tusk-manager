@@ -9,9 +9,9 @@ import (
 )
 
 type User struct {
-	ID       uint8  `gorm:"primaryKey"`
-	Name     string `gorm:"not null"`
-	Email    string `gorm:"not null"`
+	ID       uint8  `gorm:"primaryKey" json:"id"`
+	Name     string `gorm:"not null" json:"name"`
+	Email    string `gorm:"not null" json:"email"`
 	Password string `gorm:"not null"`
 	Tasks    []Task `gorm:"many2many:user_task"`
 }

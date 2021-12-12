@@ -12,6 +12,7 @@ const (
 	Unstarted State = iota
 	InProgress
 	Completed
+	Unknown
 )
 
 func (s State) String() string {
@@ -28,10 +29,12 @@ func (s State) String() string {
 
 type Task struct {
 	gorm.Model
-	Name     string `gorm:"not null"`
-	DueAt    time.Time
-	State    State    `gorm:"not null"`
-	Owner    User     `gorm:"not null; foreignKey:ID"`
-	Tags     []Tag    `gorm:"many2many:task_tag"`
-	Category Category `gorm:"many2many:task_category"`
+	ID       uint8     `gorm:"primaryKey" json:"id"`
+	Name     string    `gorm:"not null" json:"name"`
+	Body     string    `json:"body"`
+	DueAt    time.Time `json:"dueAt"`
+	State    State     `gorm:"not null" json:"state"`
+	Owner    User      `gorm:"not null; foreignKey:ID"`
+	Tags     []Tag     `gorm:"many2many:task_tag"`
+	Category Category  `gorm:"many2many:task_category"`
 }
