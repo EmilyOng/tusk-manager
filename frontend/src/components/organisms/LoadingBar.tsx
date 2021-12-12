@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import React from 'react'
 
 const LoadingBar: React.FC = () => (

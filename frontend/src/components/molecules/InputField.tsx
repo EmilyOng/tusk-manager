@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React from 'react'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import clsx from 'clsx'
 import Icon from '../atoms/Icon'

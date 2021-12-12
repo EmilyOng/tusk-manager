@@ -5,4 +5,5 @@ vendor/
 tmp/
 cvwo.db
 .env
+.env.development
 .gitignore

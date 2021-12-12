@@ -16,8 +16,20 @@
     "ecmaVersion": 6,
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["react", "@typescript-eslint", "unused-imports"],
+  "ignorePatterns": ["stories"],
   "rules": {
-    "react/react-in-jsx-scope": "off"
+    "react/react-in-jsx-scope": "off",
+    "unused-imports/no-unused-imports": "error",
+    "no-unused-vars": "off",
+    "no-unused-locals": "off",
+    "no-undef": "off",
+    "no-console": "warn",
+    "no-var": "error",
+    "prefer-const": "error",
+    "eqeqeq": "error",
+
+    "@typescript-eslint/ban-types": ["error"],
+    "@typescript-eslint/no-redeclare": ["error"]
   }
 }

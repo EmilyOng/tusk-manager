@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import React, { useState } from 'react'
 import InputField from '../molecules/InputField'
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
 

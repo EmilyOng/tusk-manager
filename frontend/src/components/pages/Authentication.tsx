@@ -9,7 +9,6 @@ import './Authentication.css'
 import { AuthUser } from 'types/user'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from 'context/Authentication'
-import { Navigate } from 'react-router'
 
 function Authentication() {
   const auth = useAuth()

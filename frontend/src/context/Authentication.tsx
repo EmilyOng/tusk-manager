@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { AuthAPI } from 'api/auth'
 import { User, AuthUser } from 'types/user'
 import LoadingBar from 'components/organisms/LoadingBar'
@@ -53,7 +53,6 @@ export const AuthProvider: React.FC = ({ children }) => {
   }
 
   function logout() {
-    console.log('logout')
   }
 
   const memo: AuthContextType = useMemo(
