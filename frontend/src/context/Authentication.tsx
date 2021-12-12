@@ -5,8 +5,8 @@ import React, {
   useMemo,
   useState,
 } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
-import { RequestAPI } from 'api/request'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { AuthAPI } from 'api/auth'
 import { User, AuthUser } from 'types/user'
 import LoadingBar from 'components/organisms/LoadingBar'
 
@@ -22,23 +22,16 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType)
 
 export const AuthProvider: React.FC = ({ children }) => {
-  const Request = new RequestAPI()
+  const Auth = new AuthAPI()
   const [user, setUser] = useState<User>()
   const [loading, setLoading] = useState(true)
 
   function signUp(user: AuthUser, onComplete: noop, onError: noop) {
-    Request.post('http://localhost:5000/api/auth/signup', {
-      Name: user.name,
-      Email: user.email,
-      Password: user.password,
-    }).then((res) => {
+    Auth.signUp(user).then((res) => {
       if (res.error) {
         onError(res)
       } else {
-        setUser({
-          name: user.name,
-          email: user.email,
-        })
+        setUser(res)
         onComplete(res)
       }
     })
@@ -49,17 +42,11 @@ export const AuthProvider: React.FC = ({ children }) => {
     onComplete: noop,
     onError: noop
   ) {
-    Request.post('http://localhost:5000/api/auth/login', {
-      Email: user.email,
-      Password: user.password,
-    }).then((res) => {
+    Auth.login(user).then((res) => {
       if (res.error) {
         onError(res)
       } else {
-        setUser({
-          name: res.Name,
-          email: res.Email,
-        })
+        setUser(res)
         onComplete(res)
       }
     })
@@ -81,15 +68,12 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     setLoading(true)
-    Request.get('http://localhost:5000/api/auth/token')
+    Auth.token()
       .then((res) => {
         if (res.error) {
           return
         }
-        setUser({
-          name: res.Name,
-          email: res.Email,
-        })
+        setUser(res)
       })
       .finally(() => setLoading(false))
   }, [])
@@ -107,10 +91,13 @@ export function useAuth() {
 
 export const RequireAuth: React.FC = ({ children }) => {
   const { user } = useAuth()
+  const navigate = useNavigate()
 
-  if (!user) {
-    return <Navigate to="/auth" state={{ from: '/' }} />
-  }
+  useEffect(() => {
+    if (!user) {
+      navigate('/auth', { replace: true })
+    }
+  }, [user])
 
   return children as JSX.Element
 }
