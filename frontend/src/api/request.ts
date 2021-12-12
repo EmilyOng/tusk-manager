@@ -1,20 +1,26 @@
+enum Method {
+  GET = 'get',
+  POST = 'post',
+}
+
 export class RequestAPI {
   get(url: string, body: any = {}) {
-    return this.request('GET', url, body)
+    return this.request(Method.GET, url, body)
   }
 
   post(url: string, body: any = {}) {
-    return this.request('POST', url, body)
+    return this.request(Method.POST, url, body)
   }
 
-  private request(method: string, url: string, body: any = {}) {
+  private request(method: Method, url: string, body: any = {}) {
     return fetch(url, {
       method,
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(body),
+      credentials: 'include',
+      ...(method === Method.GET ? {} : { body: JSON.stringify(body) }),
     })
       .then((res) => res.json())
       .catch((e) => {

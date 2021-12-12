@@ -10,7 +10,7 @@ export type Form = {
 
 export enum FormMode {
   SignUp = 'SignUp',
-  Login = 'Login'
+  Login = 'Login',
 }
 
 type Props = {
@@ -23,7 +23,7 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const [form, setForm] = useState<Form>({
     ...(isSignUp ? { name: '' } : {}),
     email: '',
-    password: ''
+    password: '',
   })
 
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
@@ -40,14 +40,16 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   }
   return (
     <form className="control" onSubmit={onSubmit_}>
-      {isSignUp && <InputField
-        name="name"
-        label="Name"
-        type="text"
-        icon={faUser}
-        value={form.name!}
-        events={{ onChange: onInputChange }}
-      />}
+      {isSignUp && (
+        <InputField
+          name="name"
+          label="Name"
+          type="text"
+          icon={faUser}
+          value={form.name!}
+          events={{ onChange: onInputChange }}
+        />
+      )}
       <InputField
         name="email"
         label="Email"
@@ -66,7 +68,7 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
       />
       <div className="control">
         <button type="submit" className="button is-light is-link">
-          {isSignUp ? "Sign Up" : "Login" }
+          {isSignUp ? 'Sign Up' : 'Login'}
         </button>
       </div>
       {children}
