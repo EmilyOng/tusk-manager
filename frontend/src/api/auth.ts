@@ -19,7 +19,6 @@ export class AuthAPI {
         Email: user.email,
         Password: user.password,
       })
-      .then((res) => res)
   }
 
   async login(user: Omit<AuthUser, 'name'>): Promise<LoginResponse> {
@@ -28,10 +27,9 @@ export class AuthAPI {
         Email: user.email,
         Password: user.password,
       })
-      .then((res) => res)
   }
 
   async token(): Promise<TokenResponse> {
-    return this.req.get('/auth/token').then((res) => res)
+    return this.req.get('/auth/token')
   }
 }

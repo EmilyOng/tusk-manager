@@ -1,0 +1,16 @@
+.board {
+  display: flex;
+  flex-direction: column;
+  margin: 16px;
+  flex: 0 0 500px;  
+}
+
+.board-title {
+  padding: 8px 16px;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  /* overrides Bulma "block" class */
+  margin-bottom: 0px !important;
+  background-color: aliceblue;
+}

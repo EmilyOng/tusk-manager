@@ -1,0 +1,14 @@
+.categories {
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  max-width: fit-content !important;
+}
+
+.categories:first-child {
+  margin-left: 0px;
+}
+
+.categories:last-child {
+  margin-right: 0px;
+}
