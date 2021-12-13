@@ -152,5 +152,11 @@ func SignUp(c *gin.Context) {
 		c.Abort()
 	}
 
+	// Generate seed data
+	err = models.SeedData(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.Abort()
+	}
 	c.JSON(http.StatusOK, models.User{ID: user.ID, Name: user.Name, Email: user.Email})
 }

@@ -1,9 +1,8 @@
 package models
 
 import (
+	"main/db"
 	"time"
-
-	"github.com/jinzhu/gorm"
 )
 
 type State int
@@ -28,13 +27,17 @@ func (s State) String() string {
 }
 
 type Task struct {
-	gorm.Model
-	ID          uint8     `gorm:"primaryKey" json:"id"`
+	CommonModel
 	Name        string    `gorm:"not null" json:"name"`
 	Description string    `json:"description"`
 	DueAt       time.Time `json:"dueAt"`
 	State       State     `gorm:"not null" json:"state"`
 	Owner       User      `gorm:"not null; foreignKey:ID"`
 	Tags        []Tag     `gorm:"many2many:task_tag"`
-	Category    Category  `gorm:"many2many:task_category"`
+	Category    Category  `gorm:"not null; foreignKey:ID"`
+}
+
+func (task *Task) Create() error {
+	result := db.DB.Create(task)
+	return result.Error
 }
