@@ -30,7 +30,7 @@ func main() {
 		{
 			auth.POST("/login", controllers.Login)
 			auth.POST("/signup", controllers.SignUp)
-			auth.GET("/token", controllers.Token)
+			auth.GET("/", controllers.IsAuthenticated)
 		}
 	}
 

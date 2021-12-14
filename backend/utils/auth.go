@@ -1,11 +1,14 @@
-package auth
+package utils
 
 import (
 	"errors"
+	"log"
 	"main/models"
+	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt"
+	"github.com/joho/godotenv"
 )
 
 type JWTAuth struct {
@@ -17,6 +20,18 @@ type Claim struct {
 	UserID    uint8
 	UserName  string
 	UserEmail string
+}
+
+func GetSecretKey() (secretKey string, err error) {
+	err = godotenv.Load()
+
+	if err != nil {
+		log.Fatalln("Error loading .env file")
+		return
+	}
+
+	secretKey = os.Getenv("AUTH_SECRET_KEY")
+	return
 }
 
 func (j *JWTAuth) GenerateToken(user models.User) (signedToken string, err error) {

@@ -3,7 +3,7 @@ import { RequestAPI, Response } from './request'
 
 interface SignUpResponse extends Response, User {}
 interface LoginResponse extends Response, User {}
-interface TokenResponse extends Response, User {}
+interface AuthUserResponse extends Response, User {}
 
 export class AuthAPI {
   private req: RequestAPI
@@ -29,7 +29,7 @@ export class AuthAPI {
       })
   }
 
-  async token(): Promise<TokenResponse> {
-    return this.req.get('/auth/token')
+  async getAuthUser(): Promise<AuthUserResponse> {
+    return this.req.get('/auth/')
   }
 }

@@ -17,7 +17,7 @@ type User struct {
 }
 
 func (user *User) Exist() bool {
-	err := db.DB.Where(User{Email: user.Email}).First(&user).Error
+	err := db.DB.Where(&user).First(&user).Error
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 

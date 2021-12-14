@@ -1,36 +1,32 @@
 package controllers
 
 import (
-	"log"
-	"main/auth"
-	"main/db"
 	"main/models"
+	"main/utils"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 type LoginPayload struct {
-	Email    string
-	Password string
+	Email    string `binding:"required"`
+	Password string `binding:"required"`
 }
 
-func getSecretKey() (secretKey string, err error) {
-	err = godotenv.Load()
-
-	if err != nil {
-		log.Fatalln("Error loading .env file")
-		return
-	}
-
-	secretKey = os.Getenv("AUTH_SECRET_KEY")
-	return
+type SignUpPayload struct {
+	Name     string `binding:"required"`
+	Email    string `binding:"required"`
+	Password string `binding:"required"`
 }
 
-func Token(c *gin.Context) {
+type UserResponse struct {
+	ID    uint8  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+func IsAuthenticated(c *gin.Context) {
 	token, err := c.Cookie("token")
 	if err != nil {
 		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
@@ -38,14 +34,14 @@ func Token(c *gin.Context) {
 		return
 	}
 
-	secretKey, err := getSecretKey()
+	secretKey, err := utils.GetSecretKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
 
-	jwtAuth := &auth.JWTAuth{SecretKey: secretKey}
+	jwtAuth := &utils.JWTAuth{SecretKey: secretKey}
 	claims, err := jwtAuth.ValidateToken(token)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -53,18 +49,18 @@ func Token(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, models.User{ID: claims.UserID, Name: claims.UserName, Email: claims.UserEmail})
+	c.JSON(http.StatusOK, UserResponse{ID: claims.UserID, Name: claims.UserName, Email: claims.UserEmail})
 }
 
 func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err error) {
-	secretKey, err := getSecretKey()
+	secretKey, err := utils.GetSecretKey()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
 
-	jwtAuth := auth.JWTAuth{
+	jwtAuth := utils.JWTAuth{
 		SecretKey: secretKey,
 	}
 
@@ -86,7 +82,6 @@ func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err
 
 func Login(c *gin.Context) {
 	var payload LoginPayload
-	var user models.User
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
@@ -95,8 +90,9 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	res := db.DB.Where(&models.User{Email: payload.Email}).First(&user)
-	if res.Error != nil {
+	user := models.User{Email: payload.Email, Password: payload.Password}
+
+	if !user.Exist() {
 		c.JSON(http.StatusForbidden, gin.H{"error": err.Error()})
 		c.Abort()
 		return
@@ -114,17 +110,19 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		c.Abort()
 	}
-	c.JSON(http.StatusOK, models.User{ID: user.ID, Name: user.Name, Email: user.Email})
+	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
 }
 
 func SignUp(c *gin.Context) {
-	var user models.User
-	err := c.ShouldBindJSON(&user)
+	var payload SignUpPayload
+	err := c.ShouldBindJSON(&payload)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		c.Abort()
 		return
 	}
+
+	user := models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
 
 	if user.Exist() {
 		c.JSON(http.StatusOK, gin.H{"error": "A user with the email already exists"})
@@ -158,5 +156,5 @@ func SignUp(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		c.Abort()
 	}
-	c.JSON(http.StatusOK, models.User{ID: user.ID, Name: user.Name, Email: user.Email})
+	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
 }

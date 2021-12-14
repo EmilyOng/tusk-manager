@@ -67,7 +67,7 @@ export const AuthProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     setLoading(true)
-    Auth.token()
+    Auth.getAuthUser()
       .then((res) => {
         if (res.error) {
           return
