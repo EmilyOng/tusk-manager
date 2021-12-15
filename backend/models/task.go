@@ -31,10 +31,10 @@ type Task struct {
 	Name        string    `gorm:"not null" json:"name"`
 	Description string    `json:"description"`
 	DueAt       time.Time `json:"dueAt"`
-	State       State     `gorm:"not null" json:"state"`
-	Owner       User      `gorm:"not null; foreignKey:ID"`
-	Tags        []Tag     `gorm:"many2many:task_tag"`
-	Category    Category  `gorm:"not null; foreignKey:ID"`
+	State       State     `gorm:"not nulll" json:"state"`
+	Tags        []Tag     `gorm:"many2many:task_tags" json:"-"` // Many-to-Many
+	UserID      uint8     // Owner of the task
+	CategoryID  uint8     // Category that the task belongs to
 }
 
 func (task *Task) Create() error {

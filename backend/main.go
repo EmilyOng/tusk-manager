@@ -24,6 +24,8 @@ func main() {
 		AllowCredentials: true,
 	}))
 
+	router.Use(controllers.SetAuthUser)
+
 	api := router.Group("/api")
 	{
 		auth := api.Group("/auth")
@@ -31,6 +33,13 @@ func main() {
 			auth.POST("/login", controllers.Login)
 			auth.POST("/signup", controllers.SignUp)
 			auth.GET("/", controllers.IsAuthenticated)
+		}
+		guard := api.Group("/")
+		{
+			categories := guard.Group("/categories")
+			{
+				categories.GET("/", controllers.GetCategories)
+			}
 		}
 	}
 

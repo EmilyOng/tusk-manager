@@ -2,6 +2,7 @@ package models
 
 import (
 	"errors"
+	"fmt"
 	"main/db"
 
 	"golang.org/x/crypto/bcrypt"
@@ -9,20 +10,22 @@ import (
 )
 
 type User struct {
-	ID       uint8  `gorm:"primaryKey" json:"id"`
-	Name     string `gorm:"not null" json:"name"`
-	Email    string `gorm:"not null" json:"email"`
-	Password string `gorm:"not null"`
-	Tasks    []Task `gorm:"not null; foreignKey:ID"`
+	ID         uint8      `gorm:"primaryKey" json:"id"`
+	Name       string     `gorm:"not null" json:"name"`
+	Email      string     `gorm:"not null" json:"email"`
+	Password   string     `gorm:"not null" json:"-"`
+	Categories []Category `json:"-"` // Categories that the user owns
+	Tasks      []Task     `json:"-"` // Tasks that the user owns
 }
 
 func (user *User) Exist() bool {
-	err := db.DB.Where(&user).First(&user).Error
+	err := db.DB.Where(&User{Email: user.Email}).First(&user).Error
 	return !errors.Is(err, gorm.ErrRecordNotFound)
 }
 
 func (user *User) Create() error {
 	result := db.DB.Create(&user)
+	fmt.Println(user.ID)
 	return result.Error
 }
 
@@ -38,5 +41,10 @@ func (user *User) HashPassword(password string) (err error) {
 
 func (user *User) CheckPassword(passwordInput string) (err error) {
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(passwordInput))
+	return
+}
+
+func (user *User) GetCategories() (categories []Category, err error) {
+	err = db.DB.Model(user).Association("Categories").Find(&categories)
 	return
 }

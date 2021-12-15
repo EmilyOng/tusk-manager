@@ -6,9 +6,10 @@ import (
 
 type Category struct {
 	CommonModel
-	Name  string `gorm:"not null" json:"name"`
-	Color string `gorm:"not null" json:"color"`
-	Tasks []Task `gorm:"not null; foreignKey:ID"`
+	Name   string `gorm:"not null" json:"name"`
+	Color  string `json:"color"`
+	Tasks  []Task `gorm:"not null"` // Tasks belonging to the category
+	UserID uint8  // Refers to the owner of the category
 }
 
 func (category *Category) Create() error {
