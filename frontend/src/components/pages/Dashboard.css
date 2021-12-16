@@ -1,4 +1,4 @@
-.categories {
+.boards {
   display: flex;
   flex-direction: row;
   overflow: auto;
@@ -6,10 +6,10 @@
   overscroll-behavior: none;
 }
 
-.categories:first-child {
+.boards:first-child {
   margin-left: 0px;
 }
 
-.categories:last-child {
+.boards:last-child {
   margin-right: 0px;
 }

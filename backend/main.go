@@ -15,7 +15,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("cannot create database", err)
 	}
-	db.DB.AutoMigrate(&models.User{}, &models.Task{}, &models.Tag{}, &models.Category{})
+	db.DB.AutoMigrate(&models.User{}, &models.Task{}, &models.Tag{}, &models.Board{})
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
@@ -36,9 +36,9 @@ func main() {
 		}
 		guard := api.Group("/")
 		{
-			categories := guard.Group("/categories")
+			boards := guard.Group("/boards")
 			{
-				categories.GET("/", controllers.GetCategories)
+				boards.GET("/", controllers.GetBoards)
 			}
 		}
 	}

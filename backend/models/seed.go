@@ -9,18 +9,18 @@ import (
 // Generates sample seed data
 func SeedData(user *User) (err error) {
 	var tags []Tag
-	var categories []Category
+	var boards []Board
 	var tasks []*Task
 
-	// Create sample categories
+	// Create sample boards
 	for i := 0; i < 10; i++ {
-		categories = append(categories, Category{
-			Name:   "Category-" + fmt.Sprint(i),
+		boards = append(boards, Board{
+			Name:   "Board-" + fmt.Sprint(i),
 			UserID: user.ID,
 		})
 	}
 
-	res := db.DB.Create(&categories)
+	res := db.DB.Create(&boards)
 	if err = res.Error; err != nil {
 		return
 	}
@@ -38,7 +38,7 @@ func SeedData(user *User) (err error) {
 	}
 
 	// Handle associations to tasks
-	for _, category := range categories {
+	for _, board := range boards {
 		tasks = nil
 		for i := 0; i < 10; i++ {
 			tasks = append(tasks, &Task{
@@ -48,7 +48,7 @@ func SeedData(user *User) (err error) {
 				State:       Unstarted,
 				Tags:        tags,
 				UserID:      user.ID,
-				CategoryID:  category.ID,
+				BoardID:     board.ID,
 			})
 		}
 		res = db.DB.Create(&tasks)

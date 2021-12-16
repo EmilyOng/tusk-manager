@@ -10,12 +10,12 @@ import (
 )
 
 type User struct {
-	ID         uint8      `gorm:"primaryKey" json:"id"`
-	Name       string     `gorm:"not null" json:"name"`
-	Email      string     `gorm:"not null" json:"email"`
-	Password   string     `gorm:"not null" json:"-"`
-	Categories []Category `json:"-"` // Categories that the user owns
-	Tasks      []Task     `json:"-"` // Tasks that the user owns
+	ID       uint8   `gorm:"primaryKey" json:"id"`
+	Name     string  `gorm:"not null" json:"name"`
+	Email    string  `gorm:"not null" json:"email"`
+	Password string  `gorm:"not null" json:"-"`
+	Boards   []Board `json:"-"` // Boards that the user owns
+	Tasks    []Task  `json:"-"` // Tasks that the user owns
 }
 
 func (user *User) Exist() bool {
@@ -44,7 +44,7 @@ func (user *User) CheckPassword(passwordInput string) (err error) {
 	return
 }
 
-func (user *User) GetCategories() (categories []Category, err error) {
-	err = db.DB.Model(user).Preload("Tasks").Association("Categories").Find(&categories)
+func (user *User) GetBoards() (boards []Board, err error) {
+	err = db.DB.Model(user).Preload("Tasks").Association("Boards").Find(&boards)
 	return
 }

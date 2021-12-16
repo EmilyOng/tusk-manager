@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetCategories(c *gin.Context) {
+func GetBoards(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -15,10 +15,10 @@ func GetCategories(c *gin.Context) {
 	}
 	user := userInterface.(models.User)
 
-	categories, err := user.GetCategories()
+	boards, err := user.GetBoards()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, categories)
+	c.JSON(http.StatusOK, boards)
 }
