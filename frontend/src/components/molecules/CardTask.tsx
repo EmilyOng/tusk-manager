@@ -6,11 +6,14 @@ import Tag from 'components/atoms/Tag'
 
 type Props = {
   task: Task
+  events: {
+    onOpenCard: (task: Task) => void, 
+  }
 }
 
-const CardTask: React.FC<Props> = ({ task }) => {
+const CardTask: React.FC<Props> = ({ task, events }) => {
   return (
-    <div className="card">
+    <div className="card" onClick={() => events.onOpenCard(task)}>
       <div className="card-content">
         <div className="tags">
           {task.tags.map(tag => <Tag key={tag.id} name={tag.name} color={tag.color} />)}

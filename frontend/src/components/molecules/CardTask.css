@@ -1,6 +1,7 @@
 .card {
   margin: 4px 8px;
   border-radius: 12px;
+  cursor: grab;
 }
 
 .card-content {

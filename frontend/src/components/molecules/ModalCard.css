@@ -1,0 +1,7 @@
+.modal-background {
+  background-color: rgba(10,10,10,.75);
+}
+
+.modal-card-foot {
+  justify-content: flex-end;
+}
