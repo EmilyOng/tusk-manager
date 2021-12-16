@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import FormAuthentication, {
   Form,
-  FormMode,
+  FormMode
 } from 'components/organisms/FormAuthentication'
 import Message from 'components/atoms/Message'
 import clsx from 'clsx'

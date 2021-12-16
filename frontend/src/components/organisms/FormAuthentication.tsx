@@ -10,7 +10,7 @@ export type Form = {
 
 export enum FormMode {
   SignUp = 'SignUp',
-  Login = 'Login',
+  Login = 'Login'
 }
 
 type Props = {
@@ -23,7 +23,7 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const [form, setForm] = useState<Form>({
     ...(isSignUp ? { name: '' } : {}),
     email: '',
-    password: '',
+    password: ''
   })
 
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
@@ -35,7 +35,7 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
     const { name, value } = e.target
     setForm({
       ...form,
-      [name]: value,
+      [name]: value
     })
   }
   return (

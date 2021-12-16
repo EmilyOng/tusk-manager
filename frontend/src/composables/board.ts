@@ -11,13 +11,16 @@ export function useBoards() {
 
   useEffect(() => {
     setLoading(true)
-    api.getBoards().then((res) => {
-      if (res.error) {
-        setError(res.error)
-      } else {
-        setBoards(res)
-      }
-    }).finally(() => setLoading(false))
+    api
+      .getBoards()
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+        } else {
+          setBoards(res)
+        }
+      })
+      .finally(() => setLoading(false))
     return () => {
       // Clean-up
       setLoading(false)

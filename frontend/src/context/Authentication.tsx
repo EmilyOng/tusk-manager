@@ -3,7 +3,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState,
+  useState
 } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthAPI } from 'api/auth'
@@ -52,15 +52,14 @@ export const AuthProvider: React.FC = ({ children }) => {
     })
   }
 
-  function logout() {
-  }
+  function logout() {}
 
   const memo: AuthContextType = useMemo(
     () => ({
       user: user || null,
       signUp,
       login,
-      logout,
+      logout
     }),
     [user]
   )

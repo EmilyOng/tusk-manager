@@ -13,20 +13,18 @@ export class AuthAPI {
   }
 
   async signUp(user: AuthUser): Promise<SignUpResponse> {
-    return this.req
-      .post('/auth/signup', {
-        Name: user.name,
-        Email: user.email,
-        Password: user.password,
-      })
+    return this.req.post('/auth/signup', {
+      Name: user.name,
+      Email: user.email,
+      Password: user.password
+    })
   }
 
   async login(user: Omit<AuthUser, 'name'>): Promise<LoginResponse> {
-    return this.req
-      .post('/auth/login', {
-        Email: user.email,
-        Password: user.password,
-      })
+    return this.req.post('/auth/login', {
+      Email: user.email,
+      Password: user.password
+    })
   }
 
   async getAuthUser(): Promise<AuthUserResponse> {

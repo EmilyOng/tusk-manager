@@ -11,11 +11,15 @@ type Props = {
 const Tag: React.FC<Props> = ({ name, color }) => {
   const derivedClass = 'is-' + ColorToAlias(color)
   return (
-    <span className={clsx({
-      'tag': true,
-      'is-light': true,
-      [derivedClass]: true
-    })}>{name}</span>
+    <span
+      className={clsx({
+        tag: true,
+        'is-light': true,
+        [derivedClass]: true
+      })}
+    >
+      {name}
+    </span>
   )
 }
 

@@ -25,8 +25,8 @@ const InputField: React.FC<Props> = ({
   placeholder,
   icon,
   events = {
-    onChange: () => {},
-  },
+    onChange: () => {}
+  }
 }) => {
   return (
     <div className="field">

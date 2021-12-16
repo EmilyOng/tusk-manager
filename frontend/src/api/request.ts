@@ -1,6 +1,6 @@
 enum Method {
   GET = 'get',
-  POST = 'post',
+  POST = 'post'
 }
 
 export interface Response {
@@ -31,10 +31,10 @@ export class RequestAPI {
       method,
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       credentials: 'include',
-      ...(method === Method.GET ? {} : { body: JSON.stringify(body) }),
+      ...(method === Method.GET ? {} : { body: JSON.stringify(body) })
     })
       .then((res) => res.json())
       .catch((e) => {

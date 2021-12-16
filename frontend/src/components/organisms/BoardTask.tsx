@@ -14,13 +14,17 @@ type Props = {
 
 const BoardTask: React.FC<Props> = ({ board, events }) => {
   return (
-    <div className={clsx({
-      'board': true,
-      [board.color]: true
-    })}>
+    <div
+      className={clsx({
+        board: true,
+        [board.color]: true
+      })}
+    >
       <div className="board-title">{board.name}</div>
       <div className="tasks">
-        {board.tasks.map(task => <CardTask key={task.id} task={task} events={{...events}} />)}
+        {board.tasks.map((task) => (
+          <CardTask key={task.id} task={task} events={{ ...events }} />
+        ))}
       </div>
     </div>
   )

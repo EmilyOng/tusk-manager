@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import LoadingBar from 'components/molecules/LoadingBar'
-import Notification, { NotificationType } from 'components/molecules/Notification'
+import Notification, {
+  NotificationType
+} from 'components/molecules/Notification'
 import BoardTask from 'components/organisms/BoardTask'
 import ModalCard from 'components/molecules/ModalCard'
 import { useBoards } from 'composables/board'
@@ -28,7 +30,12 @@ function useModalCard() {
 
 function Dashboard() {
   const { loading, error, boards } = useBoards()
-  const { task: openedTask, visible: visibleCard, openCard, closeCard} = useModalCard()
+  const {
+    task: openedTask,
+    visible: visibleCard,
+    openCard,
+    closeCard
+  } = useModalCard()
 
   if (loading) {
     return <LoadingBar />
@@ -38,8 +45,21 @@ function Dashboard() {
   }
   return (
     <div className="container boards">
-      {openedTask && <ModalCard visible={visibleCard} title={openedTask.name} labels={{ok: 'Save changes'}} events={{onClose: closeCard, onSubmit: () => {}}} />}
-      {boards.map(board => <BoardTask key={board.id} board={board} events={{onOpenCard: openCard}} />)}
+      {openedTask && (
+        <ModalCard
+          visible={visibleCard}
+          title={openedTask.name}
+          labels={{ ok: 'Save changes' }}
+          events={{ onClose: closeCard, onSubmit: () => {} }}
+        />
+      )}
+      {boards.map((board) => (
+        <BoardTask
+          key={board.id}
+          board={board}
+          events={{ onOpenCard: openCard }}
+        />
+      ))}
     </div>
   )
 }

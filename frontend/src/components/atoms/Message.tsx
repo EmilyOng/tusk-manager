@@ -14,7 +14,7 @@ const Message: React.FC<Props> = ({ type, text }) => {
         help: true,
         message: true,
         'is-danger': type === 'danger',
-        'is-success': type === 'success',
+        'is-success': type === 'success'
       })}
     >
       {text}

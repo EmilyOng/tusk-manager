@@ -44,12 +44,14 @@ const Notification: React.FC<Props> = ({ type, message }) => {
     return null
   }
   return (
-    <div className={clsx({
-      'notification': true,
-      'is-light': true,
-      [type]: true
-    })}>
-      <button className="delete" onClick={clearTimeout_}/>
+    <div
+      className={clsx({
+        notification: true,
+        'is-light': true,
+        [type]: true
+      })}
+    >
+      <button className="delete" onClick={clearTimeout_} />
       {message}
     </div>
   )

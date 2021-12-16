@@ -8,10 +8,11 @@
   --red: hsl(347, 90%, 75%);
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
-  background-color: rgb(238, 238, 238)
+  background-color: rgb(238, 238, 238);
 }
