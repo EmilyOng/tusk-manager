@@ -12,11 +12,14 @@ func SeedData(user *User) (err error) {
 	var boards []Board
 	var tasks []*Task
 
+	colors := []Color{Turquoise, Blue, Cyan, Green, Red, Yellow}
+
 	// Create sample boards
 	for i := 0; i < 10; i++ {
 		boards = append(boards, Board{
 			Name:   "Board-" + fmt.Sprint(i),
 			UserID: user.ID,
+			Color:  colors[i%6],
 		})
 	}
 
@@ -26,9 +29,10 @@ func SeedData(user *User) (err error) {
 	}
 
 	// Create sample tags
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 7; i++ {
 		tags = append(tags, Tag{
-			Name: "Tag-" + fmt.Sprint(i),
+			Name:  "Tag-" + fmt.Sprint(i),
+			Color: colors[i%6],
 		})
 	}
 
@@ -45,7 +49,6 @@ func SeedData(user *User) (err error) {
 				Name:        "Sample Task-" + fmt.Sprint(i),
 				Description: "The quick brown fox jumps over the lazy dog",
 				DueAt:       time.Now().Add(3 * time.Hour),
-				State:       Unstarted,
 				Tags:        tags,
 				UserID:      user.ID,
 				BoardID:     board.ID,

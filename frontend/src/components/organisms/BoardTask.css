@@ -4,20 +4,40 @@
   margin: 16px;
   flex: 0 0 350px;
   height: calc(100vh - 64px);
+  background-color: #fff;
+  border-radius: 12px;
+  border-top-width: 10px;
+  border-top-style: solid;
 }
 
 .board-title {
   padding: 8px 16px;
   font-weight: bold;
-  font-size: 24px;
-  text-align: center;
-  /* overrides Bulma "block" class */
-  margin-bottom: 0px !important;
-  background-color: aliceblue;
+  font-size: 16px;
 }
 
 .tasks {
   display: flex;
   flex-direction: column;
   overflow: auto;
+}
+
+/* Set color themes */
+.board.Turquoise {
+  border-top-color: var(--turquoise);
+}
+.board.Blue {
+  border-top-color: var(--blue);
+}
+.board.Cyan {
+  border-top-color: var(--cyan);
+}
+.board.Green {
+  border-top-color: var(--green);
+}
+.board.Yellow {
+  border-top-color: var(--yellow);
+}
+.board.Red {
+  border-top-color: var(--red);
 }

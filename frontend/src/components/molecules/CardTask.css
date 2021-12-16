@@ -1,3 +1,16 @@
 .card {
   margin: 4px 8px;
+  border-radius: 12px;
+}
+
+.card-content {
+  padding: 16px;
+}
+
+.content {
+  font-weight: bold;
+}
+
+.card-footer-item.created-at {
+  justify-content: flex-start;
 }

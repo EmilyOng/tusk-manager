@@ -1,8 +1,8 @@
-import clsx from 'clsx'
 import React from 'react'
 import './BoardTask.css'
 import CardTask from '../molecules/CardTask'
 import { Board } from 'types/board'
+import clsx from 'clsx'
 
 type Props = {
   board: Board
@@ -10,13 +10,13 @@ type Props = {
 
 const BoardTask: React.FC<Props> = ({ board }) => {
   return (
-    <div className="board">
-      <span className={clsx({
-        "board-title": true,
-        "block": true,
-      })}>{board.name}</span>
+    <div className={clsx({
+      'board': true,
+      [board.color]: true
+    })}>
+      <div className="board-title">{board.name}</div>
       <div className="tasks">
-        {board.tasks.map(task => <CardTask key={task.id} name={task.name} description={task.description} />)}
+        {board.tasks.map(task => <CardTask key={task.id} task={task}/>)}
       </div>
     </div>
   )

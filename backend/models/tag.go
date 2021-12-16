@@ -5,6 +5,7 @@ import "main/db"
 type Tag struct {
 	ID    uint8  `gorm:"primaryKey" json:"id"`
 	Name  string `gorm:"not null" json:"name"`
+	Color Color  `gorm:"not null" json:"color"`
 	Tasks []Task `gorm:"many2many:task_tags" json:"-"`
 }
 

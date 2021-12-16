@@ -1,8 +1,8 @@
 import ReactDOM from 'react-dom'
+import { BrowserRouter } from 'react-router-dom'
 import reportWebVitals from './reportWebVitals'
 import 'bulma/css/bulma.min.css'
-
-import { BrowserRouter } from 'react-router-dom'
+import './index.css'
 import App from './App'
 import { AuthProvider } from 'context/Authentication'
 

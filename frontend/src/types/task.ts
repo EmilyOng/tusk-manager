@@ -1,4 +1,5 @@
-import { Common } from './common'
+import { Base } from './common'
+import { Tag } from './tag'
 
 export enum State {
   Unstarted = 'Unstarted',
@@ -7,9 +8,10 @@ export enum State {
 	Unknown = 'Unknown'
 }
 
-export interface Task extends Common {
+export interface Task extends Base {
   name: string
   description?: string
   dueAt?: Date
   state: State
+  tags: Tag[]
 }
