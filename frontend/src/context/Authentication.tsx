@@ -8,7 +8,7 @@ import React, {
 import { useNavigate } from 'react-router-dom'
 import { AuthAPI } from 'api/auth'
 import { User, AuthUser } from 'types/user'
-import LoadingBar from 'components/organisms/LoadingBar'
+import LoadingBar from 'components/molecules/LoadingBar'
 
 type noop = (res: any) => void
 

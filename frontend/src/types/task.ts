@@ -1,3 +1,5 @@
+import { Common } from './common'
+
 export enum State {
   Unstarted = 'Unstarted',
 	InProgress = 'InProgress',
@@ -5,10 +7,9 @@ export enum State {
 	Unknown = 'Unknown'
 }
 
-export interface Task {
-  id: string
+export interface Task extends Common {
   name: string
-  desription?: string
+  description?: string
   dueAt?: Date
   state: State
 }

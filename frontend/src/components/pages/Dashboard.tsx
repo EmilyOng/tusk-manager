@@ -1,17 +1,18 @@
+import LoadingBar from 'components/molecules/LoadingBar'
+import Notification, { NotificationType } from 'components/molecules/Notification'
 import BoardTask from 'components/organisms/BoardTask'
-import { Category } from 'types/category'
 import './Dashboard.css'
-
-// sample
-const categories: Category[] = [...Array(10)].map((_, idx) => {
-  return {
-    id: idx.toString(),
-    name: `Test-${idx.toString()}`,
-    color: ''
-  }
-})
+import { useCategories } from 'composables/category'
 
 function Dashboard() {
+  const { loading, error, categories } = useCategories()
+
+  if (loading) {
+    return <LoadingBar />
+  }
+  if (error) {
+    return <Notification type={NotificationType.Error} message={error} />
+  }
   return (
     <div className="container categories">
       {categories.map(category => <BoardTask key={category.id} category={category} />)}

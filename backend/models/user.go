@@ -45,6 +45,6 @@ func (user *User) CheckPassword(passwordInput string) (err error) {
 }
 
 func (user *User) GetCategories() (categories []Category, err error) {
-	err = db.DB.Model(user).Association("Categories").Find(&categories)
+	err = db.DB.Model(user).Preload("Tasks").Association("Categories").Find(&categories)
 	return
 }

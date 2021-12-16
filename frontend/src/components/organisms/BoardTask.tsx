@@ -15,7 +15,9 @@ const BoardTask: React.FC<Props> = ({ category }) => {
         "board-title": true,
         "block": true,
       })}>{category.name}</span>
-      <CardTask name="Test" body="Test"/>
+      <div className="tasks">
+        {category.tasks.map(task => <CardTask key={task.id} name={task.name} description={task.description} />)}
+      </div>
     </div>
   )
 }

@@ -2,7 +2,8 @@
   display: flex;
   flex-direction: row;
   overflow: auto;
-  max-width: fit-content !important;
+  max-width: 100% !important;
+  overscroll-behavior: none;
 }
 
 .categories:first-child {

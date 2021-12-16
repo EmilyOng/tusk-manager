@@ -18,8 +18,8 @@ export class RequestAPI {
     this.url = REACT_APP_SERVER_URL
   }
 
-  get(path: string, body: any = {}) {
-    return this.request(Method.GET, path, body)
+  get(path: string) {
+    return this.request(Method.GET, path)
   }
 
   post(path: string, body: any = {}) {
@@ -38,7 +38,8 @@ export class RequestAPI {
     })
       .then((res) => res.json())
       .catch((e) => {
-        throw e
+        // eslint-disable-next-line no-console
+        console.error(e)
       })
   }
 }

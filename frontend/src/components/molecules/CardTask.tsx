@@ -1,11 +1,12 @@
 import React from 'react'
+import './CardTask.css'
 
 type Props = {
   name: string
-  body?: string
+  description?: string
 }
 
-const CardTask: React.FC<Props> = ({ name, body }) => {
+const CardTask: React.FC<Props> = ({ name }) => {
   return (
     <div className="card">
       <header className="card-header">
@@ -18,12 +19,6 @@ const CardTask: React.FC<Props> = ({ name, body }) => {
           </span>
         </button>
       </header>
-      {body && <div className="card-content">
-        <div className="content">{body}</div>
-      </div>}
-      <footer className="card-footer">
-        
-      </footer>
     </div>
   )
 }
