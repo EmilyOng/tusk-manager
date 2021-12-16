@@ -45,6 +45,6 @@ func (user *User) CheckPassword(passwordInput string) (err error) {
 }
 
 func (user *User) GetBoards() (boards []Board, err error) {
-	err = db.DB.Model(user).Preload("Tasks").Association("Boards").Find(&boards)
+	err = db.DB.Model(user).Preload("Tasks").Preload("Tasks.Tags").Association("Boards").Find(&boards)
 	return
 }
