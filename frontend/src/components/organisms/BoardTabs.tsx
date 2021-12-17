@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { faHome } from '@fortawesome/free-solid-svg-icons'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
@@ -6,23 +7,45 @@ import Notification, {
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
 import { useSelectableBoards } from 'composables/board'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function BoardTabs() {
   const {
     loading: boardsLoading,
     error: boardsError,
     boards,
-    updateBoards
   } = useSelectableBoards()
+
   const navigate = useNavigate()
-  function selectBoard(id: string) {
+  const location = useLocation()
+  const [currentBoardId, setCurrentBoardId] = useState<number | null>(null)
+
+  useEffect(() => {
+    if (boardsLoading) {
+      return
+    }
+    // Redirect to the correct tab when boards are loaded
+    const boardId_ = location.pathname.replace('/', '')
+    const boardId = boardId_ ? parseInt(boardId_) : null
+    if (!currentBoardId) {
+      if (boardId) {
+        setCurrentBoardId(boardId)
+      } else {
+        navigate('/')
+      }
+      return
+    }
+
+    selectBoard(currentBoardId)
+  }, [boardsLoading])
+
+  function selectBoard(id: number | null) {
+    setCurrentBoardId(id)
+    if (!id) {
+      navigate('/')
+      return
+    }
     navigate(`/${id}`)
-    updateBoards(
-      boards.map((board) => {
-        return { ...board, selected: board.id === id }
-      })
-    )
   }
 
   if (boardsLoading) {
@@ -33,13 +56,18 @@ function BoardTabs() {
   }
   return (
     <Tabs>
-      <TabItem label="Dashboard" selected={true} icon={faHome} />
+      <TabItem
+        label="Dashboard"
+        selected={!currentBoardId}
+        icon={faHome}
+        events={{onClick: () => selectBoard(null)}}
+      />
       {boards.map((board) => {
         return (
           <TabItem
             key={board.id}
             label={board.name}
-            selected={board.selected}
+            selected={board.id === currentBoardId}
             events={{ onClick: () => selectBoard(board.id) }}
           />
         )

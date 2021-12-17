@@ -1,5 +1,5 @@
 export interface Base {
-  id: string
+  id: number
   createdAt: string
   updatedAt: string
   deletedAt: string

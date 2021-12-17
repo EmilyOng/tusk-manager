@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { SelectableBoard } from 'types/board'
+import { BoardPrimitive } from 'types/board'
 import { BoardAPI } from 'api/board'
 
 export function useSelectableBoards() {
@@ -7,9 +7,9 @@ export function useSelectableBoards() {
   const [error, setError] = useState('')
 
   const api = new BoardAPI()
-  const [boards, setBoards] = useState<SelectableBoard[]>([])
+  const [boards, setBoards] = useState<BoardPrimitive[]>([])
 
-  function updateBoards(boards: SelectableBoard[]) {
+  function updateBoards(boards: BoardPrimitive[]) {
     setBoards(boards)
   }
 

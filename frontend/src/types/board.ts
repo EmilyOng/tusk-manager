@@ -9,7 +9,3 @@ export interface BoardPrimitive extends Base {
 export interface Board extends BoardPrimitive {
   tasks: Task[]
 }
-
-export interface SelectableBoard extends BoardPrimitive {
-  selected: boolean
-}

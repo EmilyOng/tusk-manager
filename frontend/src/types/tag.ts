@@ -1,7 +1,7 @@
 import { Color } from './common'
 
 export interface TagPrimitive {
-  id: string
+  id: number
   name: string
   color: Color
 }
