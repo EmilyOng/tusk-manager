@@ -19,7 +19,7 @@ type Task struct {
 	Description string    `json:"description"`
 	DueAt       time.Time `json:"dueAt"`
 	State       State     `gorm:"default:'Unstarted'" json:"state"`
-	Tags        []Tag     `gorm:"many2many:task_tags" json:"tags"`
+	Tags        []Tag     `gorm:"many2many:task_tags" json:"-"`
 	UserID      uint8     // Owner of the task
 	BoardID     uint8     // Board that the task belongs to
 }
