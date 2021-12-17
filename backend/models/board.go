@@ -16,3 +16,8 @@ func (board *Board) Create() error {
 	result := db.DB.Create(board)
 	return result.Error
 }
+
+func (board *Board) GetTasks() (tasks []Task, err error) {
+	err = db.DB.Model(board).Preload("Tags").Association("Tasks").Find(&tasks)
+	return
+}

@@ -1,7 +1,7 @@
-import { Board } from 'types/board'
+import { BoardPrimitive } from 'types/board'
 import { RequestAPI, Response } from './request'
 
-type Boards = Board[]
+type Boards = BoardPrimitive[]
 interface BoardsResponse extends Response, Boards {}
 
 export class BoardAPI {

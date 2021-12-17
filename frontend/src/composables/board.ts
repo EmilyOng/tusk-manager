@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react'
-import { Board } from 'types/board'
+import { SelectableBoard } from 'types/board'
 import { BoardAPI } from 'api/board'
 
-export function useBoards() {
+export function useSelectableBoards() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const api = new BoardAPI()
-  const [boards, setBoards] = useState<Board[]>([])
+  const [boards, setBoards] = useState<SelectableBoard[]>([])
+
+  function updateBoards(boards: SelectableBoard[]) {
+    setBoards(boards)
+  }
 
   useEffect(() => {
     setLoading(true)
@@ -17,7 +21,14 @@ export function useBoards() {
         if (res.error) {
           setError(res.error)
         } else {
-          setBoards(res)
+          setBoards(
+            res.map((board) => {
+              return {
+                ...board,
+                selected: false
+              }
+            })
+          )
         }
       })
       .finally(() => setLoading(false))
@@ -32,6 +43,7 @@ export function useBoards() {
   return {
     loading,
     error,
-    boards
+    boards,
+    updateBoards
   }
 }

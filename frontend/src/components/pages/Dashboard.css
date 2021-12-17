@@ -1,4 +1,4 @@
-.boards {
+.dashboard {
   display: flex;
   flex-direction: row;
   overflow: auto;
@@ -6,10 +6,10 @@
   overscroll-behavior: none;
 }
 
-.boards:first-child {
+.dashboard:first-child {
   margin-left: 0px;
 }
 
-.boards:last-child {
+.dashboard:last-child {
   margin-right: 0px;
 }

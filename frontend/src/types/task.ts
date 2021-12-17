@@ -8,10 +8,13 @@ export enum State {
   Unknown = 'Unknown'
 }
 
-export interface Task extends Base {
+export interface TaskPrimitive extends Base {
   name: string
   description?: string
   dueAt?: Date
   state: State
+}
+
+export interface Task extends TaskPrimitive {
   tags: Tag[]
 }

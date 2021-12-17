@@ -8,7 +8,7 @@ function App() {
     <RequireAuth>
       <Routes>
         <Route path="/auth" element={<Authentication />} />
-        <Route path="/" element={<Dashboard />} />
+        <Route path="*" element={<Dashboard />} />
       </Routes>
     </RequireAuth>
   )

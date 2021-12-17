@@ -1,0 +1,23 @@
+.list-view {
+  display: flex;
+  flex-direction: column;
+  margin: 16px;
+  flex: 0 0 350px;
+  height: calc(100vh - 64px);
+  background-color: #fff;
+  border-radius: 12px;
+  border-top-width: 10px;
+  border-top-style: solid;
+}
+
+.list-view-title {
+  padding: 8px 16px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.tasks {
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
