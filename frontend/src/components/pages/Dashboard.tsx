@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import ModalCard from 'components/molecules/ModalCard'
-import BoardTabs from 'components/organisms/BoardTabs'
+import DashboardLayout from 'components/layouts/DashboardLayout'
 import { Task } from 'types/task'
-import './Dashboard.css'
 
 function useModalCard() {
   const [visible, setVisible] = useState(false)
@@ -32,7 +31,7 @@ function Dashboard() {
   } = useModalCard()
 
   return (
-    <div className="container dashboard">
+    <DashboardLayout>
       {openedTask && (
         <ModalCard
           visible={visibleCard}
@@ -43,8 +42,7 @@ function Dashboard() {
           <p>hi</p>
         </ModalCard>
       )}
-      <BoardTabs />
-    </div>
+    </DashboardLayout>
   )
 }
 
