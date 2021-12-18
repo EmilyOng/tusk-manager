@@ -28,7 +28,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, events }) => {
     name: '',
     description: '',
     dueAt: undefined,
-    state: State.Unstarted
+    state
   }
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState<Form>(defaultForm)
