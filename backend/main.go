@@ -42,6 +42,10 @@ func main() {
 				boards.POST("/", controllers.CreateBoard)
 				boards.GET("/:board_id/tasks", controllers.GetTasksWithTags)
 			}
+			tasks := guard.Group("/tasks")
+			{
+				tasks.POST("/", controllers.CreateTask)
+			}
 		}
 	}
 

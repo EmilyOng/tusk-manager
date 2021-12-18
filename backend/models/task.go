@@ -16,7 +16,7 @@ const (
 type Task struct {
 	CommonModel
 	Name        string    `gorm:"not null" json:"name"`
-	Description string    `json:"description"`
+	Description string    `gorm:"default:''" json:"description"`
 	DueAt       time.Time `json:"dueAt"`
 	State       State     `gorm:"default:'Unstarted'" json:"state"`
 	Tags        []Tag     `gorm:"many2many:task_tags" json:"tags"`
