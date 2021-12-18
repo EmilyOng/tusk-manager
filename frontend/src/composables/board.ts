@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { BoardPrimitive } from 'types/board'
 import { BoardAPI } from 'api/board'
 
-export function useSelectableBoards() {
+export function useBoards() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 

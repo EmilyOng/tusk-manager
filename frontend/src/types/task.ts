@@ -4,8 +4,7 @@ import { Tag } from './tag'
 export enum State {
   Unstarted = 'Unstarted',
   InProgress = 'InProgress',
-  Completed = 'Completed',
-  Unknown = 'Unknown'
+  Completed = 'Completed'
 }
 
 export interface TaskPrimitive extends Base {

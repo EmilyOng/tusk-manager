@@ -11,7 +11,7 @@ export class TaskAPI {
     this.req = new RequestAPI()
   }
 
-  async getTasks(boardId: string): Promise<TasksResposne> {
+  async getTasks(boardId: number): Promise<TasksResposne> {
     return this.req.get(`/boards/${boardId}/tasks`)
   }
 }

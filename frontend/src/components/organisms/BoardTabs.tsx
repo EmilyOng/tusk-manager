@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
+import clsx from 'clsx'
 import { faHome } from '@fortawesome/free-solid-svg-icons'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
@@ -6,15 +8,11 @@ import Notification, {
 } from 'components/molecules/Notification'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import { useSelectableBoards } from 'composables/board'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useBoards } from 'composables/board'
+import './BoardTabs.css'
 
 function BoardTabs() {
-  const {
-    loading: boardsLoading,
-    error: boardsError,
-    boards
-  } = useSelectableBoards()
+  const { loading: boardsLoading, error: boardsError, boards } = useBoards()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -57,7 +55,6 @@ function BoardTabs() {
   return (
     <Tabs>
       <TabItem
-        label="Dashboard"
         selected={!currentBoardId}
         icon={faHome}
         events={{ onClick: () => selectBoard(null) }}
@@ -66,6 +63,7 @@ function BoardTabs() {
         return (
           <TabItem
             key={board.id}
+            className={clsx({ 'board-tab': true, [board.color]: true })}
             label={board.name}
             selected={board.id === currentBoardId}
             events={{ onClick: () => selectBoard(board.id) }}

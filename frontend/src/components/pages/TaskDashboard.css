@@ -1,0 +1,4 @@
+.card-boards {
+  display: flex;
+  flex-direction: row;
+}

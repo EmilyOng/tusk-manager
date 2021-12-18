@@ -27,7 +27,7 @@ func GetBoards(c *gin.Context) {
 	c.JSON(http.StatusOK, boards)
 }
 
-func GetTasks(c *gin.Context) {
+func GetTasksWithTags(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -35,9 +35,9 @@ func GetTasks(c *gin.Context) {
 	}
 
 	var boardID uint8
-	fmt.Sscan(c.Param("board-id"), &boardID)
+	fmt.Sscan(c.Param("board_id"), &boardID)
 	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-	tasks, err := board.GetTasks()
+	tasks, err := board.GetTasksWithTags()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return

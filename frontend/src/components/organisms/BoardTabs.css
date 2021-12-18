@@ -1,0 +1,28 @@
+.board-tab {
+  border-top-width: 5px;
+  border-top-style: solid;
+}
+
+.board-tab.Turquoise {
+  border-top-color: var(--turquoise);
+}
+
+.board-tab.Blue {
+  border-top-color: var(--blue);
+}
+
+.board-tab.Cyan {
+  border-top-color: var(--cyan);
+}
+
+.board-tab.Green {
+  border-top-color: var(--green);
+}
+
+.board-tab.Yellow {
+  border-top-color: var(--yellow);
+}
+
+.board-tab.Red {
+  border-top-color: var(--red);
+}
