@@ -1,5 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import Button from 'components/atoms/Button'
 import './ModalCard.css'
 
 type Props = {
@@ -11,17 +13,10 @@ type Props = {
   }
   events: {
     onClose: () => void
-    onSubmit: () => void
   }
 }
 
-const ModalCard: React.FC<Props> = ({
-  title,
-  visible,
-  labels,
-  events,
-  children
-}) => {
+const ModalCard: React.FC<Props> = ({ title, visible, events, children }) => {
   return (
     <div
       className={clsx({
@@ -33,21 +28,9 @@ const ModalCard: React.FC<Props> = ({
       <div className="modal-card">
         <header className="modal-card-head">
           <p className="modal-card-title">{title}</p>
-          <button
-            className="delete"
-            aria-label="close"
-            onClick={events.onClose}
-          ></button>
+          <Button events={{ onClick: events.onClose }} icon={faTimes} />
         </header>
         <section className="modal-card-body">{children}</section>
-        <footer className="modal-card-foot">
-          <button className="button" onClick={events.onClose}>
-            {labels?.cancel || 'Cancel'}
-          </button>
-          <button className="button is-success" onClick={events.onSubmit}>
-            {labels?.ok || 'OK'}
-          </button>
-        </footer>
       </div>
     </div>
   )

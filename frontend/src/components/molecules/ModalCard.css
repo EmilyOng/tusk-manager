@@ -2,6 +2,7 @@
   background-color: rgba(10, 10, 10, 0.75);
 }
 
-.modal-card-foot {
-  justify-content: flex-end;
+.modal-card,
+.modal-card-body {
+  overflow: visible;
 }

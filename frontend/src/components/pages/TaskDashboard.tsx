@@ -10,7 +10,7 @@ import Notification, {
 import ListView from 'components/organisms/ListView'
 import './TaskDashboard.css'
 
-function useModalCard() {
+function useTaskEditModal() {
   const [visible, setVisible] = useState(false)
   const [task, setTask] = useState<Task>()
   function openCard(task: Task) {
@@ -44,11 +44,11 @@ function TaskDashboard() {
   }, [location])
 
   const {
-    task: openedTask,
-    visible: visibleCard,
-    openCard,
-    closeCard
-  } = useModalCard()
+    task: openedTaskEdit,
+    visible: isTaskEditing,
+    openCard: openTaskEditCard,
+    closeCard: closeTaskEditCard
+  } = useTaskEditModal()
 
   if (tasksLoading) {
     return <LoadingBar />
@@ -58,13 +58,12 @@ function TaskDashboard() {
   }
 
   return (
-    <div>
-      {openedTask && (
+    <div className="task-dashboard">
+      {openedTaskEdit && (
         <ModalCard
-          visible={visibleCard}
-          title={openedTask.name}
-          labels={{ ok: 'Save changes' }}
-          events={{ onClose: closeCard, onSubmit: () => {} }}
+          visible={isTaskEditing}
+          title={openedTaskEdit.name}
+          events={{ onClose: closeTaskEditCard }}
         >
           <p>hi</p>
         </ModalCard>
@@ -73,17 +72,17 @@ function TaskDashboard() {
         <ListView
           tasks={orderedTasks[State.Unstarted]}
           state={State.Unstarted}
-          events={{ onOpenCard: openCard }}
+          events={{ onOpenCard: openTaskEditCard }}
         />
         <ListView
           tasks={orderedTasks[State.InProgress]}
           state={State.InProgress}
-          events={{ onOpenCard: openCard }}
+          events={{ onOpenCard: openTaskEditCard }}
         />
         <ListView
           tasks={orderedTasks[State.Completed]}
           state={State.Completed}
-          events={{ onOpenCard: openCard }}
+          events={{ onOpenCard: openTaskEditCard }}
         />
       </div>
     </div>

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import clsx from 'clsx'
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import Button from 'components/atoms/Button'
 import './Notification.css'
 
 export enum NotificationType {
@@ -51,7 +53,7 @@ const Notification: React.FC<Props> = ({ type, message }) => {
         [type]: true
       })}
     >
-      <button className="delete" onClick={clearTimeout_} />
+      <Button events={{ onClick: clearTimeout_ }} icon={faTimes} />
       {message}
     </div>
   )

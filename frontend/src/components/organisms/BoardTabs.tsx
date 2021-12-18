@@ -1,22 +1,62 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
-import { faHome } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { Board, BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
   NotificationType
 } from 'components/molecules/Notification'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import { useBoards } from 'composables/board'
+import { useBoards, useCreateBoard } from 'composables/board'
+import Button from 'components/atoms/Button'
+import ModalCard from 'components/molecules/ModalCard'
+import FormBoardCreate, { Form } from './FormBoardCreate'
 import './BoardTabs.css'
 
-function BoardTabs() {
-  const { loading: boardsLoading, error: boardsError, boards } = useBoards()
+function useBoardCreateModal() {
+  const [visible, setVisible] = useState(false)
+  const [board, setBoard] = useState<Board>()
+  function openCard(board: Board) {
+    setBoard(board)
+    setVisible(true)
+  }
+  function closeCard() {
+    setBoard(undefined)
+    setVisible(false)
+  }
+  return {
+    board,
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
+const BoardTabs: React.FC = () => {
+  const {
+    loading: boardsLoading,
+    error: boardsError,
+    boards,
+    updateBoards
+  } = useBoards()
+  const {
+    loading: createBoardLoading,
+    error: createBoardError,
+    createBoard: createBoard_
+  } = useCreateBoard()
 
   const navigate = useNavigate()
   const location = useLocation()
   const [currentBoardId, setCurrentBoardId] = useState<number | null>(null)
+
+  const {
+    board: openedBoardCreate,
+    visible: isBoardCreating,
+    openCard: openBoardCreateCard,
+    closeCard: closeBoardCreateCard
+  } = useBoardCreateModal()
 
   useEffect(() => {
     if (boardsLoading) {
@@ -46,31 +86,76 @@ function BoardTabs() {
     navigate(`/${id}`)
   }
 
-  if (boardsLoading) {
+  function createBoard(form: Form, cb: () => void) {
+    createBoard_(form)
+      .then((board: BoardPrimitive | null) => {
+        if (!board) {
+          return
+        }
+        updateBoards([...boards, board])
+        // Navigate to the new board
+        selectBoard(board.id)
+        closeBoardCreateCard()
+      })
+      .finally(() => cb())
+  }
+
+  if (boardsLoading || createBoardLoading) {
     return <LoadingBar />
   }
-  if (boardsError) {
-    return <Notification type={NotificationType.Error} message={boardsError} />
+  if (boardsError || createBoardError) {
+    return (
+      <Notification
+        type={NotificationType.Error}
+        message={boardsError || createBoardError}
+      />
+    )
   }
   return (
-    <Tabs>
-      <TabItem
-        selected={!currentBoardId}
-        icon={faHome}
-        events={{ onClick: () => selectBoard(null) }}
-      />
-      {boards.map((board) => {
-        return (
-          <TabItem
-            key={board.id}
-            className={clsx({ 'board-tab': true, [board.color]: true })}
-            label={board.name}
-            selected={board.id === currentBoardId}
-            events={{ onClick: () => selectBoard(board.id) }}
+    <div className="tabs-container">
+      {openedBoardCreate && (
+        <ModalCard
+          visible={isBoardCreating}
+          title="Create a new board"
+          events={{ onClose: closeBoardCreateCard }}
+        >
+          <FormBoardCreate
+            events={{
+              onSubmit: createBoard,
+              onCancel: closeBoardCreateCard
+            }}
           />
-        )
-      })}
-    </Tabs>
+        </ModalCard>
+      )}
+      <Tabs>
+        <Button
+          className={clsx({
+            'is-info': true,
+            'is-light': true,
+            'is-active': !currentBoardId
+          })}
+          icon={faHome}
+          events={{ onClick: () => selectBoard(null) }}
+        />
+        {boards.map((board) => {
+          return (
+            <TabItem
+              key={board.id}
+              className={clsx({ 'board-tab': true, [board.color]: true })}
+              label={board.name}
+              selected={board.id === currentBoardId}
+              events={{ onClick: () => selectBoard(board.id) }}
+            />
+          )
+        })}
+      </Tabs>
+
+      <Button
+        className="is-link is-light"
+        icon={faPlus}
+        events={{ onClick: openBoardCreateCard }}
+      />
+    </div>
   )
 }
 

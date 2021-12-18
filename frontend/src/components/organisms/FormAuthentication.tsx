@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import InputField from '../molecules/InputField'
+import clsx from 'clsx'
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
+import InputField from '../molecules/InputField'
+import Button from 'components/atoms/Button'
 
 export type Form = {
   name?: string
@@ -15,11 +17,12 @@ export enum FormMode {
 
 type Props = {
   mode: FormMode
-  onSubmit: (form: Form) => any
+  onSubmit: (form: Form, cb: () => void) => any
 }
 
 const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const isSignUp = mode === FormMode.SignUp
+  const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState<Form>({
     ...(isSignUp ? { name: '' } : {}),
     email: '',
@@ -28,7 +31,8 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
 
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    onSubmit(form)
+    setSubmitting(true)
+    onSubmit(form, () => setSubmitting(false))
   }
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -67,9 +71,15 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
         events={{ onChange: onInputChange }}
       />
       <div className="control">
-        <button type="submit" className="button is-light is-link">
-          {isSignUp ? 'Sign Up' : 'Login'}
-        </button>
+        <Button
+          type="submit"
+          className={clsx({
+            'is-loading': submitting,
+            'is-link': true
+          })}
+          attr={{ disabled: submitting }}
+          label={isSignUp ? 'Sign Up' : 'Login'}
+        />
       </div>
       {children}
     </form>

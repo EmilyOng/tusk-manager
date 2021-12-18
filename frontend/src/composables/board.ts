@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BoardPrimitive } from 'types/board'
-import { BoardAPI } from 'api/board'
+import { BoardAPI, CreatingBoard } from 'api/board'
 
 export function useBoards() {
   const [loading, setLoading] = useState(false)
@@ -38,5 +38,32 @@ export function useBoards() {
     error,
     boards,
     updateBoards
+  }
+}
+
+export function useCreateBoard() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new BoardAPI()
+
+  function createBoard(board: CreatingBoard) {
+    setLoading(true)
+    return api
+      .createBoard(board)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return res
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    createBoard
   }
 }

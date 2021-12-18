@@ -26,3 +26,9 @@
 .board-tab.Red {
   border-top-color: var(--red);
 }
+
+.tabs-container {
+  /* position: fixed; */
+  display: flex;
+  flex-direction: row;
+}

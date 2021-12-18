@@ -8,7 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type BoardsResponse struct {
+type CreateBoardPayload struct {
+	Name  string
+	Color models.Color
 }
 
 func GetBoards(c *gin.Context) {
@@ -43,4 +45,30 @@ func GetTasksWithTags(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, tasks)
+}
+
+func CreateBoard(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	user := userInterface.(models.User)
+
+	var payload CreateBoardPayload
+
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: user.ID}
+	err = board.Create()
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, board)
 }
