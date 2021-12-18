@@ -73,18 +73,17 @@ const FormBoardCreate: React.FC<Props> = ({ events }) => {
   return (
     <form className="control" onSubmit={onSubmit_}>
       <div className="form-fields">
-        <div className="name-field">
+        <div className="name-field field">
           <InputField
             name="name"
             label="Name"
             type="text"
-            required
             icon={faEdit}
             value={form.name}
             events={{ onChange: onInputChange }}
           />
         </div>
-        <div className="color-field">
+        <div className="color-field field">
           <label className="label">Color</label>
           <Dropdown
             items={colorItems}

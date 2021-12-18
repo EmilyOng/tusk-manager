@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { State, Task } from 'types/task'
-import { TaskAPI } from 'api/task'
+import { TaskAPI, CreatingTask } from 'api/task'
 
 export function useTasks(boardId: number | null) {
   const [loading, setLoading] = useState(false)
@@ -8,6 +8,10 @@ export function useTasks(boardId: number | null) {
 
   const api = new TaskAPI()
   const [tasks, setTasks] = useState<Task[]>([])
+
+  function updateTasks(tasks: Task[]) {
+    setTasks(tasks)
+  }
 
   useEffect(() => {
     if (!boardId) {
@@ -36,7 +40,35 @@ export function useTasks(boardId: number | null) {
   return {
     loading,
     error,
-    tasks
+    tasks,
+    updateTasks
+  }
+}
+
+export function useCreateTask() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new TaskAPI()
+
+  function createTask(task: CreatingTask) {
+    setLoading(true)
+    return api
+      .createTask(task)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return res
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    createTask
   }
 }
 

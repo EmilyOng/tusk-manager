@@ -7,9 +7,17 @@ export enum State {
   Completed = 'Completed'
 }
 
+export function derivedState(state: State) {
+  return state === State.Completed
+    ? 'Completed'
+    : state === State.InProgress
+    ? 'In Progress'
+    : 'To Do'
+}
+
 export interface TaskPrimitive extends Base {
   name: string
-  description?: string
+  description: string
   dueAt?: Date
   state: State
 }

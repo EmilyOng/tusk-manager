@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import ModalCard from 'components/molecules/ModalCard'
 import { State, Task } from 'types/task'
-import { orderTasksByState, useTasks } from 'composables/task'
+import { orderTasksByState, useCreateTask, useTasks } from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
   NotificationType
 } from 'components/molecules/Notification'
 import ListView from 'components/organisms/ListView'
 import './TaskDashboard.css'
+import { Form } from 'components/organisms/FormTaskCreate'
 
 function useTaskEditModal() {
   const [visible, setVisible] = useState(false)
@@ -32,7 +33,12 @@ function useTaskEditModal() {
 function TaskDashboard() {
   const location = useLocation()
   const [boardId, setBoardId] = useState<number | null>(null)
-  const { loading: tasksLoading, error: tasksError, tasks } = useTasks(boardId)
+  const {
+    loading: tasksLoading,
+    error: tasksError,
+    tasks,
+    updateTasks
+  } = useTasks(boardId)
   const orderedTasks = orderTasksByState(tasks)
 
   useEffect(() => {
@@ -50,15 +56,28 @@ function TaskDashboard() {
     closeCard: closeTaskEditCard
   } = useTaskEditModal()
 
+  const { error: createTaskError, createTask: createTask_ } = useCreateTask()
+
+  function createTask(form: Form, cb: () => void) {
+    createTask_({ ...form, boardId: boardId! })
+      .then((task) => {
+        if (!task) {
+          return
+        }
+        updateTasks([...tasks, { ...task, tags: [] }])
+      })
+      .finally(() => cb())
+  }
+
   if (tasksLoading) {
     return <LoadingBar />
-  }
-  if (tasksError) {
-    return <Notification type={NotificationType.Error} message={tasksError} />
   }
 
   return (
     <div className="task-dashboard">
+      {(tasksError || createTaskError) && (
+        <Notification type={NotificationType.Error} message={createTaskError} />
+      )}
       {openedTaskEdit && (
         <ModalCard
           visible={isTaskEditing}
@@ -72,17 +91,17 @@ function TaskDashboard() {
         <ListView
           tasks={orderedTasks[State.Unstarted]}
           state={State.Unstarted}
-          events={{ onOpenCard: openTaskEditCard }}
+          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
         />
         <ListView
           tasks={orderedTasks[State.InProgress]}
           state={State.InProgress}
-          events={{ onOpenCard: openTaskEditCard }}
+          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
         />
         <ListView
           tasks={orderedTasks[State.Completed]}
           state={State.Completed}
-          events={{ onOpenCard: openTaskEditCard }}
+          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
         />
       </div>
     </div>

@@ -103,16 +103,15 @@ const BoardTabs: React.FC = () => {
   if (boardsLoading || createBoardLoading) {
     return <LoadingBar />
   }
-  if (boardsError || createBoardError) {
-    return (
-      <Notification
-        type={NotificationType.Error}
-        message={boardsError || createBoardError}
-      />
-    )
-  }
+
   return (
     <div className="tabs-container">
+      {(boardsError || createBoardError) && (
+        <Notification
+          type={NotificationType.Error}
+          message={boardsError || createBoardError}
+        />
+      )}
       {openedBoardCreate && (
         <ModalCard
           visible={isBoardCreating}

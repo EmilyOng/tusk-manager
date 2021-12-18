@@ -1,7 +1,9 @@
 import React, { Key, useState } from 'react'
 import clsx from 'clsx'
+import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/atoms/Button'
 import DropdownItem from './DropdownItem'
+import Icon from 'components/atoms/Icon'
 import './Dropdown.css'
 
 type Props = {
@@ -25,6 +27,8 @@ const Dropdown: React.FC<Props> = ({ items, events }) => {
 
   function onSelect(key: Key | null) {
     setSelected(key)
+    // Close the dropdown
+    setActive(false)
     events.onSelect(key)
   }
 
@@ -41,6 +45,9 @@ const Dropdown: React.FC<Props> = ({ items, events }) => {
           events={{ onClick: clickDropdown }}
         >
           <span>{items.find((item) => item.key === selected) ?? items[0]}</span>
+          <span className="dropdown-icon">
+            <Icon icon={faAngleDown} />
+          </span>
         </Button>
       </div>
       <div className="dropdown-menu" id="dropdown-menu" role="menu">

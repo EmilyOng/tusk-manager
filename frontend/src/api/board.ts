@@ -23,9 +23,6 @@ export class BoardAPI {
   }
 
   async createBoard(board: CreatingBoard): Promise<BoardResponse> {
-    return this.req.post('/boards/', {
-      Name: board.name,
-      Color: board.color
-    })
+    return this.req.post('/boards/', board)
   }
 }

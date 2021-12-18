@@ -1,3 +1,7 @@
 .dropdown-menu {
   z-index: 99;
 }
+
+.dropdown-icon {
+  margin-left: 8px;
+}

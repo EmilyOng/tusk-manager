@@ -10,7 +10,7 @@ type Props = {
   label?: string
   attr?: Record<string, unknown>
   events?: {
-    onClick: any
+    onClick?: any
   }
 }
 
