@@ -21,14 +21,7 @@ export function useSelectableBoards() {
         if (res.error) {
           setError(res.error)
         } else {
-          setBoards(
-            res.map((board) => {
-              return {
-                ...board,
-                selected: false
-              }
-            })
-          )
+          setBoards(res)
         }
       })
       .finally(() => setLoading(false))

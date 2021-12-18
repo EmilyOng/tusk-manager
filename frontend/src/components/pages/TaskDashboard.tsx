@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import ModalCard from 'components/molecules/ModalCard'
-import DashboardLayout from 'components/layouts/DashboardLayout'
 import { Task } from 'types/task'
 
 function useModalCard() {
@@ -22,7 +21,7 @@ function useModalCard() {
   }
 }
 
-function Dashboard() {
+function TaskDashboard() {
   const {
     task: openedTask,
     visible: visibleCard,
@@ -31,7 +30,7 @@ function Dashboard() {
   } = useModalCard()
 
   return (
-    <DashboardLayout>
+    <div>
       {openedTask && (
         <ModalCard
           visible={visibleCard}
@@ -42,8 +41,9 @@ function Dashboard() {
           <p>hi</p>
         </ModalCard>
       )}
-    </DashboardLayout>
+      Tasks
+    </div>
   )
 }
 
-export default Dashboard
+export default TaskDashboard

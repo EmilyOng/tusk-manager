@@ -13,7 +13,7 @@ function BoardTabs() {
   const {
     loading: boardsLoading,
     error: boardsError,
-    boards,
+    boards
   } = useSelectableBoards()
 
   const navigate = useNavigate()
@@ -60,7 +60,7 @@ function BoardTabs() {
         label="Dashboard"
         selected={!currentBoardId}
         icon={faHome}
-        events={{onClick: () => selectBoard(null)}}
+        events={{ onClick: () => selectBoard(null) }}
       />
       {boards.map((board) => {
         return (

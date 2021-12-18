@@ -1,22 +1,12 @@
 import React from 'react'
-import clsx from 'clsx'
+import { Outlet } from 'react-router-dom'
 import BoardTabs from 'components/organisms/BoardTabs'
 
-type Props = {
-  className?: string
-}
-
-const DashboardLayout: React.FC<Props> = ({ className, children }) => {
+const DashboardLayout: React.FC = () => {
   return (
     <div className="container">
       <BoardTabs />
-      <div
-        className={clsx({
-          [className ?? '']: !!className
-        })}
-      >
-        {children}
-      </div>
+      <Outlet />
     </div>
   )
 }
