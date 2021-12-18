@@ -12,7 +12,7 @@ type Props = {
   tasks: Task[]
   state: State
   events: {
-    onOpenCard: (task: Task) => void
+    onEditTask: any // TOOD
     onCreateTask: (form: Form, cb: () => void) => void
   }
 }
@@ -36,7 +36,27 @@ function useTaskCreateModal() {
   }
 }
 
+function useTaskEditModal() {
+  const [visible, setVisible] = useState(false)
+  const [task, setTask] = useState<Task>()
+  function openCard(task: Task) {
+    setTask(task)
+    setVisible(true)
+  }
+  function closeCard() {
+    setTask(undefined)
+    setVisible(false)
+  }
+  return {
+    task,
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
 const ListView: React.FC<Props> = ({ tasks, state, events }) => {
+  // Handles task creation
   const {
     task: openedTaskCreate,
     visible: isTaskCreating,
@@ -50,6 +70,14 @@ const ListView: React.FC<Props> = ({ tasks, state, events }) => {
       closeTaskCreateCard()
     })
   }
+
+  // Handles task edit
+  const {
+    task: openedTaskEdit,
+    visible: isTaskEditing,
+    openCard: openTaskEditCard,
+    closeCard: closeTaskEditCard
+  } = useTaskEditModal()
 
   return (
     <div className={clsx({ 'list-view': true, [state]: true })}>
@@ -65,6 +93,15 @@ const ListView: React.FC<Props> = ({ tasks, state, events }) => {
           />
         </ModalCard>
       )}
+      {openedTaskEdit && (
+        <ModalCard
+          visible={isTaskEditing}
+          title={openedTaskEdit.name}
+          events={{ onClose: closeTaskEditCard }}
+        >
+          <p>hi</p>
+        </ModalCard>
+      )}
       <div className="list-view-header">
         <div className="list-view-title">{derivedState(state)}</div>
         <Button
@@ -75,7 +112,11 @@ const ListView: React.FC<Props> = ({ tasks, state, events }) => {
       </div>
       <div className="tasks">
         {tasks.map((task) => (
-          <CardTask key={task.id} task={task} events={{ ...events }} />
+          <CardTask
+            key={task.id}
+            task={task}
+            events={{ onTaskEditing: openTaskEditCard }}
+          />
         ))}
       </div>
     </div>

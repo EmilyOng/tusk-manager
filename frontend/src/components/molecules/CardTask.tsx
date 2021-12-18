@@ -7,13 +7,13 @@ import Tag from 'components/atoms/Tag'
 type Props = {
   task: Task
   events: {
-    onOpenCard: (task: Task) => void
+    onTaskEditing: (task: Task) => void
   }
 }
 
 const CardTask: React.FC<Props> = ({ task, events }) => {
   return (
-    <div className="card" onClick={() => events.onOpenCard(task)}>
+    <div className="card" onClick={() => events.onTaskEditing(task)}>
       <div className="card-content">
         <div className="tags">
           {task.tags.map((tag) => (

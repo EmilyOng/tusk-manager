@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import ModalCard from 'components/molecules/ModalCard'
-import { State, Task } from 'types/task'
+import { State } from 'types/task'
 import { orderTasksByState, useCreateTask, useTasks } from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
@@ -10,25 +9,6 @@ import Notification, {
 import ListView from 'components/organisms/ListView'
 import './TaskDashboard.css'
 import { Form } from 'components/organisms/FormTaskCreate'
-
-function useTaskEditModal() {
-  const [visible, setVisible] = useState(false)
-  const [task, setTask] = useState<Task>()
-  function openCard(task: Task) {
-    setTask(task)
-    setVisible(true)
-  }
-  function closeCard() {
-    setTask(undefined)
-    setVisible(false)
-  }
-  return {
-    task,
-    visible,
-    openCard,
-    closeCard
-  }
-}
 
 function TaskDashboard() {
   const location = useLocation()
@@ -48,13 +28,6 @@ function TaskDashboard() {
     }
     setBoardId(parseInt(id))
   }, [location])
-
-  const {
-    task: openedTaskEdit,
-    visible: isTaskEditing,
-    openCard: openTaskEditCard,
-    closeCard: closeTaskEditCard
-  } = useTaskEditModal()
 
   const { error: createTaskError, createTask: createTask_ } = useCreateTask()
 
@@ -78,30 +51,21 @@ function TaskDashboard() {
       {(tasksError || createTaskError) && (
         <Notification type={NotificationType.Error} message={createTaskError} />
       )}
-      {openedTaskEdit && (
-        <ModalCard
-          visible={isTaskEditing}
-          title={openedTaskEdit.name}
-          events={{ onClose: closeTaskEditCard }}
-        >
-          <p>hi</p>
-        </ModalCard>
-      )}
       <div className="card-boards">
         <ListView
           tasks={orderedTasks[State.Unstarted]}
           state={State.Unstarted}
-          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
+          events={{ onEditTask: () => {}, onCreateTask: createTask }}
         />
         <ListView
           tasks={orderedTasks[State.InProgress]}
           state={State.InProgress}
-          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
+          events={{ onEditTask: () => {}, onCreateTask: createTask }}
         />
         <ListView
           tasks={orderedTasks[State.Completed]}
           state={State.Completed}
-          events={{ onOpenCard: openTaskEditCard, onCreateTask: createTask }}
+          events={{ onEditTask: () => {}, onCreateTask: createTask }}
         />
       </div>
     </div>
