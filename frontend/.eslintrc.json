@@ -16,7 +16,7 @@
   "ignorePatterns": ["stories"],
   "rules": {
     "react/react-in-jsx-scope": "off",
-    "unused-imports/no-unused-imports": "warning",
+    "unused-imports/no-unused-imports": "warn",
     "no-unused-vars": "off",
     "no-unused-locals": "off",
     "no-undef": "off",
