@@ -23,9 +23,11 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
         <div className="content">{task.name}</div>
       </div>
       <footer className="card-footer">
-        <span className="card-footer-item created-at">
-          {format(new Date(task.createdAt), 'E, LLL d')}
-        </span>
+        {task.dueAt && (
+          <span className="card-footer-item due-at">
+            {format(new Date(task.dueAt), 'E, LLL d')}
+          </span>
+        )}
       </footer>
     </div>
   )

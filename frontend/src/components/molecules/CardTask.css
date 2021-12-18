@@ -12,6 +12,6 @@
   font-weight: bold;
 }
 
-.card-footer-item.created-at {
+.card-footer-item.due-at {
   justify-content: flex-start;
 }
