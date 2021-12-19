@@ -2,33 +2,38 @@ import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit, faFile } from '@fortawesome/free-solid-svg-icons'
 import { derivedState, State } from 'types/task'
+import { TagPrimitive } from 'types/tag'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
 import Dropdown from '../molecules/Dropdown'
 import DatePicker from 'components/molecules/DatePicker'
-import './FormBoardCreate.css'
+import TagsSelect from 'components/molecules/TagsSelect'
+import './FormTaskCreate.css'
 
 export type Form = {
   name: string
   description: string
   dueAt?: Date | undefined
   state: State
+  tags: TagPrimitive[]
 }
 
 type Props = {
   state: State
+  tags: TagPrimitive[]
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
   }
 }
 
-const FormTaskCreate: React.FC<Props> = ({ state, events }) => {
+const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
   const defaultForm = {
     name: '',
     description: '',
     dueAt: undefined,
-    state
+    state,
+    tags: []
   }
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState<Form>(defaultForm)
@@ -60,6 +65,24 @@ const FormTaskCreate: React.FC<Props> = ({ state, events }) => {
       [name]: value
     })
   }
+
+  function updateTags(tag: TagPrimitive) {
+    const existing = form.tags.find((t) => t.id === tag.id)
+    if (existing) {
+      setForm({
+        ...form,
+        // Remove the tag
+        tags: form.tags.filter((t) => t.id !== tag.id)
+      })
+    } else {
+      // Add the tag
+      setForm({
+        ...form,
+        tags: [...form.tags, tag]
+      })
+    }
+  }
+
   return (
     <form className="control" onSubmit={onSubmit_}>
       <InputField
@@ -83,6 +106,13 @@ const FormTaskCreate: React.FC<Props> = ({ state, events }) => {
         <label className="label">Due Date</label>
         <DatePicker
           events={{ onChange: (dueAt: Date) => setForm({ ...form, dueAt }) }}
+        />
+      </div>
+      <div className="tag-field field">
+        <label className="label">Tags</label>
+        <TagsSelect
+          tags={tags}
+          events={{ onSelect: (tag: TagPrimitive) => updateTags(tag) }}
         />
       </div>
       <div className="state-field field">

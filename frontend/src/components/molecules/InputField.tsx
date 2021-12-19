@@ -12,7 +12,7 @@ type Props = {
   placeholder?: string
   icon?: IconDefinition
   events?: {
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => any
+    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any
   }
 }
 
@@ -24,9 +24,7 @@ const InputField: React.FC<Props> = ({
   required = true,
   placeholder,
   icon,
-  events = {
-    onChange: () => {}
-  }
+  events
 }) => {
   return (
     <div className="field">
@@ -46,9 +44,6 @@ const InputField: React.FC<Props> = ({
             <Icon icon={icon} />
           </span>
         )}
-        <span className="icon is-small is-right">
-          <i className="fas fa-check"></i>
-        </span>
       </div>
     </div>
   )

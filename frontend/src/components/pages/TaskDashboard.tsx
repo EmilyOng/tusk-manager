@@ -7,8 +7,9 @@ import Notification, {
   NotificationType
 } from 'components/molecules/Notification'
 import ListView from 'components/organisms/ListView'
-import './TaskDashboard.css'
 import { Form } from 'components/organisms/FormTaskCreate'
+import { useTags } from 'composables/tag'
+import './TaskDashboard.css'
 
 function TaskDashboard() {
   const location = useLocation()
@@ -19,7 +20,9 @@ function TaskDashboard() {
     tasks,
     updateTasks
   } = useTasks(boardId)
+  const { loading: tagsLoading, error: tagsError, tags } = useTags(boardId)
   const orderedTasks = orderTasksByState(tasks)
+  const states = [State.Unstarted, State.InProgress, State.Completed]
 
   useEffect(() => {
     const id = location.pathname.replace('/', '')
@@ -37,36 +40,35 @@ function TaskDashboard() {
         if (!task) {
           return
         }
-        updateTasks([...tasks, { ...task, tags: [] }])
+        updateTasks([...tasks, task])
       })
       .finally(() => cb())
   }
 
-  if (tasksLoading) {
+  if (tasksLoading || tagsLoading) {
     return <LoadingBar />
   }
 
   return (
     <div className="task-dashboard">
-      {(tasksError || createTaskError) && (
-        <Notification type={NotificationType.Error} message={createTaskError} />
+      {(tasksError || createTaskError || tagsError) && (
+        <Notification
+          type={NotificationType.Error}
+          message={tasksError || createTaskError || tagsError}
+        />
       )}
       <div className="card-boards">
-        <ListView
-          tasks={orderedTasks[State.Unstarted]}
-          state={State.Unstarted}
-          events={{ onEditTask: () => {}, onCreateTask: createTask }}
-        />
-        <ListView
-          tasks={orderedTasks[State.InProgress]}
-          state={State.InProgress}
-          events={{ onEditTask: () => {}, onCreateTask: createTask }}
-        />
-        <ListView
-          tasks={orderedTasks[State.Completed]}
-          state={State.Completed}
-          events={{ onEditTask: () => {}, onCreateTask: createTask }}
-        />
+        {states.map((state) => {
+          return (
+            <ListView
+              key={state}
+              tasks={orderedTasks[state]}
+              tags={tags}
+              state={state}
+              events={{ onEditTask: () => {}, onCreateTask: createTask }}
+            />
+          )
+        })}
       </div>
     </div>
   )

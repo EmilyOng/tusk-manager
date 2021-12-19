@@ -5,11 +5,13 @@ import './ListView.css'
 import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form } from './FormTaskCreate'
 import { derivedState, State, Task } from 'types/task'
+import { TagPrimitive } from 'types/tag'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 
 type Props = {
   tasks: Task[]
+  tags: TagPrimitive[]
   state: State
   events: {
     onEditTask: any // TOOD
@@ -55,7 +57,7 @@ function useTaskEditModal() {
   }
 }
 
-const ListView: React.FC<Props> = ({ tasks, state, events }) => {
+const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
   // Handles task creation
   const {
     task: openedTaskCreate,
@@ -89,6 +91,7 @@ const ListView: React.FC<Props> = ({ tasks, state, events }) => {
         >
           <FormTaskCreate
             state={state}
+            tags={tags}
             events={{ onSubmit: createTask, onCancel: closeTaskCreateCard }}
           />
         </ModalCard>

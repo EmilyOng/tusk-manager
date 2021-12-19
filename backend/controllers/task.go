@@ -13,6 +13,7 @@ type CreateTaskPayload struct {
 	Description string
 	DueAt       time.Time
 	State       models.State
+	Tags        []models.Tag
 	BoardID     uint8
 }
 
@@ -37,6 +38,7 @@ func CreateTask(c *gin.Context) {
 		Description: payload.Description,
 		DueAt:       payload.DueAt,
 		State:       payload.State,
+		Tags:        payload.Tags,
 		BoardID:     payload.BoardID,
 		UserID:      user.ID,
 	}

@@ -23,15 +23,17 @@ function Authentication() {
   const [error, setError] = useState('')
   const [mode, setMode] = useState<FormMode>(FormMode.SignUp)
 
-  function onSubmit(form: Form) {
+  function onSubmit(form: Form, cb: () => void) {
     if (mode === FormMode.SignUp) {
       auth.signUp(
         form as AuthUser,
         () => {
           navigate('/', { replace: true })
+          cb()
         },
         (res) => {
           setError(res.error)
+          cb()
         }
       )
     } else {
@@ -39,9 +41,11 @@ function Authentication() {
         form as Omit<AuthUser, 'name'>,
         () => {
           navigate('/', { replace: true })
+          cb()
         },
         (res) => {
           setError(res.error)
+          cb()
         }
       )
     }

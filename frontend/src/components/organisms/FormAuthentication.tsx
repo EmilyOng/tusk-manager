@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
 import InputField from '../molecules/InputField'
@@ -22,12 +22,21 @@ type Props = {
 
 const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const isSignUp = mode === FormMode.SignUp
-  const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState<Form>({
+  const defaultForm = {
     ...(isSignUp ? { name: '' } : {}),
     email: '',
     password: ''
-  })
+  }
+  const [submitting, setSubmitting] = useState(false)
+  const [form, setForm] = useState<Form>(defaultForm)
+
+  useEffect(() => {
+    return () => {
+      // Clean-up
+      setSubmitting(false)
+      setForm(defaultForm)
+    }
+  }, [])
 
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()

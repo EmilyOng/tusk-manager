@@ -9,7 +9,8 @@ type Board struct {
 	Name   string `gorm:"not null" json:"name"`
 	Color  Color  `gorm:"not null" json:"color"`
 	Tasks  []Task `gorm:"not null" json:"-"` // Tasks belonging to the board
-	UserID uint8  // Refers to the owner of the board
+	Tags   []Tag  `gorm:"not null" json:"-"` // Tags belonging to the board
+	UserID uint8  `json:"-"`                 // Refers to the owner of the board
 }
 
 func (board *Board) Create() error {
@@ -19,5 +20,10 @@ func (board *Board) Create() error {
 
 func (board *Board) GetTasksWithTags() (tasks []Task, err error) {
 	err = db.DB.Model(board).Preload("Tags").Association("Tasks").Find(&tasks)
+	return
+}
+
+func (board *Board) GetTags() (tags []Tag, err error) {
+	err = db.DB.Model(board).Association("Tags").Find(&tags)
 	return
 }

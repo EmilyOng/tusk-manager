@@ -1,15 +1,17 @@
-import { State, Task, TaskPrimitive } from 'types/task'
+import { TagPrimitive } from 'types/tag'
+import { State, Task } from 'types/task'
 import { RequestAPI, Response } from './request'
 
 type Tasks = Task[]
 interface TasksResposne extends Response, Tasks {}
-interface TaskResponse extends Response, TaskPrimitive {}
+interface TaskResponse extends Response, Task {}
 
 export interface CreatingTask {
   name: string
   description: string
   dueAt?: Date
   state: State
+  tags: TagPrimitive[]
   boardId: number
 }
 

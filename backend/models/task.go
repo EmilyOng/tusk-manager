@@ -20,8 +20,8 @@ type Task struct {
 	DueAt       time.Time `json:"dueAt"`
 	State       State     `gorm:"default:'Unstarted'" json:"state"`
 	Tags        []Tag     `gorm:"many2many:task_tags" json:"tags"`
-	UserID      uint8     // Owner of the task
-	BoardID     uint8     // Board that the task belongs to
+	UserID      uint8     `json:"-"` // Owner of the task
+	BoardID     uint8     `json:"-"` // Board that the task belongs to
 }
 
 func (task *Task) Create() error {
