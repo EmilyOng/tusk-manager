@@ -31,10 +31,11 @@ func SeedData(user *User) (err error) {
 
 		// Create sample tasks for the current board
 		for i := 0; i < 10; i++ {
+			t := time.Now().Add(24 * time.Hour)
 			tasks = append(tasks, Task{
 				Name:        "Sample Task-" + fmt.Sprint(i),
 				Description: "The quick brown fox jumps over the lazy dog",
-				DueAt:       time.Now().Add(24 * time.Hour),
+				DueAt:       &t,
 				Tags:        tags,
 				UserID:      user.ID,
 			})

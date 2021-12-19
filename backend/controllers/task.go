@@ -11,7 +11,7 @@ import (
 type CreateTaskPayload struct {
 	Name        string
 	Description string
-	DueAt       time.Time
+	DueAt       string
 	State       models.State
 	Tags        []models.Tag
 	BoardID     uint8
@@ -36,11 +36,14 @@ func CreateTask(c *gin.Context) {
 	task := models.Task{
 		Name:        payload.Name,
 		Description: payload.Description,
-		DueAt:       payload.DueAt,
 		State:       payload.State,
 		Tags:        payload.Tags,
 		BoardID:     payload.BoardID,
 		UserID:      user.ID,
+	}
+	if len(payload.DueAt) > 0 {
+		t, _ := time.Parse(time.RFC3339, payload.DueAt)
+		task.DueAt = &t
 	}
 	err = task.Create()
 
