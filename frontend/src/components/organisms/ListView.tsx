@@ -6,6 +6,7 @@ import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form } from './FormTaskCreate'
 import { derivedState, State, Task } from 'types/task'
 import { TagPrimitive } from 'types/tag'
+import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 
@@ -16,6 +17,15 @@ type Props = {
   events: {
     onEditTask: any // TOOD
     onCreateTask: (form: Form, cb: () => void) => void
+    onCreateTag: ({
+      name,
+      color,
+      cb
+    }: {
+      name: string
+      color: Color
+      cb: (tag: TagPrimitive) => void
+    }) => any
   }
 }
 
@@ -92,7 +102,11 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
           <FormTaskCreate
             state={state}
             tags={tags}
-            events={{ onSubmit: createTask, onCancel: closeTaskCreateCard }}
+            events={{
+              onSubmit: createTask,
+              onCancel: closeTaskCreateCard,
+              onCreateTag: events.onCreateTag
+            }}
           />
         </ModalCard>
       )}

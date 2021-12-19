@@ -1,16 +1,27 @@
-import React, { useState } from 'react'
+import React, { createRef, useState } from 'react'
 import clsx from 'clsx'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { TagPrimitive } from 'types/tag'
+import { Color, Colors } from 'types/common'
 import DropdownItem from './DropdownItem'
 import Icon from 'components/atoms/Icon'
 import Tag, { TagAction } from 'components/atoms/Tag'
+import Button from 'components/atoms/Button'
 import './TagsSelect.css'
 
 type Props = {
   tags: TagPrimitive[]
   events: {
     onSelect: (tag: TagPrimitive) => any
+    onCreateTag: ({
+      name,
+      color,
+      cb
+    }: {
+      name: string
+      color: Color
+      cb: (tag: TagPrimitive) => void
+    }) => any
   }
 }
 
@@ -20,6 +31,9 @@ interface SelectableTag extends TagPrimitive {
 
 const TagsSelect: React.FC<Props> = ({ tags, events }) => {
   const [active, setActive] = useState(false)
+  const [tagInput, setTagInput] = useState('')
+  const tagInputField = createRef<HTMLInputElement>()
+  const [isCreatingTag, setIsCreatingTag] = useState(false)
   const [selectableTags, setSelectableTags] = useState<SelectableTag[]>(
     tags.map((tag) => {
       return { ...tag, selected: false }
@@ -28,6 +42,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
 
   function clickDropdown(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation()
+    tagInputField.current?.focus()
     setActive(!active)
   }
 
@@ -44,6 +59,29 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     )
   }
 
+  function onCreateTag() {
+    setIsCreatingTag(true)
+    events.onCreateTag({
+      name: tagInput,
+      color: Colors[tagInput.length % Colors.length],
+      cb: (tag: TagPrimitive) => {
+        setIsCreatingTag(false)
+        setTagInput('') // Reset search input
+        setSelectableTags([...selectableTags, { ...tag, selected: true }])
+        events.onSelect(tag)
+      }
+    })
+  }
+
+  function onTagInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setTagInput(e.target.value)
+    setActive(true) // Make sure the dropdown is active
+  }
+
+  function isMatchTagInput(tag: TagPrimitive) {
+    return tag.name.toLowerCase().includes(tagInput.toLowerCase())
+  }
+
   return (
     <div
       className={clsx({
@@ -53,7 +91,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     >
       <div className="dropdown-trigger">
         <div
-          className="tags-select input"
+          className="tags-select input is-info"
           aria-haspopup={true}
           aria-controls="dropdown-menu"
           onClick={clickDropdown}
@@ -76,6 +114,13 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
               }
               return acc
             }, [] as JSX.Element[])}
+            <input
+              type="text"
+              className="tag-input"
+              ref={tagInputField}
+              value={tagInput}
+              onChange={onTagInputChange}
+            />
           </div>
           <span className="dropdown-icon">
             <Icon icon={faAngleDown} />
@@ -84,9 +129,25 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
       </div>
       <div className="dropdown-menu" id="dropdown-menu" role="menu">
         <div className="dropdown-content">
+          {tagInput.length > 0 &&
+            selectableTags.filter((tag) => isMatchTagInput(tag)).length ===
+              0 && (
+              <Button
+                className={clsx({
+                  'create-new-tag': true,
+                  'is-link': true,
+                  'is-loading': isCreatingTag
+                })}
+                events={{ onClick: onCreateTag }}
+                attr={{ disabled: isCreatingTag }}
+              >
+                Create a new tag: <Tag className="new-tag" name={tagInput} />
+              </Button>
+            )}
           {selectableTags.reduce(
             (acc, tag) => {
-              if (!tag.selected) {
+              const match = tagInput.length < 0 ? true : isMatchTagInput(tag)
+              if (!tag.selected && match) {
                 if (acc[0].key === '-1') {
                   acc = []
                 }

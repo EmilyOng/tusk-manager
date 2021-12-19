@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Color } from 'types/common'
+import { Color, Colors } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
 import Dropdown from '../molecules/Dropdown'
@@ -35,15 +35,7 @@ const FormBoardCreate: React.FC<Props> = ({ events }) => {
     }
   }, [])
 
-  const colors = [
-    Color.Turquoise,
-    Color.Blue,
-    Color.Cyan,
-    Color.Green,
-    Color.Red,
-    Color.Yellow
-  ]
-  const colorItems = colors.map((color) => {
+  const colorItems = Colors.map((color) => {
     return (
       <div key={color} className="color-dropdown-item">
         <span

@@ -47,6 +47,10 @@ func main() {
 			{
 				tasks.POST("/", controllers.CreateTask)
 			}
+			tags := guard.Group(("/tags"))
+			{
+				tags.POST("/", controllers.CreateTag)
+			}
 		}
 	}
 

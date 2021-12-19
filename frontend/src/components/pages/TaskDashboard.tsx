@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { State } from 'types/task'
+import { Color } from 'types/common'
+import { TagPrimitive } from 'types/tag'
 import { orderTasksByState, useCreateTask, useTasks } from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
@@ -8,7 +10,7 @@ import Notification, {
 } from 'components/molecules/Notification'
 import ListView from 'components/organisms/ListView'
 import { Form } from 'components/organisms/FormTaskCreate'
-import { useTags } from 'composables/tag'
+import { useCreateTag, useTags } from 'composables/tag'
 import './TaskDashboard.css'
 
 function TaskDashboard() {
@@ -20,7 +22,13 @@ function TaskDashboard() {
     tasks,
     updateTasks
   } = useTasks(boardId)
-  const { loading: tagsLoading, error: tagsError, tags } = useTags(boardId)
+  const { error: createTagError, createTag: createTag_ } = useCreateTag()
+  const {
+    loading: tagsLoading,
+    error: tagsError,
+    tags,
+    updateTags
+  } = useTags(boardId)
   const orderedTasks = orderTasksByState(tasks)
   const states = [State.Unstarted, State.InProgress, State.Completed]
 
@@ -45,16 +53,38 @@ function TaskDashboard() {
       .finally(() => cb())
   }
 
+  function createTag({
+    name,
+    color,
+    cb
+  }: {
+    name: string
+    color: Color
+    cb: (tag: TagPrimitive) => void
+  }) {
+    createTag_({
+      name,
+      color,
+      boardId: boardId!
+    }).then((tag) => {
+      if (!tag) {
+        return
+      }
+      updateTags([...tags, tag])
+      cb(tag)
+    })
+  }
+
   if (tasksLoading || tagsLoading) {
     return <LoadingBar />
   }
 
   return (
     <div className="task-dashboard">
-      {(tasksError || createTaskError || tagsError) && (
+      {(tasksError || createTaskError || tagsError || createTagError) && (
         <Notification
           type={NotificationType.Error}
-          message={tasksError || createTaskError || tagsError}
+          message={tasksError || createTaskError || tagsError || createTagError}
         />
       )}
       <div className="card-boards">
@@ -65,7 +95,11 @@ function TaskDashboard() {
               tasks={orderedTasks[state]}
               tags={tags}
               state={state}
-              events={{ onEditTask: () => {}, onCreateTask: createTask }}
+              events={{
+                onEditTask: () => {},
+                onCreateTask: createTask,
+                onCreateTag: createTag
+              }}
             />
           )
         })}

@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
-import { faEdit, faFile } from '@fortawesome/free-solid-svg-icons'
+import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { derivedState, State } from 'types/task'
 import { TagPrimitive } from 'types/tag'
+import { Color } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
 import Dropdown from '../molecules/Dropdown'
 import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
+import TextArea from 'components/molecules/TextArea'
 import './FormTaskCreate.css'
 
 export type Form = {
@@ -24,6 +26,15 @@ type Props = {
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
+    onCreateTag: ({
+      name,
+      color,
+      cb
+    }: {
+      name: string
+      color: Color
+      cb: (tag: TagPrimitive) => void
+    }) => any
   }
 }
 
@@ -58,7 +69,11 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
     events.onSubmit(form, () => setSubmitting(false))
   }
 
-  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function onInputChange(
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) {
     const { name, value } = e.target
     setForm({
       ...form,
@@ -93,11 +108,9 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
         value={form.name}
         events={{ onChange: onInputChange }}
       />
-      <InputField
+      <TextArea
         name="description"
         label="Description"
-        type="text"
-        icon={faFile}
         required={false}
         value={form.description}
         events={{ onChange: onInputChange }}
@@ -112,7 +125,10 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
         <label className="label">Tags</label>
         <TagsSelect
           tags={tags}
-          events={{ onSelect: (tag: TagPrimitive) => updateTags(tag) }}
+          events={{
+            onSelect: (tag: TagPrimitive) => updateTags(tag),
+            onCreateTag: events.onCreateTag
+          }}
         />
       </div>
       <div className="state-field field">

@@ -14,6 +14,15 @@ export enum Color {
   Red = 'Red'
 }
 
+export const Colors = [
+  Color.Blue,
+  Color.Cyan,
+  Color.Green,
+  Color.Red,
+  Color.Turquoise,
+  Color.Yellow
+]
+
 export function ColorToAlias(color: Color) {
   return color === Color.Turquoise
     ? 'primary'
