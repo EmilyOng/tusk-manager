@@ -10,7 +10,7 @@ import Button from 'components/atoms/Button'
 import './TagsSelect.css'
 
 type Props = {
-  tags: TagPrimitive[]
+  tags: SelectableTag[]
   events: {
     onSelect: (tag: TagPrimitive) => any
     onCreateTag: ({
@@ -25,7 +25,7 @@ type Props = {
   }
 }
 
-interface SelectableTag extends TagPrimitive {
+export interface SelectableTag extends TagPrimitive {
   selected: boolean
 }
 
@@ -34,11 +34,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
   const [tagInput, setTagInput] = useState('')
   const tagInputField = createRef<HTMLInputElement>()
   const [isCreatingTag, setIsCreatingTag] = useState(false)
-  const [selectableTags, setSelectableTags] = useState<SelectableTag[]>(
-    tags.map((tag) => {
-      return { ...tag, selected: false }
-    })
-  )
+  const [selectableTags, setSelectableTags] = useState<SelectableTag[]>(tags)
 
   function clickDropdown(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation()

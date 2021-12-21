@@ -126,16 +126,16 @@ const BoardTabs: React.FC = () => {
           />
         </ModalCard>
       )}
+      <Button
+        className={clsx({
+          'is-info': true,
+          'is-light': true,
+          'is-active': !currentBoardId
+        })}
+        icon={faHome}
+        events={{ onClick: () => selectBoard(null) }}
+      />
       <Tabs>
-        <Button
-          className={clsx({
-            'is-info': true,
-            'is-light': true,
-            'is-active': !currentBoardId
-          })}
-          icon={faHome}
-          events={{ onClick: () => selectBoard(null) }}
-        />
         {boards.map((board) => {
           return (
             <TabItem

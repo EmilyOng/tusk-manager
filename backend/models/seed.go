@@ -36,7 +36,7 @@ func SeedData(user *User) (err error) {
 				Name:        "Sample Task-" + fmt.Sprint(i),
 				Description: "The quick brown fox jumps over the lazy dog",
 				DueAt:       &t,
-				Tags:        tags,
+				Tags:        &tags,
 				UserID:      user.ID,
 			})
 		}
@@ -49,8 +49,8 @@ func SeedData(user *User) (err error) {
 			Name:   "Board-" + fmt.Sprint(i),
 			UserID: user.ID,
 			Color:  colors[i%6],
-			Tags:   tags,
-			Tasks:  tasks,
+			Tags:   &tags,
+			Tasks:  &tasks,
 		})
 	}
 

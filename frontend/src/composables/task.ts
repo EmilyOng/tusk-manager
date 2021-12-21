@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { State, Task } from 'types/task'
-import { TaskAPI, CreatingTask } from 'api/task'
+import { TaskAPI, CreatingTask, EditingTask } from 'api/task'
 
 export function useTasks(boardId: number | null) {
   const [loading, setLoading] = useState(false)
@@ -69,6 +69,33 @@ export function useCreateTask() {
     loading,
     error,
     createTask
+  }
+}
+
+export function useEditTask() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new TaskAPI()
+
+  function editTask(task: EditingTask) {
+    setLoading(true)
+    return api
+      .editTask(task)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return res
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    editTask
   }
 }
 

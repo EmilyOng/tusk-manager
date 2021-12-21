@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { derivedState, State } from 'types/task'
+import { derivedState, State, Task } from 'types/task'
 import { TagPrimitive } from 'types/tag'
 import { Color } from 'types/common'
 import Button from '../atoms/Button'
@@ -10,9 +10,10 @@ import Dropdown from '../molecules/Dropdown'
 import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
-import './FormTaskCreate.css'
+import './FormTaskEdit.css'
 
 export type Form = {
+  id: number
   name: string
   description: string
   dueAt?: string
@@ -21,7 +22,7 @@ export type Form = {
 }
 
 type Props = {
-  state: State
+  task: Task
   tags: TagPrimitive[]
   events: {
     onSubmit: (form: Form, cb: () => void) => any
@@ -38,19 +39,11 @@ type Props = {
   }
 }
 
-const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
-  const defaultForm = {
-    name: '',
-    description: '',
-    dueAt: undefined,
-    state,
-    tags: []
-  }
+const FormTaskEdit: React.FC<Props> = ({ task, tags, events }) => {
   const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState<Form>(defaultForm)
+  const [form, setForm] = useState<Form>(task)
 
   const states = [State.Unstarted, State.InProgress, State.Completed]
-  states.sort((a, b) => (a === state ? -1 : b === state ? 1 : 0))
   const stateItems = states.map((state) => (
     <div key={state}>{derivedState(state)}</div>
   ))
@@ -59,7 +52,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
     return () => {
       // Clean-up
       setSubmitting(false)
-      setForm(defaultForm)
+      setForm(task)
     }
   }, [])
 
@@ -118,6 +111,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
       <div className="field">
         <label className="label">Due Date</label>
         <DatePicker
+          date={form.dueAt ? new Date(form.dueAt) : undefined}
           events={{
             onChange: (dueAt: Date) =>
               setForm({ ...form, dueAt: dueAt.toString() })
@@ -128,7 +122,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
         <label className="label">Tags</label>
         <TagsSelect
           tags={tags.map((t) => {
-            return { ...t, selected: false }
+            return { ...t, selected: form.tags.map((t) => t.id).includes(t.id) }
           })}
           events={{
             onSelect: (tag: TagPrimitive) => updateTags(tag),
@@ -159,11 +153,11 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
             'is-loading': submitting
           })}
           attr={{ disabled: submitting }}
-          label="Create"
+          label="Save Changes"
         />
       </div>
     </form>
   )
 }
 
-export default FormTaskCreate
+export default FormTaskEdit

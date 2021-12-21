@@ -3,13 +3,19 @@ import { useLocation } from 'react-router-dom'
 import { State } from 'types/task'
 import { Color } from 'types/common'
 import { TagPrimitive } from 'types/tag'
-import { orderTasksByState, useCreateTask, useTasks } from 'composables/task'
+import {
+  orderTasksByState,
+  useCreateTask,
+  useEditTask,
+  useTasks
+} from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Notification, {
   NotificationType
 } from 'components/molecules/Notification'
 import ListView from 'components/organisms/ListView'
-import { Form } from 'components/organisms/FormTaskCreate'
+import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
+import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import { useCreateTag, useTags } from 'composables/tag'
 import './TaskDashboard.css'
 
@@ -41,14 +47,26 @@ function TaskDashboard() {
   }, [location])
 
   const { error: createTaskError, createTask: createTask_ } = useCreateTask()
+  const { error: updateTaskError, editTask: editTask_ } = useEditTask()
 
-  function createTask(form: Form, cb: () => void) {
+  function createTask(form: CreateTaskForm, cb: () => void) {
     createTask_({ ...form, boardId: boardId! })
       .then((task) => {
         if (!task) {
           return
         }
         updateTasks([...tasks, task])
+      })
+      .finally(() => cb())
+  }
+
+  function editTask(form: EditTaskForm, cb: () => void) {
+    editTask_({ ...form, boardId: boardId! })
+      .then((task) => {
+        if (!task) {
+          return
+        }
+        updateTasks(tasks.map((t) => (t.id === task.id ? task : t)))
       })
       .finally(() => cb())
   }
@@ -81,10 +99,20 @@ function TaskDashboard() {
 
   return (
     <div className="task-dashboard">
-      {(tasksError || createTaskError || tagsError || createTagError) && (
+      {(tasksError ||
+        createTaskError ||
+        tagsError ||
+        createTagError ||
+        updateTaskError) && (
         <Notification
           type={NotificationType.Error}
-          message={tasksError || createTaskError || tagsError || createTagError}
+          message={
+            tasksError ||
+            createTaskError ||
+            tagsError ||
+            createTagError ||
+            updateTaskError
+          }
         />
       )}
       <div className="card-boards">
@@ -96,7 +124,7 @@ function TaskDashboard() {
               tags={tags}
               state={state}
               events={{
-                onEditTask: () => {},
+                onEditTask: editTask,
                 onCreateTask: createTask,
                 onCreateTag: createTag
               }}

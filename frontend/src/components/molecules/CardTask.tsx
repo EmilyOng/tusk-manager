@@ -1,8 +1,10 @@
 import React from 'react'
 import { format } from 'date-fns'
 import { Task } from 'types/task'
-import './CardTask.css'
+import { faClock } from '@fortawesome/free-solid-svg-icons'
 import Tag from 'components/atoms/Tag'
+import Icon from 'components/atoms/Icon'
+import './CardTask.css'
 
 type Props = {
   task: Task
@@ -25,7 +27,9 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
       <footer className="card-footer">
         {task.dueAt && (
           <span className="card-footer-item due-at">
-            {format(new Date(task.dueAt), 'E, LLL d')}
+            <code>
+              <Icon icon={faClock} /> {format(new Date(task.dueAt), 'E, LLL d')}
+            </code>
           </span>
         )}
       </footer>

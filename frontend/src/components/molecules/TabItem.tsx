@@ -1,6 +1,6 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import clsx from 'clsx'
-import React from 'react'
+import React, { RefObject } from 'react'
 import Icon from '../atoms/Icon'
 
 type Props = {
@@ -8,6 +8,7 @@ type Props = {
   selected: boolean
   icon?: IconDefinition
   className?: string
+  ref?: RefObject<HTMLLIElement>
   events?: {
     onClick: () => void
   }
@@ -18,10 +19,12 @@ const TabItem: React.FC<Props> = ({
   selected,
   icon,
   className,
+  ref,
   events
 }) => {
   return (
     <li
+      ref={ref}
       className={clsx({
         'is-active': selected,
         [className ?? '']: !!className

@@ -1,0 +1,6 @@
+.form-control {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

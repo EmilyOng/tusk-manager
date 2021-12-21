@@ -9,10 +9,14 @@ interface TaskResponse extends Response, Task {}
 export interface CreatingTask {
   name: string
   description: string
-  dueAt?: Date
+  dueAt?: string
   state: State
   tags: TagPrimitive[]
   boardId: number
+}
+
+export interface EditingTask extends CreatingTask {
+  id: number
 }
 
 export class TaskAPI {
@@ -28,5 +32,9 @@ export class TaskAPI {
 
   async createTask(task: CreatingTask): Promise<TaskResponse> {
     return this.req.post('/tasks/', task)
+  }
+
+  async editTask(task: EditingTask): Promise<TaskResponse> {
+    return this.req.put('/tasks/', task)
   }
 }

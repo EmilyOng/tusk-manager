@@ -3,20 +3,21 @@ import clsx from 'clsx'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import './ListView.css'
 import CardTask from '../molecules/CardTask'
-import FormTaskCreate, { Form } from './FormTaskCreate'
+import FormTaskCreate, { Form as CreateTaskForm } from './FormTaskCreate'
 import { derivedState, State, Task } from 'types/task'
 import { TagPrimitive } from 'types/tag'
 import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
+import FormTaskEdit, { Form as EditTaskForm } from './FormTaskEdit'
 
 type Props = {
   tasks: Task[]
   tags: TagPrimitive[]
   state: State
   events: {
-    onEditTask: any // TOOD
-    onCreateTask: (form: Form, cb: () => void) => void
+    onEditTask: (form: EditTaskForm, cb: () => void) => void
+    onCreateTask: (form: CreateTaskForm, cb: () => void) => void
     onCreateTag: ({
       name,
       color,
@@ -76,7 +77,7 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
     closeCard: closeTaskCreateCard
   } = useTaskCreateModal()
 
-  function createTask(form: Form, cb: () => void) {
+  function createTask(form: CreateTaskForm, cb: () => void) {
     events.onCreateTask(form, () => {
       cb()
       closeTaskCreateCard()
@@ -90,6 +91,13 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
     openCard: openTaskEditCard,
     closeCard: closeTaskEditCard
   } = useTaskEditModal()
+
+  function editTask(form: EditTaskForm, cb: () => void) {
+    events.onEditTask(form, () => {
+      cb()
+      closeTaskEditCard()
+    })
+  }
 
   return (
     <div className={clsx({ 'list-view': true, [state]: true })}>
@@ -116,7 +124,15 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
           title={openedTaskEdit.name}
           events={{ onClose: closeTaskEditCard }}
         >
-          <p>hi</p>
+          <FormTaskEdit
+            task={openedTaskEdit}
+            tags={tags}
+            events={{
+              onSubmit: editTask,
+              onCancel: closeTaskEditCard,
+              onCreateTag: events.onCreateTag
+            }}
+          />
         </ModalCard>
       )}
       <div className="list-view-header">

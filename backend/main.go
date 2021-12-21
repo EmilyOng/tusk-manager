@@ -19,7 +19,7 @@ func main() {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000"},
-		AllowMethods:     []string{"GET", "POST"},
+		AllowMethods:     []string{"GET", "POST", "PUT"},
 		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "accept", "credentials", "origin", "Cache-Control"},
 		AllowCredentials: true,
 	}))
@@ -46,6 +46,7 @@ func main() {
 			tasks := guard.Group("/tasks")
 			{
 				tasks.POST("/", controllers.CreateTask)
+				tasks.PUT("/", controllers.UpdateTask)
 			}
 			tags := guard.Group(("/tags"))
 			{

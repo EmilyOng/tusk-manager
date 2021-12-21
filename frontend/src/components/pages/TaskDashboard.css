@@ -1,6 +1,7 @@
 .card-boards {
   display: flex;
   flex-direction: row;
+  overflow: auto;
 }
 
 .task-dashboard {

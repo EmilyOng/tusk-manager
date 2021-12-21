@@ -2,13 +2,14 @@ import React, { useState } from 'react'
 import { default as DatePicker_ } from 'react-datepicker'
 
 type Props = {
+  date?: Date
   events: {
     onChange: (date: Date) => void
   }
 }
 
-const DatePicker: React.FC<Props> = ({ events }) => {
-  const [date, setDate] = useState<Date | null>(null)
+const DatePicker: React.FC<Props> = ({ date: _date, events }) => {
+  const [date, setDate] = useState<Date | null>(_date || null)
 
   function onChange(date: Date) {
     setDate(date)

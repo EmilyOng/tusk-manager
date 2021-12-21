@@ -18,7 +18,7 @@ export function derivedState(state: State) {
 export interface TaskPrimitive extends Base {
   name: string
   description: string
-  dueAt?: Date
+  dueAt?: string
   state: State
 }
 
