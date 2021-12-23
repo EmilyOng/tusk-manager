@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { State, Task } from 'types/task'
 import { Color } from 'types/common'
@@ -10,14 +10,12 @@ import {
   useTasks
 } from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
-import Notification, {
-  NotificationType
-} from 'components/molecules/Notification'
 import ListView from 'components/organisms/ListView'
 import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
 import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import { useCreateTag, useTags } from 'composables/tag'
 import './TaskDashboard.css'
+import { NotificationType, useNotification } from 'composables/notification'
 
 function TaskDashboard() {
   const location = useLocation()
@@ -126,6 +124,25 @@ function TaskDashboard() {
   }
 
   const { onDragTask, onDragOver, onDropTask } = useDragTask()
+  const error = useMemo(
+    () =>
+      tasksError ||
+      createTaskError ||
+      tagsError ||
+      createTagError ||
+      updateTaskError,
+    [tasksError, createTaskError, tagsError, createTagError, updateTaskError]
+  )
+
+  useEffect(() => {
+    if (!error) {
+      return
+    }
+    useNotification({
+      type: NotificationType.Error,
+      message: error
+    })
+  }, [error])
 
   if (tasksLoading || tagsLoading) {
     return <LoadingBar />
@@ -133,22 +150,6 @@ function TaskDashboard() {
 
   return (
     <div className="task-dashboard">
-      {(tasksError ||
-        createTaskError ||
-        tagsError ||
-        createTagError ||
-        updateTaskError) && (
-        <Notification
-          type={NotificationType.Error}
-          message={
-            tasksError ||
-            createTaskError ||
-            tagsError ||
-            createTagError ||
-            updateTaskError
-          }
-        />
-      )}
       <div className="card-boards">
         {states.map((state) => {
           return (

@@ -21,7 +21,7 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
       <div className="card-content">
         <div className="card-info-section">
           <div className="tags">
-            {task.tags.map((tag) => (
+            {task.tags?.map((tag) => (
               <Tag key={tag.id} name={tag.name} color={tag.color} />
             ))}
           </div>

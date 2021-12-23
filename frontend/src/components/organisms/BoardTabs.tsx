@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { faHome, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Board, BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
-import Notification, {
-  NotificationType
-} from 'components/molecules/Notification'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
 import { useBoards, useCreateBoard } from 'composables/board'
@@ -14,6 +11,7 @@ import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from './FormBoardCreate'
 import './BoardTabs.css'
+import { NotificationType, useNotification } from 'composables/notification'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -100,18 +98,27 @@ const BoardTabs: React.FC = () => {
       .finally(() => cb())
   }
 
+  const error = useMemo(
+    () => boardsError || createBoardError,
+    [boardsError, createBoardError]
+  )
+
+  useEffect(() => {
+    if (!error) {
+      return
+    }
+    useNotification({
+      type: NotificationType.Error,
+      message: error
+    })
+  }, [error])
+
   if (boardsLoading || createBoardLoading) {
     return <LoadingBar />
   }
 
   return (
     <div className="tabs-container">
-      {(boardsError || createBoardError) && (
-        <Notification
-          type={NotificationType.Error}
-          message={boardsError || createBoardError}
-        />
-      )}
       {openedBoardCreate && (
         <ModalCard
           visible={isBoardCreating}
