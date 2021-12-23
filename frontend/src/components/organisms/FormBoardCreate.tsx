@@ -4,7 +4,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons'
 import { Color, Colors } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
-import Dropdown from '../molecules/Dropdown'
+import DropdownSelect from '../molecules/DropdownSelect'
 import './FormBoardCreate.css'
 
 export type Form = {
@@ -77,7 +77,7 @@ const FormBoardCreate: React.FC<Props> = ({ events }) => {
         </div>
         <div className="color-field field">
           <label className="label">Color</label>
-          <Dropdown
+          <DropdownSelect
             items={colorItems}
             events={{
               onSelect: (key) => setForm({ ...form, color: key as Color })

@@ -1,0 +1,8 @@
+.dropdown-menu-wrapper {
+  position: absolute;
+  z-index: 99;
+}
+
+.dropdown-menu-container {
+  padding-top: 4px;
+}

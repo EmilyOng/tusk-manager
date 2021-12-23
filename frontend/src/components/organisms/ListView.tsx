@@ -99,8 +99,32 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
     })
   }
 
+  const dragTask: {
+    task: null | Task
+    onDragTask: (task: Task) => void
+    onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
+    onDropTask: (e: React.DragEvent<HTMLDivElement>) => void
+  } = {
+    task: null,
+    onDragTask: (task: Task) => {
+      dragTask.task = task
+    },
+    onDragOver: (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault()
+    },
+    onDropTask: (e: React.DragEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      dragTask.task = null
+      console.log('dropped')
+    }
+  }
+
   return (
-    <div className={clsx({ 'list-view': true, [state]: true })}>
+    <div
+      className={clsx({ 'list-view': true, [state]: true })}
+      onDrop={dragTask.onDropTask}
+      onDragOver={dragTask.onDropTask}
+    >
       {openedTaskCreate && (
         <ModalCard
           visible={isTaskCreating}
@@ -145,11 +169,18 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
       </div>
       <div className="tasks">
         {tasks.map((task) => (
-          <CardTask
+          <div
             key={task.id}
-            task={task}
-            events={{ onTaskEditing: openTaskEditCard }}
-          />
+            draggable={true}
+            onDragStart={() => dragTask.onDragTask(task)}
+          >
+            <CardTask
+              task={task}
+              events={{
+                onTaskEditing: openTaskEditCard
+              }}
+            />
+          </div>
         ))}
       </div>
     </div>

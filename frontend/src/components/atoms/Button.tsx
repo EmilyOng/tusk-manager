@@ -7,6 +7,7 @@ type Props = {
   className?: string
   type?: 'button' | 'submit' | 'reset' | undefined
   icon?: IconDefinition
+  iconPosition?: 'left' | 'right'
   label?: string
   attr?: Record<string, unknown>
   events?: {
@@ -18,11 +19,17 @@ const Button: React.FC<Props> = ({
   className,
   type = 'button',
   icon,
+  iconPosition = 'left',
   label,
   attr,
   events,
   children
 }) => {
+  const iconComponent = icon && (
+    <span className="icon">
+      <Icon icon={icon} />
+    </span>
+  )
   return (
     <button
       type={type}
@@ -30,12 +37,9 @@ const Button: React.FC<Props> = ({
       {...events}
       {...attr}
     >
-      {icon && (
-        <span className="icon">
-          <Icon icon={icon} />
-        </span>
-      )}
+      {icon && iconPosition === 'left' && iconComponent}
       {label && <span>{label}</span>}
+      {icon && iconPosition === 'right' && iconComponent}
       {children}
     </button>
   )

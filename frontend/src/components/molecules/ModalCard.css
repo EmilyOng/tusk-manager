@@ -4,5 +4,5 @@
 
 .modal-card,
 .modal-card-body {
-  overflow: visible;
+  overflow: auto;
 }

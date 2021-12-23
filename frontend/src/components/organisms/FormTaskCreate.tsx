@@ -6,7 +6,7 @@ import { TagPrimitive } from 'types/tag'
 import { Color } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
-import Dropdown from '../molecules/Dropdown'
+import DropdownSelect from '../molecules/DropdownSelect'
 import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
@@ -138,7 +138,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
       </div>
       <div className="field">
         <label className="label">State</label>
-        <Dropdown
+        <DropdownSelect
           items={stateItems}
           events={{
             onSelect: (key) => setForm({ ...form, state: key as State })

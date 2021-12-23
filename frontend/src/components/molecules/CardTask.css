@@ -15,3 +15,11 @@
 .card-footer-item.due-at {
   justify-content: flex-start;
 }
+
+.card-info-section {
+  display: flex;
+}
+
+.action-menu {
+  justify-self: flex-end;
+}
