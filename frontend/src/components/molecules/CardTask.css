@@ -22,4 +22,5 @@
 
 .action-menu {
   justify-self: flex-end;
+  margin-left: auto;
 }
