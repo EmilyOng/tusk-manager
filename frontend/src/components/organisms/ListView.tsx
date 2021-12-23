@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { createRef, useState } from 'react'
 import clsx from 'clsx'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import './ListView.css'
@@ -18,6 +18,7 @@ type Props = {
   events: {
     onEditTask: (form: EditTaskForm, cb: () => void) => void
     onCreateTask: (form: CreateTaskForm, cb: () => void) => void
+    onDragTask: (task: Task) => void
     onCreateTag: ({
       name,
       color,
@@ -27,6 +28,8 @@ type Props = {
       color: Color
       cb: (tag: TagPrimitive) => void
     }) => any
+    onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
+    onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
   }
 }
 
@@ -69,6 +72,7 @@ function useTaskEditModal() {
 }
 
 const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
+  const listViewWrapper = createRef<HTMLDivElement>()
   // Handles task creation
   const {
     task: openedTaskCreate,
@@ -99,31 +103,44 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
     })
   }
 
-  const dragTask: {
-    task: null | Task
-    onDragTask: (task: Task) => void
-    onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
-    onDropTask: (e: React.DragEvent<HTMLDivElement>) => void
-  } = {
-    task: null,
-    onDragTask: (task: Task) => {
-      dragTask.task = task
-    },
-    onDragOver: (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault()
-    },
-    onDropTask: (e: React.DragEvent<HTMLDivElement>) => {
-      e.preventDefault()
-      dragTask.task = null
-      console.log('dropped')
+  const [showDropzone, setShowDropzone] = useState(false)
+
+  function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+    events.onDragOver(e)
+    e.stopPropagation()
+    setShowDropzone(true)
+  }
+
+  function onDrop(e: React.DragEvent<HTMLDivElement>, state: State) {
+    events.onDropTask(e, state)
+    e.stopPropagation()
+    setShowDropzone(false)
+  }
+
+  function onDragLeave(e: React.DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    e.stopPropagation()
+    const rect = listViewWrapper.current?.getBoundingClientRect()
+    if (!rect) {
+      return
+    }
+    if (
+      e.clientY < rect.top ||
+      e.clientY > rect.bottom ||
+      e.clientX < rect.left ||
+      e.clientX > rect.right
+    ) {
+      setShowDropzone(false)
     }
   }
 
   return (
     <div
       className={clsx({ 'list-view': true, [state]: true })}
-      onDrop={dragTask.onDropTask}
-      onDragOver={dragTask.onDropTask}
+      ref={listViewWrapper}
+      onDragOver={onDragOver}
+      onDrop={(e: React.DragEvent<HTMLDivElement>) => onDrop(e, state)}
+      onDragLeave={onDragLeave}
     >
       {openedTaskCreate && (
         <ModalCard
@@ -172,7 +189,7 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
           <div
             key={task.id}
             draggable={true}
-            onDragStart={() => dragTask.onDragTask(task)}
+            onDragStart={() => events.onDragTask(task)}
           >
             <CardTask
               task={task}
@@ -183,6 +200,11 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
           </div>
         ))}
       </div>
+      {showDropzone && (
+        <div className="dropzone-overlay">
+          <div className="dropzone-info">Drop tasks here!</div>
+        </div>
+      )}
     </div>
   )
 }

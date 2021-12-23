@@ -4,6 +4,8 @@
   margin: 16px;
   flex: 0 0 350px;
   height: calc(100vh - 103px);
+  width: 100%;
+  position: relative;
   background-color: #fff;
   border-radius: 12px;
   border-top-width: 10px;
@@ -40,4 +42,20 @@
   display: flex;
   flex-direction: column;
   overflow: auto;
+}
+
+.dropzone-overlay {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  border: 2px dashed;
+  background-color: rgba(255, 255, 255, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropzone-info {
+  font-weight: bold;
+  font-size: 32px;
 }

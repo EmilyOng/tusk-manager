@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { State } from 'types/task'
+import { State, Task } from 'types/task'
 import { Color } from 'types/common'
 import { TagPrimitive } from 'types/tag'
 import {
@@ -93,6 +93,40 @@ function TaskDashboard() {
     })
   }
 
+  function useDragTask() {
+    const task = useRef<Task | null>(null)
+
+    function onDragTask(t: Task) {
+      task.current = t
+    }
+
+    function onDragOver(e: React.DragEvent<HTMLDivElement>) {
+      e.preventDefault()
+    }
+
+    function onDropTask(e: React.DragEvent<HTMLDivElement>, state: State) {
+      e.preventDefault()
+      if (!task.current) {
+        return
+      }
+      editTask(
+        {
+          ...task.current,
+          state
+        },
+        () => (task.current = null)
+      )
+    }
+
+    return {
+      onDragTask,
+      onDragOver,
+      onDropTask
+    }
+  }
+
+  const { onDragTask, onDragOver, onDropTask } = useDragTask()
+
   if (tasksLoading || tagsLoading) {
     return <LoadingBar />
   }
@@ -126,7 +160,10 @@ function TaskDashboard() {
               events={{
                 onEditTask: editTask,
                 onCreateTask: createTask,
-                onCreateTag: createTag
+                onCreateTag: createTag,
+                onDragTask,
+                onDragOver,
+                onDropTask
               }}
             />
           )

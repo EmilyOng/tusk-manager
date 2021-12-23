@@ -23,7 +23,6 @@ const DropdownMenu: React.FC<Props> = ({ trigger, items, events }) => {
       return
     }
     const rect = dropdownTriggerWrapper.current.getBoundingClientRect()
-    // console.log(rect.x + 'px', rect.y + rect.height + 'px')
     dropdownMenuWrapper.current.style.left = rect.x + 'px'
     dropdownMenuWrapper.current.style.top = rect.y + rect.height + 'px'
   }
