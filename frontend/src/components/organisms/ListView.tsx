@@ -18,6 +18,7 @@ type Props = {
   events: {
     onEditTask: (form: EditTaskForm, cb: () => void) => void
     onCreateTask: (form: CreateTaskForm, cb: () => void) => void
+    onDeleteTask: (taskId: number, cb: () => void) => void
     onDragTask: (task: Task) => void
     onCreateTag: ({
       name,
@@ -194,7 +195,8 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
             <CardTask
               task={task}
               events={{
-                onTaskEditing: openTaskEditCard
+                onTaskEditing: openTaskEditCard,
+                onDeleteTask: events.onDeleteTask
               }}
             />
           </div>

@@ -1,7 +1,8 @@
 enum Method {
   GET = 'get',
   POST = 'post',
-  PUT = 'put'
+  PUT = 'put',
+  DELETE = 'delete'
 }
 
 export interface Response {
@@ -29,6 +30,10 @@ export class RequestAPI {
 
   put(path: string, body: any = {}) {
     return this.request(Method.PUT, path, body)
+  }
+
+  delete(path: string, body: any = {}) {
+    return this.request(Method.DELETE, path, body)
   }
 
   private async request(method: Method, path: string, body: any = {}) {

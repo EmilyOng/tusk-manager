@@ -128,17 +128,19 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
           {tagInput.length > 0 &&
             selectableTags.filter((tag) => isMatchTagInput(tag)).length ===
               0 && (
-              <Button
-                className={clsx({
-                  'create-new-tag': true,
-                  'is-link': true,
-                  'is-loading': isCreatingTag
-                })}
-                events={{ onClick: onCreateTag }}
-                attr={{ disabled: isCreatingTag }}
-              >
-                Create a new tag: <Tag className="new-tag" name={tagInput} />
-              </Button>
+              <span className="dropdown-item">
+                <Button
+                  className={clsx({
+                    'create-new-tag': true,
+                    'is-link': true,
+                    'is-loading': isCreatingTag
+                  })}
+                  events={{ onClick: onCreateTag }}
+                  attr={{ disabled: isCreatingTag }}
+                >
+                  Create a new tag: <Tag className="new-tag" name={tagInput} />
+                </Button>
+              </span>
             )}
           {selectableTags.reduce(
             (acc, tag) => {
@@ -156,8 +158,8 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
               return acc
             },
             [
-              <div key={-1} className="no-matches-found">
-                No matches found
+              <div key={-1} className="no-matches-found dropdown-item">
+                <span>No matches found</span>
               </div>
             ] as JSX.Element[]
           )}

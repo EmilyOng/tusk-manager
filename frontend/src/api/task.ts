@@ -37,4 +37,8 @@ export class TaskAPI {
   async editTask(task: EditingTask): Promise<TaskResponse> {
     return this.req.put('/tasks/', task)
   }
+
+  async deleteTask(taskId: number): Promise<Response> {
+    return this.req.delete('/tasks/', { ID: taskId })
+  }
 }

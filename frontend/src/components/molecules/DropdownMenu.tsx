@@ -6,13 +6,19 @@ import './DropdownMenu.css'
 type Props = {
   trigger: JSX.Element
   items: JSX.Element[]
+  closeOnContentClick?: boolean
   events?: {
     onClickDropdownItem?: (key: Key | null) => any
     onClickDropdown?: () => any
   }
 }
 
-const DropdownMenu: React.FC<Props> = ({ trigger, items, events }) => {
+const DropdownMenu: React.FC<Props> = ({
+  trigger,
+  closeOnContentClick = true,
+  items,
+  events
+}) => {
   const [dropdownMenuVisible, setDropdownMenuVisible] = useState(false)
   const dropdownMenuWrapper = createRef<HTMLDivElement>()
   const dropdownTriggerWrapper = createRef<HTMLDivElement>()
@@ -32,7 +38,7 @@ const DropdownMenu: React.FC<Props> = ({ trigger, items, events }) => {
     key: Key | null
   ) {
     e.stopPropagation()
-    setDropdownMenuVisible(!dropdownMenuVisible)
+    setDropdownMenuVisible(!closeOnContentClick)
     events?.onClickDropdownItem?.(key)
   }
 
@@ -57,7 +63,7 @@ const DropdownMenu: React.FC<Props> = ({ trigger, items, events }) => {
       }
       cancelAnimationFrame(animationRef.current)
     }
-  }, [dropdownMenuVisible])
+  }, [dropdownMenuVisible, dropdownMenuWrapper])
 
   return (
     <div className="dropdown">

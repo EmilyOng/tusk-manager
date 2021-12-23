@@ -110,3 +110,30 @@ export function orderTasksByState(tasks: Task[]) {
   tasks.forEach((task) => orderedTasks[task.state].push(task))
   return orderedTasks
 }
+
+export function useDeleteTask() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new TaskAPI()
+
+  function deleteTask(taskId: number) {
+    setLoading(true)
+    return api
+      .deleteTask(taskId)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return taskId
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    deleteTask
+  }
+}

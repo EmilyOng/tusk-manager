@@ -7,6 +7,7 @@ import {
   orderTasksByState,
   useCreateTask,
   useEditTask,
+  useDeleteTask,
   useTasks
 } from 'composables/task'
 import LoadingBar from 'components/molecules/LoadingBar'
@@ -46,6 +47,7 @@ function TaskDashboard() {
 
   const { error: createTaskError, createTask: createTask_ } = useCreateTask()
   const { error: updateTaskError, editTask: editTask_ } = useEditTask()
+  const { error: deleteTaskError, deleteTask: deleteTask_ } = useDeleteTask()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
     createTask_({ ...form, boardId: boardId! })
@@ -54,6 +56,17 @@ function TaskDashboard() {
           return
         }
         updateTasks([...tasks, task])
+      })
+      .finally(() => cb())
+  }
+
+  function deleteTask(taskId: number, cb: () => void) {
+    deleteTask_(taskId)
+      .then((resId) => {
+        if (!resId) {
+          return
+        }
+        updateTasks(tasks.filter((task) => task.id !== resId))
       })
       .finally(() => cb())
   }
@@ -130,8 +143,16 @@ function TaskDashboard() {
       createTaskError ||
       tagsError ||
       createTagError ||
+      updateTaskError ||
+      deleteTaskError,
+    [
+      tasksError,
+      createTaskError,
+      tagsError,
+      createTagError,
       updateTaskError,
-    [tasksError, createTaskError, tagsError, createTagError, updateTaskError]
+      deleteTaskError
+    ]
   )
 
   useEffect(() => {
@@ -162,6 +183,7 @@ function TaskDashboard() {
                 onEditTask: editTask,
                 onCreateTask: createTask,
                 onCreateTag: createTag,
+                onDeleteTask: deleteTask,
                 onDragTask,
                 onDragOver,
                 onDropTask

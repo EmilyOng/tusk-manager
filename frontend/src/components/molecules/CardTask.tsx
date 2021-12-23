@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import clsx from 'clsx'
 import { format } from 'date-fns'
 import { Task } from 'types/task'
-import { faClock, faEllipsisV } from '@fortawesome/free-solid-svg-icons'
+import {
+  faClock,
+  faEllipsisV,
+  faTrash
+} from '@fortawesome/free-solid-svg-icons'
 import Tag from 'components/atoms/Tag'
 import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
@@ -12,10 +17,53 @@ type Props = {
   task: Task
   events: {
     onTaskEditing: (task: Task) => void
+    onDeleteTask: (taskId: number, cb: () => void) => void
   }
 }
 
 const CardTask: React.FC<Props> = ({ task, events }) => {
+  function useDeleteTask() {
+    const [deleting, setDeleting] = useState(false)
+    const [confirmingDelete, setConfirmingDelete] = useState(false)
+
+    function onConfirmingDeleteTask() {
+      setConfirmingDelete(true)
+    }
+
+    function onDeleteTask(taskId: number) {
+      setDeleting(true)
+      events.onDeleteTask(taskId, () => setDeleting(false))
+    }
+
+    function abortDeleteTask() {
+      setDeleting(false)
+      setConfirmingDelete(false)
+    }
+
+    useEffect(() => {
+      return () => {
+        setDeleting(false)
+        setConfirmingDelete(false)
+      }
+    }, [])
+
+    return {
+      deleting,
+      confirmingDelete,
+      onConfirmingDeleteTask,
+      onDeleteTask,
+      abortDeleteTask
+    }
+  }
+
+  const {
+    deleting,
+    confirmingDelete,
+    onConfirmingDeleteTask,
+    onDeleteTask,
+    abortDeleteTask
+  } = useDeleteTask()
+
   return (
     <div className="card" onClick={() => events.onTaskEditing(task)}>
       <div className="card-content">
@@ -27,8 +75,31 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
           </div>
           <div className="action-menu">
             <DropdownMenu
-              items={[<div key="delete">Delete</div>]}
-              trigger={<Button icon={faEllipsisV} />}
+              closeOnContentClick={false}
+              items={[
+                <Button
+                  key="delete"
+                  icon={faTrash}
+                  label={confirmingDelete ? 'Really delete?' : 'Delete'}
+                  className={clsx({
+                    'is-danger': true,
+                    'is-loading': deleting
+                  })}
+                  attr={{
+                    onClick: () =>
+                      confirmingDelete
+                        ? onDeleteTask(task.id)
+                        : onConfirmingDeleteTask(),
+                    disabled: deleting
+                  }}
+                />
+              ]}
+              trigger={
+                <Button
+                  icon={faEllipsisV}
+                  attr={{ onClick: abortDeleteTask }}
+                />
+              }
             />
           </div>
         </div>

@@ -39,3 +39,8 @@ func (task *Task) Update() error {
 	result := db.DB.Model(task).Preload("Tags").Save(task)
 	return result.Error
 }
+
+func (task *Task) Delete() error {
+	result := db.DB.Delete(task)
+	return result.Error
+}

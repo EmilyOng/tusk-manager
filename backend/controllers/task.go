@@ -17,6 +17,10 @@ type CreateTaskPayload struct {
 	BoardID     uint8
 }
 
+type DeleteTaskPayload struct {
+	ID uint8
+}
+
 type UpdateTaskPayload struct {
 	ID          uint8
 	Name        string
@@ -95,6 +99,36 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	err = task.Update()
+
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, task)
+}
+
+func DeleteTask(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	user := userInterface.(models.User)
+
+	var payload DeleteTaskPayload
+
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	task := models.Task{
+		CommonModel: models.CommonModel{ID: payload.ID},
+		UserID:      user.ID,
+	}
+
+	err = task.Delete()
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
