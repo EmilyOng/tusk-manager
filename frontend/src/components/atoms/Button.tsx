@@ -39,8 +39,8 @@ const Button: React.FC<Props> = ({
     >
       {icon && iconPosition === 'left' && iconComponent}
       {label && <span>{label}</span>}
-      {icon && iconPosition === 'right' && iconComponent}
       {children}
+      {icon && iconPosition === 'right' && iconComponent}
     </button>
   )
 }
