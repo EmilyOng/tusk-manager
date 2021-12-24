@@ -55,6 +55,10 @@ function TaskDashboard() {
           return
         }
         updateTasks([...tasks, task])
+        useNotification({
+          type: NotificationType.Success,
+          message: 'Task has been created successfully'
+        })
       })
       .finally(() => cb())
   }

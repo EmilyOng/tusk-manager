@@ -3,6 +3,10 @@
   border-top-style: solid;
 }
 
+.tabs {
+  margin: 0 !important;
+}
+
 .board-tab.Turquoise {
   border-top-color: var(--turquoise);
 }
@@ -30,4 +34,5 @@
 .tabs-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }

@@ -99,6 +99,10 @@ const BoardTabs: React.FC = () => {
         // Navigate to the new board
         selectBoard(board.id)
         closeBoardCreateCard()
+        useNotification({
+          type: NotificationType.Success,
+          message: 'Board has been created successfully'
+        })
       })
       .finally(() => cb())
   }
@@ -121,6 +125,10 @@ const BoardTabs: React.FC = () => {
           return
         }
         updateBoards(boards.filter((board) => board.id !== boardId))
+        useNotification({
+          type: NotificationType.Success,
+          message: 'Board has been deleted successfully'
+        })
       })
       .finally(() => {
         cb()
