@@ -39,6 +39,7 @@ func main() {
 			boards := guard.Group("/boards")
 			{
 				boards.GET("/", controllers.GetBoards)
+				boards.PUT("/", controllers.UpdateBoard)
 				boards.GET("/:board_id", controllers.GetBoard)
 				boards.POST("/", controllers.CreateBoard)
 				boards.GET("/:board_id/tasks", controllers.GetBoardTasksWithTags)

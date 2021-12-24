@@ -32,3 +32,8 @@ func (board *Board) GetTags() (tags []Tag, err error) {
 	err = db.DB.Model(board).Association("Tags").Find(&tags)
 	return
 }
+
+func (board *Board) Update() error {
+	result := db.DB.Model(board).Save(board)
+	return result.Error
+}

@@ -1,17 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
-import { faHome, faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import { useBoard, useBoards, useCreateBoard } from 'composables/board'
+import { useBoards, useCreateBoard, useEditBoard } from 'composables/board'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from './FormBoardCreate'
-import './BoardTabs.css'
 import { NotificationType, useNotification } from 'composables/notification'
+import BoardHeader from 'components/organisms/BoardHeader'
+import './BoardTabs.css'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -41,11 +42,14 @@ const BoardTabs: React.FC = () => {
     error: createBoardError,
     createBoard: createBoard_
   } = useCreateBoard()
+  const {
+    error: editBoardError,
+    editBoard: editBoard_
+  } = useEditBoard()
 
   const navigate = useNavigate()
   const location = useLocation()
   const [currentBoardId, setCurrentBoardId] = useState<number | null>(null)
-  const { board } = useBoard(currentBoardId)
 
   const {
     visible: isBoardCreating,
@@ -95,9 +99,18 @@ const BoardTabs: React.FC = () => {
       .finally(() => cb())
   }
 
+  function editBoard(form: Form, cb: () => void) {
+    editBoard_({...form, id: form.id! }).then((res) => {
+      if (!res) {
+        return
+      }
+      updateBoards(boards.map(board => board.id === res.id ? res : board))
+    }).finally(() =>  cb())
+  }
+
   const error = useMemo(
-    () => boardsError || createBoardError,
-    [boardsError, createBoardError]
+    () => boardsError || createBoardError || editBoardError,
+    [boardsError, createBoardError, editBoardError]
   )
 
   useEffect(() => {
@@ -109,10 +122,6 @@ const BoardTabs: React.FC = () => {
       message: error
     })
   }, [error])
-
-  if (boardsLoading || createBoardLoading) {
-    return <LoadingBar />
-  }
 
   return (
     <div className="board-tabs">
@@ -129,6 +138,7 @@ const BoardTabs: React.FC = () => {
         />
       </ModalCard>
       <div className="tabs-container">
+        {(boardsLoading || createBoardLoading) && <LoadingBar />}
         <Button
           className={clsx({
             'is-info': true,
@@ -158,19 +168,9 @@ const BoardTabs: React.FC = () => {
           events={{ onClick: openBoardCreateCard }}
         />
       </div>
-      <div className="board-information">
-        <h1 className="title">{board?.name}</h1>
-        <div className="board-actions">
-          <Button
-            className="is-link is-light"
-            icon={faEdit}
-          />
-          <Button
-            className="is-danger is-light"
-            icon={faTrash}
-          />
-        </div>
-      </div>
+      {currentBoardId &&
+        <BoardHeader boardId={currentBoardId} events={{onEditBoard: editBoard}}/>
+      }
     </div>
   )
 }

@@ -11,6 +11,10 @@ export interface CreatingBoard {
   color: Color
 }
 
+export interface EditingBoard extends CreatingBoard {
+  id: number
+}
+
 export class BoardAPI {
   private req: RequestAPI
 
@@ -28,5 +32,9 @@ export class BoardAPI {
 
   async createBoard(board: CreatingBoard): Promise<BoardResponse> {
     return this.req.post('/boards/', board)
+  }
+
+  async editBoard(board: EditingBoard): Promise<BoardResponse> {
+    return this.req.put('/boards/', board)
   }
 }

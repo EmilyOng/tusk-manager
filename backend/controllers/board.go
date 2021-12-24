@@ -13,6 +13,12 @@ type CreateBoardPayload struct {
 	Color models.Color
 }
 
+type UpdateBoardPayload struct {
+	ID    uint8
+	Name  string
+	Color models.Color
+}
+
 func GetBoards(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
@@ -102,6 +108,38 @@ func GetBoard(c *gin.Context) {
 	fmt.Sscan(c.Param("board_id"), &boardID)
 	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
 	err := board.Get()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, board)
+}
+
+func UpdateBoard(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+	user := userInterface.(models.User)
+
+	var payload UpdateBoardPayload
+
+	err := c.ShouldBindJSON(&payload)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	board := models.Board{
+		CommonModel: models.CommonModel{ID: payload.ID},
+		Name:        payload.Name,
+		Color:       payload.Color,
+		UserID:      user.ID,
+	}
+
+	err = board.Update()
+
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
 		return
