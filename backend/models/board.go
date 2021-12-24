@@ -33,7 +33,34 @@ func (board *Board) GetTags() (tags []Tag, err error) {
 	return
 }
 
+func (board *Board) GetTasks() (tasks []Task, err error) {
+	err = db.DB.Model(board).Association("Tasks").Find(&tasks)
+	return
+}
+
 func (board *Board) Update() error {
 	result := db.DB.Model(board).Save(board)
+	return result.Error
+}
+
+func (board *Board) Delete() error {
+	tasks, err := board.GetTasks()
+	if err != nil {
+		return err
+	}
+
+	for _, task := range tasks {
+		err = task.Delete()
+		if err != nil {
+			return err
+		}
+	}
+
+	result := db.DB.Debug().Where(&Tag{BoardID: board.ID}).Delete(Tag{})
+
+	if result.Error != nil {
+		return result.Error
+	}
+	result = db.DB.Delete(board)
 	return result.Error
 }

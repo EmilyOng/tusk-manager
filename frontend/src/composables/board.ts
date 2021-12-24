@@ -136,3 +136,30 @@ export function useEditBoard() {
     editBoard
   }
 }
+
+export function useDeleteBoard() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new BoardAPI()
+
+  function deleteBoard(boardId: number) {
+    setLoading(true)
+    return api
+      .deleteBoard(boardId)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return boardId
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    deleteBoard
+  }
+}

@@ -6,7 +6,12 @@ import { BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import { useBoards, useCreateBoard, useEditBoard } from 'composables/board'
+import {
+  useBoards,
+  useCreateBoard,
+  useDeleteBoard,
+  useEditBoard
+} from 'composables/board'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from './FormBoardCreate'
@@ -43,6 +48,8 @@ const BoardTabs: React.FC = () => {
     createBoard: createBoard_
   } = useCreateBoard()
   const { error: editBoardError, editBoard: editBoard_ } = useEditBoard()
+  const { error: deleteBoardError, deleteBoard: deleteBoard_ } =
+    useDeleteBoard()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -107,9 +114,23 @@ const BoardTabs: React.FC = () => {
       .finally(() => cb())
   }
 
+  function deleteBoard(boardId: number, cb: () => void) {
+    deleteBoard_(boardId)
+      .then((res) => {
+        if (!res) {
+          return
+        }
+        updateBoards(boards.filter((board) => board.id !== boardId))
+      })
+      .finally(() => {
+        cb()
+        selectBoard(null)
+      })
+  }
+
   const error = useMemo(
-    () => boardsError || createBoardError || editBoardError,
-    [boardsError, createBoardError, editBoardError]
+    () => boardsError || createBoardError || editBoardError || deleteBoardError,
+    [boardsError, createBoardError, editBoardError, deleteBoardError]
   )
 
   useEffect(() => {
@@ -170,7 +191,7 @@ const BoardTabs: React.FC = () => {
       {currentBoardId && (
         <BoardHeader
           boardId={currentBoardId}
-          events={{ onEditBoard: editBoard }}
+          events={{ onEditBoard: editBoard, onDeleteBoard: deleteBoard }}
         />
       )}
     </div>

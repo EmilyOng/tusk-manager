@@ -50,7 +50,7 @@ func (task *Task) Delete() error {
 	if err != nil {
 		return err
 	}
-	err = db.DB.Model(task).Association("Tags").Delete(task.Tags)
+	err = db.DB.Debug().Model(task).Association("Tags").Delete(task.Tags)
 	if err != nil {
 		return err
 	}

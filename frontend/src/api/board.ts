@@ -37,4 +37,8 @@ export class BoardAPI {
   async editBoard(board: EditingBoard): Promise<BoardResponse> {
     return this.req.put('/boards/', board)
   }
+
+  async deleteBoard(boardId: number): Promise<Response> {
+    return this.req.delete(`/boards/${boardId}`)
+  }
 }

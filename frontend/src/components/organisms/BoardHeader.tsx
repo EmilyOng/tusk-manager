@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import clsx from 'clsx'
 import Button from 'components/atoms/Button'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
@@ -11,10 +12,31 @@ type Props = {
   boardId: number | null
   events: {
     onEditBoard: (form: Form, cb: () => void) => any
+    onDeleteBoard: (boardId: number, cb: () => void) => any
   }
 }
 
 function useBoardEditModal() {
+  const [visible, setVisible] = useState(false)
+  const [board, setBoard] = useState<BoardPrimitive>()
+
+  function openCard(board: BoardPrimitive) {
+    setBoard(board)
+    setVisible(true)
+  }
+  function closeCard() {
+    setBoard(undefined)
+    setVisible(false)
+  }
+  return {
+    board,
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
+function useBoardDeleteModal() {
   const [visible, setVisible] = useState(false)
   const [board, setBoard] = useState<BoardPrimitive>()
 
@@ -45,12 +67,28 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     })
   }
 
+  const [deletingBoard, setDeletingBoard] = useState(false)
+  function onDeleteBoard(boardId: number) {
+    setDeletingBoard(true)
+    events.onDeleteBoard(boardId, () => {
+      setDeletingBoard(false)
+      closeBoardDeleteCard()
+    })
+  }
+
   const {
     board: openedBoardEdit,
     visible: isBoardEditing,
     openCard: openBoardEditCard,
     closeCard: closeBoardEditCard
   } = useBoardEditModal()
+
+  const {
+    board: openedBoardDelete,
+    visible: isBoardDeleting,
+    openCard: openBoardDeleteCard,
+    closeCard: closeBoardDeleteCard
+  } = useBoardDeleteModal()
 
   return (
     <div className="board-header">
@@ -69,6 +107,37 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
           />
         </ModalCard>
       )}
+      {openedBoardDelete && (
+        <ModalCard
+          visible={isBoardDeleting}
+          title="Delete board"
+          events={{ onClose: closeBoardDeleteCard }}
+        >
+          <div>
+            Are you sure you want to delete &quot;{openedBoardDelete.name}
+            &quot;?
+          </div>
+          <div>This action is irreversible.</div>
+          <div className="form-control">
+            <Button
+              type="button"
+              className="is-light"
+              label="Cancel"
+              events={{ onClick: () => closeBoardDeleteCard() }}
+            />
+            <Button
+              type="submit"
+              className={clsx({
+                'is-danger': true,
+                'is-loading': deletingBoard
+              })}
+              attr={{ disabled: deletingBoard }}
+              label="Delete"
+              events={{ onClick: () => onDeleteBoard(openedBoardDelete.id) }}
+            />
+          </div>
+        </ModalCard>
+      )}
       {board && (
         <div className="board-information">
           <h1 className="title">{board.name}</h1>
@@ -78,7 +147,11 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
               icon={faEdit}
               events={{ onClick: () => openBoardEditCard(board) }}
             />
-            <Button className="is-danger is-light" icon={faTrash} />
+            <Button
+              className="is-danger is-light"
+              icon={faTrash}
+              events={{ onClick: () => openBoardDeleteCard(board) }}
+            />
           </div>
         </div>
       )}
