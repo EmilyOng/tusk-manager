@@ -29,6 +29,11 @@ func (task *Task) Create() error {
 	return result.Error
 }
 
+func (task *Task) Get() error {
+	result := db.DB.Model(task).Preload("Tags").Find(task)
+	return result.Error
+}
+
 func (task *Task) Update() error {
 	if task.Tags != nil {
 		err := db.DB.Model(task).Association("Tags").Replace(task.Tags)
@@ -41,6 +46,14 @@ func (task *Task) Update() error {
 }
 
 func (task *Task) Delete() error {
+	err := task.Get()
+	if err != nil {
+		return err
+	}
+	err = db.DB.Model(task).Association("Tags").Delete(task.Tags)
+	if err != nil {
+		return err
+	}
 	result := db.DB.Delete(task)
 	return result.Error
 }
