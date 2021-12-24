@@ -10,7 +10,6 @@ import {
   useDeleteTask,
   useTasks
 } from 'composables/task'
-import LoadingBar from 'components/molecules/LoadingBar'
 import ListView from 'components/organisms/ListView'
 import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
 import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
@@ -165,10 +164,6 @@ function TaskDashboard() {
     })
   }, [error])
 
-  if (tasksLoading || tagsLoading) {
-    return <LoadingBar />
-  }
-
   return (
     <div className="task-dashboard">
       <div className="card-boards">
@@ -177,6 +172,7 @@ function TaskDashboard() {
             <ListView
               key={state}
               tasks={orderedTasks[state]}
+              loading={tasksLoading || tagsLoading}
               tags={tags}
               state={state}
               events={{

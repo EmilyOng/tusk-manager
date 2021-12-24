@@ -18,6 +18,11 @@ func (board *Board) Create() error {
 	return result.Error
 }
 
+func (board *Board) Get() error {
+	result := db.DB.Where(&Board{CommonModel: CommonModel{ID: board.ID}}).First(&board)
+	return result.Error
+}
+
 func (board *Board) GetTasksWithTags() (tasks []Task, err error) {
 	err = db.DB.Model(board).Preload("Tags").Association("Tasks").Find(&tasks)
 	return

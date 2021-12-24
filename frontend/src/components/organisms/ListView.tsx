@@ -8,6 +8,7 @@ import { derivedState, State, Task } from 'types/task'
 import { TagPrimitive } from 'types/tag'
 import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
+import LoadingBar from 'components/molecules/LoadingBar'
 import ModalCard from 'components/molecules/ModalCard'
 import FormTaskEdit, { Form as EditTaskForm } from './FormTaskEdit'
 
@@ -15,6 +16,7 @@ type Props = {
   tasks: Task[]
   tags: TagPrimitive[]
   state: State
+  loading: boolean
   events: {
     onEditTask: (form: EditTaskForm, cb: () => void) => void
     onCreateTask: (form: CreateTaskForm, cb: () => void) => void
@@ -36,17 +38,13 @@ type Props = {
 
 function useTaskCreateModal() {
   const [visible, setVisible] = useState(false)
-  const [task, setTask] = useState<Task>()
-  function openCard(task: Task) {
-    setTask(task)
+  function openCard() {
     setVisible(true)
   }
   function closeCard() {
-    setTask(undefined)
     setVisible(false)
   }
   return {
-    task,
     visible,
     openCard,
     closeCard
@@ -72,11 +70,10 @@ function useTaskEditModal() {
   }
 }
 
-const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
+const ListView: React.FC<Props> = ({ tasks, tags, state, loading, events }) => {
   const listViewWrapper = createRef<HTMLDivElement>()
   // Handles task creation
   const {
-    task: openedTaskCreate,
     visible: isTaskCreating,
     openCard: openTaskCreateCard,
     closeCard: closeTaskCreateCard
@@ -143,40 +140,36 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
       onDrop={(e: React.DragEvent<HTMLDivElement>) => onDrop(e, state)}
       onDragLeave={onDragLeave}
     >
-      {openedTaskCreate && (
-        <ModalCard
-          visible={isTaskCreating}
-          title="Create a new task"
-          events={{ onClose: closeTaskCreateCard }}
-        >
-          <FormTaskCreate
-            state={state}
-            tags={tags}
-            events={{
-              onSubmit: createTask,
-              onCancel: closeTaskCreateCard,
-              onCreateTag: events.onCreateTag
-            }}
-          />
-        </ModalCard>
-      )}
-      {openedTaskEdit && (
-        <ModalCard
-          visible={isTaskEditing}
-          title={openedTaskEdit.name}
-          events={{ onClose: closeTaskEditCard }}
-        >
-          <FormTaskEdit
-            task={openedTaskEdit}
-            tags={tags}
-            events={{
-              onSubmit: editTask,
-              onCancel: closeTaskEditCard,
-              onCreateTag: events.onCreateTag
-            }}
-          />
-        </ModalCard>
-      )}
+      <ModalCard
+        visible={isTaskCreating}
+        title="Create a new task"
+        events={{ onClose: closeTaskCreateCard }}
+      >
+        <FormTaskCreate
+          state={state}
+          tags={tags}
+          events={{
+            onSubmit: createTask,
+            onCancel: closeTaskCreateCard,
+            onCreateTag: events.onCreateTag
+          }}
+        />
+      </ModalCard>
+      {openedTaskEdit && <ModalCard
+        visible={isTaskEditing}
+        title={openedTaskEdit.name}
+        events={{ onClose: closeTaskEditCard }}
+      >
+        <FormTaskEdit
+          task={openedTaskEdit}
+          tags={tags}
+          events={{
+            onSubmit: editTask,
+            onCancel: closeTaskEditCard,
+            onCreateTag: events.onCreateTag
+          }}
+        />
+      </ModalCard>}
       <div className="list-view-header">
         <div className="list-view-title">{derivedState(state)}</div>
         <Button
@@ -185,6 +178,7 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, events }) => {
           events={{ onClick: openTaskCreateCard }}
         />
       </div>
+      {loading && <LoadingBar />}
       <div className="tasks">
         {tasks.map((task) => (
           <div

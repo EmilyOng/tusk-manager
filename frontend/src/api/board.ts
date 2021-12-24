@@ -22,6 +22,10 @@ export class BoardAPI {
     return this.req.get('/boards/')
   }
 
+  async getBoard(boardId: number): Promise<BoardResponse> {
+    return this.req.get(`/boards/${boardId}`)
+  }
+
   async createBoard(board: CreatingBoard): Promise<BoardResponse> {
     return this.req.post('/boards/', board)
   }

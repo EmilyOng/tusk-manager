@@ -39,6 +39,6 @@ export class TaskAPI {
   }
 
   async deleteTask(taskId: number): Promise<Response> {
-    return this.req.delete('/tasks/', { ID: taskId })
+    return this.req.delete(`/tasks/${taskId}`)
   }
 }

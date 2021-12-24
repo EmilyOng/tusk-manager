@@ -90,3 +90,21 @@ func GetBoardTags(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, tags)
 }
+
+func GetBoard(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	var boardID uint8
+	fmt.Sscan(c.Param("board_id"), &boardID)
+	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
+	err := board.Get()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, board)
+}

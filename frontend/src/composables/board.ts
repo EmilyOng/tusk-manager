@@ -67,3 +67,45 @@ export function useCreateBoard() {
     createBoard
   }
 }
+
+export function useBoard(boardId: number | null) {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new BoardAPI()
+  const [board, setBoard] = useState<BoardPrimitive>()
+
+  function updateBoard(board: BoardPrimitive) {
+    setBoard(board)
+  }
+
+  useEffect(() => {
+    if (!boardId) {
+      return
+    }
+    setLoading(true)
+    api
+      .getBoard(boardId)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+        } else {
+          setBoard(res)
+        }
+      })
+      .finally(() => setLoading(false))
+    return () => {
+      // Clean-up
+      setLoading(false)
+      setError('')
+      setBoard(undefined)
+    }
+  }, [boardId])
+
+  return {
+    loading,
+    error,
+    board,
+    updateBoard
+  }
+}

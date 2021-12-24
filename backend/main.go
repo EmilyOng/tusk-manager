@@ -39,6 +39,7 @@ func main() {
 			boards := guard.Group("/boards")
 			{
 				boards.GET("/", controllers.GetBoards)
+				boards.GET("/:board_id", controllers.GetBoard)
 				boards.POST("/", controllers.CreateBoard)
 				boards.GET("/:board_id/tasks", controllers.GetBoardTasksWithTags)
 				boards.GET("/:board_id/tags", controllers.GetBoardTags)
@@ -47,7 +48,7 @@ func main() {
 			{
 				tasks.POST("/", controllers.CreateTask)
 				tasks.PUT("/", controllers.UpdateTask)
-				tasks.DELETE("/", controllers.DeleteTask)
+				tasks.DELETE("/:task_id", controllers.DeleteTask)
 			}
 			tags := guard.Group(("/tags"))
 			{

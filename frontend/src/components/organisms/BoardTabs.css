@@ -28,7 +28,18 @@
 }
 
 .tabs-container {
-  /* position: fixed; */
   display: flex;
   flex-direction: row;
+}
+
+.board-information {
+  display: flex;
+  height: 40px;
+  align-items: center;
+  justify-content: space-between;
+  margin: 8px 16px;
+}
+
+.board-actions {
+  display: flex;
 }

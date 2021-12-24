@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"main/models"
 	"net/http"
 	"time"
@@ -15,10 +16,6 @@ type CreateTaskPayload struct {
 	State       models.State
 	Tags        []models.Tag
 	BoardID     uint8
-}
-
-type DeleteTaskPayload struct {
-	ID uint8
 }
 
 type UpdateTaskPayload struct {
@@ -115,20 +112,15 @@ func DeleteTask(c *gin.Context) {
 	}
 	user := userInterface.(models.User)
 
-	var payload DeleteTaskPayload
-
-	err := c.ShouldBindJSON(&payload)
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	var taskId uint8
+	fmt.Sscan(c.Param("task_id"), &taskId)
 
 	task := models.Task{
-		CommonModel: models.CommonModel{ID: payload.ID},
+		CommonModel: models.CommonModel{ID: taskId},
 		UserID:      user.ID,
 	}
 
-	err = task.Delete()
+	err := task.Delete()
 
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
