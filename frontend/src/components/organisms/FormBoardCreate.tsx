@@ -11,9 +11,7 @@ type Props = {
 }
 
 const FormBoardCreate: React.FC<Props> = ({ events }) => {
-  return (
-    <FormBoard events={events} actionLabels={{ok: 'Create'}}/>
-  )
+  return <FormBoard events={events} actionLabels={{ ok: 'Create' }} />
 }
 
 export default FormBoardCreate

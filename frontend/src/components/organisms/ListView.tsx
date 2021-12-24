@@ -155,21 +155,23 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, loading, events }) => {
           }}
         />
       </ModalCard>
-      {openedTaskEdit && <ModalCard
-        visible={isTaskEditing}
-        title={openedTaskEdit.name}
-        events={{ onClose: closeTaskEditCard }}
-      >
-        <FormTaskEdit
-          task={openedTaskEdit}
-          tags={tags}
-          events={{
-            onSubmit: editTask,
-            onCancel: closeTaskEditCard,
-            onCreateTag: events.onCreateTag
-          }}
-        />
-      </ModalCard>}
+      {openedTaskEdit && (
+        <ModalCard
+          visible={isTaskEditing}
+          title={openedTaskEdit.name}
+          events={{ onClose: closeTaskEditCard }}
+        >
+          <FormTaskEdit
+            task={openedTaskEdit}
+            tags={tags}
+            events={{
+              onSubmit: editTask,
+              onCancel: closeTaskEditCard,
+              onCreateTag: events.onCreateTag
+            }}
+          />
+        </ModalCard>
+      )}
       <div className="list-view-header">
         <div className="list-view-title">{derivedState(state)}</div>
         <Button

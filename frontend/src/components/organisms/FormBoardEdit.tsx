@@ -4,7 +4,7 @@ import FormBoard, { Form as Form_ } from '../molecules/FormBoard'
 export type Form = Form_
 
 type Props = {
-  board: Form,
+  board: Form
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
@@ -13,7 +13,7 @@ type Props = {
 
 const FormBoardEdit: React.FC<Props> = ({ board, events }) => {
   return (
-    <FormBoard initial={board} events={events} actionLabels={{ok: 'Edit'}} />
+    <FormBoard initial={board} events={events} actionLabels={{ ok: 'Edit' }} />
   )
 }
 

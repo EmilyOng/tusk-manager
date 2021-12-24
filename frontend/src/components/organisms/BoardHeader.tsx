@@ -41,46 +41,47 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     events.onEditBoard(form, () => {
       cb()
       closeBoardEditCard()
-      updateBoard({...form, id: form.id!})
+      updateBoard({ ...form, id: form.id! })
     })
   }
- 
+
   const {
     board: openedBoardEdit,
     visible: isBoardEditing,
     openCard: openBoardEditCard,
     closeCard: closeBoardEditCard
   } = useBoardEditModal()
-  
+
   return (
     <div className="board-header">
-      {openedBoardEdit && <ModalCard
-        visible={isBoardEditing}
-        title="Edit board"
-        events={{ onClose: closeBoardEditCard }}
-      >
-        <FormBoardEdit
-          board={openedBoardEdit}
-          events={{
-            onSubmit: onEditBoard,
-            onCancel: closeBoardEditCard
-          }}
-        />
-      </ModalCard>}
-      {board && <div className="board-information">
-        <h1 className="title">{board.name}</h1>
-        <div className="board-actions">
-          <Button
-            className="is-link is-light"
-            icon={faEdit}
-            events={{ onClick: () => openBoardEditCard(board) }}
+      {openedBoardEdit && (
+        <ModalCard
+          visible={isBoardEditing}
+          title="Edit board"
+          events={{ onClose: closeBoardEditCard }}
+        >
+          <FormBoardEdit
+            board={openedBoardEdit}
+            events={{
+              onSubmit: onEditBoard,
+              onCancel: closeBoardEditCard
+            }}
           />
-          <Button
-            className="is-danger is-light"
-            icon={faTrash}
-          />
+        </ModalCard>
+      )}
+      {board && (
+        <div className="board-information">
+          <h1 className="title">{board.name}</h1>
+          <div className="board-actions">
+            <Button
+              className="is-link is-light"
+              icon={faEdit}
+              events={{ onClick: () => openBoardEditCard(board) }}
+            />
+            <Button className="is-danger is-light" icon={faTrash} />
+          </div>
         </div>
-      </div>}
+      )}
     </div>
   )
 }

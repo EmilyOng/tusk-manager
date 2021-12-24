@@ -42,10 +42,7 @@ const BoardTabs: React.FC = () => {
     error: createBoardError,
     createBoard: createBoard_
   } = useCreateBoard()
-  const {
-    error: editBoardError,
-    editBoard: editBoard_
-  } = useEditBoard()
+  const { error: editBoardError, editBoard: editBoard_ } = useEditBoard()
 
   const navigate = useNavigate()
   const location = useLocation()
@@ -100,12 +97,14 @@ const BoardTabs: React.FC = () => {
   }
 
   function editBoard(form: Form, cb: () => void) {
-    editBoard_({...form, id: form.id! }).then((res) => {
-      if (!res) {
-        return
-      }
-      updateBoards(boards.map(board => board.id === res.id ? res : board))
-    }).finally(() =>  cb())
+    editBoard_({ ...form, id: form.id! })
+      .then((res) => {
+        if (!res) {
+          return
+        }
+        updateBoards(boards.map((board) => (board.id === res.id ? res : board)))
+      })
+      .finally(() => cb())
   }
 
   const error = useMemo(
@@ -168,9 +167,12 @@ const BoardTabs: React.FC = () => {
           events={{ onClick: openBoardCreateCard }}
         />
       </div>
-      {currentBoardId &&
-        <BoardHeader boardId={currentBoardId} events={{onEditBoard: editBoard}}/>
-      }
+      {currentBoardId && (
+        <BoardHeader
+          boardId={currentBoardId}
+          events={{ onEditBoard: editBoard }}
+        />
+      )}
     </div>
   )
 }
