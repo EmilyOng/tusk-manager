@@ -17,6 +17,9 @@ type Props = {
 }
 
 const ModalCard: React.FC<Props> = ({ title, visible, events, children }) => {
+  if (!visible) {
+    return null
+  }
   return (
     <div
       className={clsx({

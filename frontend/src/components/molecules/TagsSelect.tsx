@@ -1,4 +1,4 @@
-import React, { createRef, useState } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import { TagPrimitive } from 'types/tag'
@@ -34,7 +34,11 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
   const [tagInput, setTagInput] = useState('')
   const tagInputField = createRef<HTMLInputElement>()
   const [isCreatingTag, setIsCreatingTag] = useState(false)
-  const [selectableTags, setSelectableTags] = useState<SelectableTag[]>(tags)
+  const [selectableTags, setSelectableTags] = useState<SelectableTag[]>([])
+
+  useEffect(() => {
+    setSelectableTags(tags)
+  }, [])
 
   function clickDropdown(e: React.MouseEvent<HTMLDivElement>) {
     e.stopPropagation()
@@ -144,7 +148,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
             )}
           {selectableTags.reduce(
             (acc, tag) => {
-              const match = tagInput.length < 0 ? true : isMatchTagInput(tag)
+              const match = tagInput.length <= 0 ? true : isMatchTagInput(tag)
               if (!tag.selected && match) {
                 if (acc[0].key === '-1') {
                   acc = []
