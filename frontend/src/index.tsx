@@ -1,18 +1,19 @@
 import ReactDOM from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
+import { Provider } from 'react-redux'
 import reportWebVitals from './reportWebVitals'
 import 'bulma/css/bulma.min.css'
 import 'react-datepicker/dist/react-datepicker.css'
 import './index.css'
+import { store } from 'store'
 import App from './App'
-import { AuthProvider } from 'context/Authentication'
 
 ReactDOM.render(
-  <AuthProvider>
+  <Provider store={store}>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </AuthProvider>,
+  </Provider>,
   document.getElementById('root')
 )
 

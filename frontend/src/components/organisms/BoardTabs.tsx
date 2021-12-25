@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import { faHome, faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -6,18 +7,14 @@ import { BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import {
-  useBoards,
-  useCreateBoard,
-  useDeleteBoard,
-  useEditBoard
-} from 'composables/board'
+import { useCreateBoard, useDeleteBoard, useEditBoard } from 'composables/board'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from './FormBoardCreate'
 import { NotificationType, useNotification } from 'composables/notification'
 import BoardHeader from 'components/organisms/BoardHeader'
 import './BoardTabs.css'
+import { selectBoards, setCurrentBoardId, updateBoards } from 'store/board'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -36,12 +33,13 @@ function useBoardCreateModal() {
 }
 
 const BoardTabs: React.FC = () => {
+  const dispatch = useDispatch()
   const {
-    loading: boardsLoading,
-    error: boardsError,
     boards,
-    updateBoards
-  } = useBoards()
+    loading: boardsLoading,
+    currentBoardId
+  } = useSelector(selectBoards)
+
   const {
     loading: createBoardLoading,
     error: createBoardError,
@@ -53,7 +51,6 @@ const BoardTabs: React.FC = () => {
 
   const navigate = useNavigate()
   const location = useLocation()
-  const [currentBoardId, setCurrentBoardId] = useState<number | null>(null)
 
   const {
     visible: isBoardCreating,
@@ -70,7 +67,7 @@ const BoardTabs: React.FC = () => {
     const boardId = boardId_ ? parseInt(boardId_) : null
     if (!currentBoardId) {
       if (boardId) {
-        setCurrentBoardId(boardId)
+        dispatch(setCurrentBoardId(boardId))
       } else {
         navigate('/')
       }
@@ -81,7 +78,7 @@ const BoardTabs: React.FC = () => {
   }, [boardsLoading])
 
   function selectBoard(id: number | null) {
-    setCurrentBoardId(id)
+    dispatch(setCurrentBoardId(id))
     if (!id) {
       navigate('/')
       return
@@ -95,7 +92,7 @@ const BoardTabs: React.FC = () => {
         if (!board) {
           return
         }
-        updateBoards([...boards, board])
+        dispatch(updateBoards([...boards, board]))
         // Navigate to the new board
         selectBoard(board.id)
         closeBoardCreateCard()
@@ -113,7 +110,11 @@ const BoardTabs: React.FC = () => {
         if (!res) {
           return
         }
-        updateBoards(boards.map((board) => (board.id === res.id ? res : board)))
+        dispatch(
+          updateBoards(
+            boards.map((board) => (board.id === res.id ? res : board))
+          )
+        )
       })
       .finally(() => cb())
   }
@@ -124,7 +125,7 @@ const BoardTabs: React.FC = () => {
         if (!res) {
           return
         }
-        updateBoards(boards.filter((board) => board.id !== boardId))
+        dispatch(updateBoards(boards.filter((board) => board.id !== boardId)))
         useNotification({
           type: NotificationType.Success,
           message: 'Board has been deleted successfully'
@@ -137,8 +138,8 @@ const BoardTabs: React.FC = () => {
   }
 
   const error = useMemo(
-    () => boardsError || createBoardError || editBoardError || deleteBoardError,
-    [boardsError, createBoardError, editBoardError, deleteBoardError]
+    () => createBoardError || editBoardError || deleteBoardError,
+    [createBoardError, editBoardError, deleteBoardError]
   )
 
   useEffect(() => {

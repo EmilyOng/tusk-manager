@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import FormAuthentication, {
   Form,
   FormMode
@@ -8,46 +9,49 @@ import clsx from 'clsx'
 import './Authentication.css'
 import { AuthUser } from 'types/user'
 import { useNavigate } from 'react-router-dom'
-import { useAuth } from 'context/Authentication'
+import { selectMe, setMe } from 'store/me'
+import { AuthAPI } from 'api/auth'
 
 function Authentication() {
-  const auth = useAuth()
+  const dispatch = useDispatch()
+  const { user } = useSelector(selectMe)
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (auth.user) {
+    if (user) {
       navigate('/', { replace: true })
     }
-  }, [])
+  }, [user])
 
   const [error, setError] = useState('')
+  const auth = new AuthAPI()
   const [mode, setMode] = useState<FormMode>(FormMode.SignUp)
 
   function onSubmit(form: Form, cb: () => void) {
     if (mode === FormMode.SignUp) {
-      auth.signUp(
-        form as AuthUser,
-        () => {
+      auth
+        .signUp(form as AuthUser)
+        .then((res) => {
+          if (res.error) {
+            setError(res.error)
+            return
+          }
+          dispatch(setMe(res))
           navigate('/', { replace: true })
-          cb()
-        },
-        (res) => {
-          setError(res.error)
-          cb()
-        }
-      )
+        })
+        .finally(() => cb())
     } else {
-      auth.login(
-        form as Omit<AuthUser, 'name'>,
-        () => {
+      auth
+        .login(form as Omit<AuthUser, 'name'>)
+        .then((res) => {
+          if (res.error) {
+            setError(res.error)
+            return
+          }
+          dispatch(setMe(res))
           navigate('/', { replace: true })
-          cb()
-        },
-        (res) => {
-          setError(res.error)
-          cb()
-        }
-      )
+        })
+        .finally(() => cb())
     }
   }
 

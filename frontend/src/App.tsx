@@ -3,7 +3,7 @@ import Authentication from 'components/pages/Authentication'
 import HomeDashboard from 'components/pages/HomeDashboard'
 import TaskDashboard from 'components/pages/TaskDashboard'
 import DashboardLayout from 'components/layouts/DashboardLayout'
-import { RequireAuth } from 'context/Authentication'
+import RequireAuth from 'components/organisms/RequireAuth'
 
 function App() {
   return (
