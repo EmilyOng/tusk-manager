@@ -34,6 +34,7 @@ function TaskDashboard() {
     updateTags
   } = useTags(boardId)
   const orderedTasks = orderTasksByState(tasks)
+  // const [sortBy, setSortBy] = useState<TaskSortBy>(TaskSortBy.CreatedAt)
   const states = [State.Unstarted, State.InProgress, State.Completed]
 
   useEffect(() => {

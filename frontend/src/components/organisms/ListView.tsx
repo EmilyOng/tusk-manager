@@ -1,7 +1,7 @@
-import React, { createRef, useState } from 'react'
+import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
+import { compareAsc } from 'date-fns'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
-import './ListView.css'
 import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form as CreateTaskForm } from './FormTaskCreate'
 import { derivedState, State, Task } from 'types/task'
@@ -11,6 +11,9 @@ import Button from 'components/atoms/Button'
 import LoadingBar from 'components/molecules/LoadingBar'
 import ModalCard from 'components/molecules/ModalCard'
 import FormTaskEdit, { Form as EditTaskForm } from './FormTaskEdit'
+import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
+import './ListView.css'
+import FilterReverse from 'components/molecules/FilterReverse'
 
 type Props = {
   tasks: Task[]
@@ -34,6 +37,16 @@ type Props = {
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
     onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
   }
+}
+
+enum TaskSortDirection {
+  Ascending = 'Ascending',
+  Descending = 'Descending'
+}
+
+type TaskSort = {
+  sortBy: TaskSortBy
+  reversed: TaskSortDirection
 }
 
 function useTaskCreateModal() {
@@ -70,8 +83,27 @@ function useTaskEditModal() {
   }
 }
 
-const ListView: React.FC<Props> = ({ tasks, tags, state, loading, events }) => {
+const ListView: React.FC<Props> = ({
+  tasks: tasks_,
+  tags,
+  state,
+  loading,
+  events
+}) => {
   const listViewWrapper = createRef<HTMLDivElement>()
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [currentSort, setCurrentSort] = useState<TaskSort>({
+    sortBy: TaskSortBy.CreatedAt,
+    reversed: TaskSortDirection.Ascending
+  })
+
+  useEffect(() => {
+    // Sorts in ascending order
+    setTasks([...sortTasks(tasks_, currentSort.sortBy)])
+    if (currentSort.reversed === TaskSortDirection.Descending) {
+      setTasks([...reverseTasks(tasks_)])
+    }
+  }, [tasks_])
   // Handles task creation
   const {
     visible: isTaskCreating,
@@ -132,6 +164,49 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, loading, events }) => {
     }
   }
 
+  function sortTasks(tasks: Task[], sortBy: TaskSortBy) {
+    return tasks.sort((a, b) => {
+      switch (sortBy) {
+        case TaskSortBy.CreatedAt:
+          return !a.createdAt
+            ? 1
+            : !b.createdAt
+            ? -1
+            : compareAsc(new Date(a.createdAt), new Date(b.createdAt))
+        case TaskSortBy.DueDate:
+          return !a.dueAt
+            ? 1
+            : !b.dueAt
+            ? -1
+            : compareAsc(new Date(a.dueAt), new Date(b.dueAt))
+        case TaskSortBy.Name:
+          const a_ = a.name.toLowerCase()
+          const b_ = b.name.toLowerCase()
+          return a_ < b_ ? -1 : a_ > b_ ? 1 : 0
+      }
+    })
+  }
+
+  function reverseTasks(tasks: Task[]) {
+    return tasks.reverse()
+  }
+
+  function onFilterSort(sortBy: TaskSortBy) {
+    setCurrentSort({ ...currentSort, sortBy })
+    setTasks([...sortTasks(tasks, sortBy)])
+  }
+
+  function onFilterReverse() {
+    setCurrentSort({
+      ...currentSort,
+      reversed:
+        currentSort.reversed === TaskSortDirection.Ascending
+          ? TaskSortDirection.Descending
+          : TaskSortDirection.Ascending
+    })
+    setTasks([...reverseTasks(tasks)])
+  }
+
   return (
     <div
       className={clsx({ 'list-view': true, [state]: true })}
@@ -174,11 +249,15 @@ const ListView: React.FC<Props> = ({ tasks, tags, state, loading, events }) => {
       )}
       <div className="list-view-header">
         <div className="list-view-title">{derivedState(state)}</div>
-        <Button
-          className="is-link is-light"
-          icon={faPlus}
-          events={{ onClick: openTaskCreateCard }}
-        />
+        <div className="list-view-actions">
+          <FilterSort events={{ onFilterSort }} />
+          <FilterReverse events={{ onFilterReverse }} />
+          <Button
+            className="is-link is-light"
+            icon={faPlus}
+            events={{ onClick: openTaskCreateCard }}
+          />
+        </div>
       </div>
       {loading && <LoadingBar />}
       <div className="tasks">

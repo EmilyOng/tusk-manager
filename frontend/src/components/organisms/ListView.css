@@ -21,6 +21,15 @@
   justify-content: space-between;
 }
 
+.list-view-actions {
+  display: flex;
+  flex-direction: row;
+}
+
+.list-view-actions > *:not(:last-child) {
+  margin-right: 8px;
+}
+
 .list-view.Completed {
   border-top-color: var(--green);
 }

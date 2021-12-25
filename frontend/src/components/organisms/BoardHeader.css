@@ -13,3 +13,7 @@
   height: 40px;
   margin: 8px 16px;
 }
+
+.board-actions > *:not(:last-child) {
+  margin-right: 8px;
+}
