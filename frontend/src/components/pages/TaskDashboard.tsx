@@ -16,7 +16,7 @@ import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import LoadingBar from 'components/molecules/LoadingBar'
 import { useCreateTag, useTags } from 'composables/tag'
 import { NotificationType, useNotification } from 'composables/notification'
-import { useCreateState, useStates } from 'composables/state'
+import { useCreateState, useEditState, useStates } from 'composables/state'
 import './TaskDashboard.css'
 import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
 
@@ -56,6 +56,7 @@ function TaskDashboard() {
   const { error: deleteTaskError, deleteTask: deleteTask_ } = useDeleteTask()
   const { error: createStateError, createState: createState_ } =
     useCreateState()
+  const { error: editStateError, editState: editState_ } = useEditState()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
     createTask_({ ...form, boardId: boardId!, stateId: form.stateId! })
@@ -166,6 +167,17 @@ function TaskDashboard() {
     }
   }
 
+  function onEditState(newState: State) {
+    editState_({ ...newState, boardId: boardId! }).then((res) => {
+      if (!res) {
+        return
+      }
+      updateStates(
+        states.map((state) => (state.id === newState.id ? newState : state))
+      )
+    })
+  }
+
   const { onDragTask, onDragOver, onDropTask } = useDragTask()
   const error = useMemo(
     () =>
@@ -176,7 +188,8 @@ function TaskDashboard() {
       updateTaskError ||
       deleteTaskError ||
       statesError ||
-      createStateError,
+      createStateError ||
+      editStateError,
     [
       tasksError,
       createTaskError,
@@ -185,7 +198,8 @@ function TaskDashboard() {
       updateTaskError,
       deleteTaskError,
       statesError,
-      createStateError
+      createStateError,
+      editStateError
     ]
   )
 
@@ -221,7 +235,8 @@ function TaskDashboard() {
                   onDeleteTask: deleteTask,
                   onDragTask,
                   onDragOver,
-                  onDropTask
+                  onDropTask,
+                  onEditState
                 }}
               />
             )

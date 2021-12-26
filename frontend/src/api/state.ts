@@ -10,6 +10,10 @@ export interface CreatingState {
   boardId: number
 }
 
+export interface EditingState extends CreatingState {
+  id: number
+}
+
 export class StateAPI {
   private req: RequestAPI
 
@@ -23,5 +27,9 @@ export class StateAPI {
 
   async createState(state: CreatingState): Promise<StateResponse> {
     return this.req.post('/states/', state)
+  }
+
+  async editState(state: EditingState): Promise<StateResponse> {
+    return this.req.put('/states/', state)
   }
 }

@@ -12,6 +12,7 @@ import ModalCard from 'components/molecules/ModalCard'
 import FormTaskEdit, { Form as EditTaskForm } from './FormTaskEdit'
 import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
 import FilterReverse from 'components/molecules/FilterReverse'
+import ListViewHeader from 'components/molecules/ListViewHeader'
 import { State } from 'types/state'
 import './ListView.css'
 
@@ -37,6 +38,7 @@ type Props = {
     }) => any
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
     onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
+    onEditState: (newState: State) => void
   }
 }
 
@@ -251,7 +253,10 @@ const ListView: React.FC<Props> = ({
         </ModalCard>
       )}
       <div className="list-view-header">
-        <div className="list-view-title">{state.name}</div>
+        <ListViewHeader
+          state={state}
+          events={{ onEditState: events.onEditState }}
+        />
         <div className="list-view-actions">
           <FilterSort events={{ onFilterSort }} />
           <FilterReverse events={{ onFilterReverse }} />

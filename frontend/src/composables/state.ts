@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CreatingState, StateAPI } from 'api/state'
+import { CreatingState, EditingState, StateAPI } from 'api/state'
 import { State } from 'types/state'
 
 export function useStates(boardId: number | null) {
@@ -69,5 +69,32 @@ export function useCreateState() {
     loading,
     error,
     createState
+  }
+}
+
+export function useEditState() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new StateAPI()
+
+  function editState(state: EditingState) {
+    setLoading(true)
+    return api
+      .editState(state)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return res
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    editState
   }
 }

@@ -13,6 +13,7 @@ type Props = {
   icon?: IconDefinition
   events?: {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any
+    onBlur?: () => any
   }
 }
 

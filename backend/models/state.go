@@ -17,3 +17,8 @@ func (state *State) Create() error {
 	result := db.DB.Create(state)
 	return result.Error
 }
+
+func (state *State) Update() error {
+	result := db.DB.Model(state).Save(state)
+	return result.Error
+}

@@ -39,6 +39,7 @@ func main() {
 			states := guard.Group("/states")
 			{
 				states.POST("/", controllers.CreateState)
+				states.PUT("/", controllers.UpdateState)
 			}
 			boards := guard.Group("/boards")
 			{
