@@ -32,4 +32,8 @@ export class StateAPI {
   async editState(state: EditingState): Promise<StateResponse> {
     return this.req.put('/states/', state)
   }
+
+  async deleteState(stateId: number): Promise<Response> {
+    return this.req.delete(`/states/${stateId}`)
+  }
 }

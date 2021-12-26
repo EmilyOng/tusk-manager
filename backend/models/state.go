@@ -1,6 +1,8 @@
 package models
 
-import "main/db"
+import (
+	"main/db"
+)
 
 type State struct {
 	ID      uint8   `gorm:"primaryKey" json:"id"`
@@ -20,5 +22,26 @@ func (state *State) Create() error {
 
 func (state *State) Update() error {
 	result := db.DB.Model(state).Save(state)
+	return result.Error
+}
+
+func (state *State) GetTasks() (tasks []Task, err error) {
+	err = db.DB.Model(state).Association("Tasks").Find(&tasks)
+	return
+}
+
+func (state *State) Delete() error {
+	tasks, err := state.GetTasks()
+	if err != nil {
+		return err
+	}
+	for _, task := range tasks {
+		err = task.Delete()
+		if err != nil {
+			return err
+		}
+	}
+
+	result := db.DB.Delete(state)
 	return result.Error
 }

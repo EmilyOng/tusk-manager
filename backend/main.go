@@ -40,6 +40,7 @@ func main() {
 			{
 				states.POST("/", controllers.CreateState)
 				states.PUT("/", controllers.UpdateState)
+				states.DELETE("/:state_id", controllers.DeleteState)
 			}
 			boards := guard.Group("/boards")
 			{

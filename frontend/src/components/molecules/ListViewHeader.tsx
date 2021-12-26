@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
+import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { State } from 'types/state'
 import InputField from './InputField'
+import Button from 'components/atoms/Button'
+import './ListViewHeader.css'
 
 type Props = {
   state: State
@@ -35,8 +38,13 @@ const ListViewHeader: React.FC<Props> = ({ state, events }) => {
       events={{ onChange: onInputChange, onBlur: onEditState }}
     />
   ) : (
-    <div className="list-view-title" onClick={() => setEditingStateName(true)}>
-      {state.name}
+    <div className="list-view-wrap">
+      <span className="list-view-title">{state.name}</span>
+      <Button
+        className="is-ghost"
+        icon={faPen}
+        events={{ onClick: () => setEditingStateName(true) }}
+      />
     </div>
   )
 }

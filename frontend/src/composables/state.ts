@@ -98,3 +98,30 @@ export function useEditState() {
     editState
   }
 }
+
+export function useDeleteState() {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const api = new StateAPI()
+
+  function deleteState(stateId: number) {
+    setLoading(true)
+    return api
+      .deleteState(stateId)
+      .then((res) => {
+        if (res.error) {
+          setError(res.error)
+          return null
+        }
+        return stateId
+      })
+      .finally(() => setLoading(false))
+  }
+
+  return {
+    loading,
+    error,
+    deleteState
+  }
+}

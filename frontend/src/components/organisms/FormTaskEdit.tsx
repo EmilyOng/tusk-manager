@@ -59,7 +59,6 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitting(true)
-    console.log(form)
     events.onSubmit(form, () => setSubmitting(false))
   }
 

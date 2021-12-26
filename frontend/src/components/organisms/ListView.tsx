@@ -1,6 +1,7 @@
 import React, { createRef, useEffect, useState } from 'react'
+import clsx from 'clsx'
 import { compareAsc } from 'date-fns'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
 import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form as CreateTaskForm } from './FormTaskCreate'
 import { Task } from 'types/task'
@@ -39,6 +40,7 @@ type Props = {
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
     onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
     onEditState: (newState: State) => void
+    onDeleteState: (stateId: number, cb: () => void) => void
   }
 }
 
@@ -86,6 +88,25 @@ function useTaskEditModal() {
   }
 }
 
+function useStateDeleteModal() {
+  const [state, setState] = useState<State>()
+  const [visible, setVisible] = useState(false)
+  function openCard(state: State) {
+    setState(state)
+    setVisible(true)
+  }
+  function closeCard() {
+    setState(undefined)
+    setVisible(false)
+  }
+  return {
+    state,
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
 const ListView: React.FC<Props> = ({
   tasks: tasks_,
   tags,
@@ -106,6 +127,9 @@ const ListView: React.FC<Props> = ({
     setTasks([...sortTasks(tasks_, currentSort.sortBy)])
     if (currentSort.reversed === TaskSortDirection.Descending) {
       setTasks([...reverseTasks(tasks_)])
+    }
+    return () => {
+      setTasks([])
     }
   }, [tasks_])
   // Handles task creation
@@ -210,6 +234,22 @@ const ListView: React.FC<Props> = ({
     setTasks([...reverseTasks(tasks)])
   }
 
+  // Handles state edit/delete
+  const {
+    state: openedStateDelete,
+    visible: isStateDeleting,
+    openCard: openStateDeleteCard,
+    closeCard: closeStateDeleteCard
+  } = useStateDeleteModal()
+  const [deletingState, setDeletingState] = useState(false)
+
+  function onDeleteState(stateId: number) {
+    events.onDeleteState(stateId, () => {
+      closeStateDeleteCard()
+      setDeletingState(false)
+    })
+  }
+
   return (
     <div
       className="list-view"
@@ -218,6 +258,37 @@ const ListView: React.FC<Props> = ({
       onDrop={(e: React.DragEvent<HTMLDivElement>) => onDrop(e, state)}
       onDragLeave={onDragLeave}
     >
+      {openedStateDelete && (
+        <ModalCard
+          visible={isStateDeleting}
+          title="Delete state"
+          events={{ onClose: closeStateDeleteCard }}
+        >
+          <div>
+            Are you sure you want to delete &quot;{openedStateDelete.name}
+            &quot;?
+          </div>
+          <div>This action is irreversible.</div>
+          <div className="form-control">
+            <Button
+              type="button"
+              className="is-light"
+              label="Cancel"
+              events={{ onClick: () => closeStateDeleteCard() }}
+            />
+            <Button
+              type="submit"
+              className={clsx({
+                'is-danger': true,
+                'is-loading': deletingState
+              })}
+              attr={{ disabled: deletingState }}
+              label="Delete"
+              events={{ onClick: () => onDeleteState(openedStateDelete.id) }}
+            />
+          </div>
+        </ModalCard>
+      )}
       <ModalCard
         visible={isTaskCreating}
         title="Create a new task"
@@ -258,14 +329,21 @@ const ListView: React.FC<Props> = ({
           events={{ onEditState: events.onEditState }}
         />
         <div className="list-view-actions">
-          <FilterSort events={{ onFilterSort }} />
-          <FilterReverse events={{ onFilterReverse }} />
           <Button
             className="is-link is-light"
             icon={faPlus}
             events={{ onClick: openTaskCreateCard }}
           />
+          <Button
+            className="is-danger is-light"
+            icon={faTrash}
+            events={{ onClick: () => openStateDeleteCard(state) }}
+          />
         </div>
+      </div>
+      <div className="list-view-filter">
+        <FilterSort events={{ onFilterSort }} />
+        <FilterReverse events={{ onFilterReverse }} />
       </div>
       {loading ? (
         <LoadingBar />

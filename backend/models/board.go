@@ -62,7 +62,7 @@ func (board *Board) Delete() error {
 		}
 	}
 
-	result := db.DB.Debug().Where(&Tag{BoardID: board.ID}).Delete(Tag{})
+	result := db.DB.Where(&Tag{BoardID: board.ID}).Delete(Tag{})
 
 	if result.Error != nil {
 		return result.Error

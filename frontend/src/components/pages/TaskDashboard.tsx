@@ -16,7 +16,12 @@ import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import LoadingBar from 'components/molecules/LoadingBar'
 import { useCreateTag, useTags } from 'composables/tag'
 import { NotificationType, useNotification } from 'composables/notification'
-import { useCreateState, useEditState, useStates } from 'composables/state'
+import {
+  useCreateState,
+  useDeleteState,
+  useEditState,
+  useStates
+} from 'composables/state'
 import './TaskDashboard.css'
 import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
 
@@ -57,6 +62,8 @@ function TaskDashboard() {
   const { error: createStateError, createState: createState_ } =
     useCreateState()
   const { error: editStateError, editState: editState_ } = useEditState()
+  const { error: deleteStateError, deleteState: deleteState_ } =
+    useDeleteState()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
     createTask_({ ...form, boardId: boardId!, stateId: form.stateId! })
@@ -167,7 +174,7 @@ function TaskDashboard() {
     }
   }
 
-  function onEditState(newState: State) {
+  function editState(newState: State) {
     editState_({ ...newState, boardId: boardId! }).then((res) => {
       if (!res) {
         return
@@ -176,6 +183,21 @@ function TaskDashboard() {
         states.map((state) => (state.id === newState.id ? newState : state))
       )
     })
+  }
+
+  function deleteState(stateId: number, cb: () => void) {
+    deleteState_(stateId)
+      .then((resId) => {
+        if (!resId) {
+          return
+        }
+        updateStates(states.filter((state) => state.id !== resId))
+        useNotification({
+          type: NotificationType.Success,
+          message: 'State has been deleted successfully'
+        })
+      })
+      .finally(() => cb())
   }
 
   const { onDragTask, onDragOver, onDropTask } = useDragTask()
@@ -189,7 +211,8 @@ function TaskDashboard() {
       deleteTaskError ||
       statesError ||
       createStateError ||
-      editStateError,
+      editStateError ||
+      deleteStateError,
     [
       tasksError,
       createTaskError,
@@ -199,7 +222,8 @@ function TaskDashboard() {
       deleteTaskError,
       statesError,
       createStateError,
-      editStateError
+      editStateError,
+      deleteStateError
     ]
   )
 
@@ -236,7 +260,8 @@ function TaskDashboard() {
                   onDragTask,
                   onDragOver,
                   onDropTask,
-                  onEditState
+                  onEditState: editState,
+                  onDeleteState: deleteState
                 }}
               />
             )
