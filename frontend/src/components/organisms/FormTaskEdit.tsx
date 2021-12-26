@@ -59,6 +59,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitting(true)
+    console.log(form)
     events.onSubmit(form, () => setSubmitting(false))
   }
 
@@ -136,7 +137,8 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
           initial={form.stateId.toString()}
           items={stateItems}
           events={{
-            onSelect: (key) => setForm({ ...form, stateId: key as number })
+            onSelect: (key) =>
+              setForm({ ...form, stateId: parseInt(key as string) })
           }}
         />
       </div>
