@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { derivedState, State } from 'types/task'
-import { TagPrimitive } from 'types/tag'
+import { Tag } from 'types/tag'
 import { Color } from 'types/common'
+import { State } from 'types/state'
 import Button from '../atoms/Button'
 import InputField from '../molecules/InputField'
 import DropdownSelect from '../molecules/DropdownSelect'
@@ -15,13 +15,14 @@ export type Form = {
   name: string
   description: string
   dueAt?: string
-  state: State
-  tags: TagPrimitive[]
+  stateId: number | null
+  tags: Tag[]
 }
 
 type Props = {
   state: State
-  tags: TagPrimitive[]
+  tags: Tag[]
+  states: State[]
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
@@ -32,26 +33,28 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: TagPrimitive) => void
+      cb: (tag: Tag) => void
     }) => any
   }
 }
 
-const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
+const FormTaskCreate: React.FC<Props> = ({ state, states, tags, events }) => {
   const defaultForm = {
     name: '',
     description: '',
     dueAt: undefined,
-    state,
+    stateId: state.id,
     tags: []
   }
   const [submitting, setSubmitting] = useState(false)
   const [form, setForm] = useState<Form>(defaultForm)
 
-  const states = [State.Unstarted, State.InProgress, State.Completed]
-  states.sort((a, b) => (a === state ? -1 : b === state ? 1 : 0))
-  const stateItems = states.map((state) => (
-    <div key={state}>{derivedState(state)}</div>
+  const sortedStates = [...states]
+  sortedStates.sort((a, b) =>
+    a.id === state.id ? -1 : b.id === state.id ? 1 : 0
+  )
+  const stateItems = sortedStates.map((state) => (
+    <div key={state.id}>{state.name}</div>
   ))
 
   useEffect(() => {
@@ -80,7 +83,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
     })
   }
 
-  function updateTags(tag: TagPrimitive) {
+  function updateTags(tag: Tag) {
     const existing = form.tags.find((t) => t.id === tag.id)
     if (existing) {
       setForm({
@@ -130,7 +133,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
             return { ...t, selected: false }
           })}
           events={{
-            onSelect: (tag: TagPrimitive) => updateTags(tag),
+            onSelect: (tag: Tag) => updateTags(tag),
             onCreateTag: events.onCreateTag
           }}
         />
@@ -140,7 +143,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, tags, events }) => {
         <DropdownSelect
           items={stateItems}
           events={{
-            onSelect: (key) => setForm({ ...form, state: key as State })
+            onSelect: (key) => setForm({ ...form, stateId: key as number })
           }}
         />
       </div>

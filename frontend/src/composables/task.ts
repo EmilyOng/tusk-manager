@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { State, Task } from 'types/task'
+import { Task } from 'types/task'
+import { State } from 'types/state'
 import { TaskAPI, CreatingTask, EditingTask } from 'api/task'
 
 export function useTasks(boardId: number | null) {
@@ -99,15 +100,17 @@ export function useEditTask() {
   }
 }
 
-export type TasksByState = Record<State, Task[]>
+export type TasksByStateID = Record<number, Task[]>
 
-export function orderTasksByState(tasks: Task[]) {
-  const orderedTasks: TasksByState = {
-    [State.Completed]: [],
-    [State.InProgress]: [],
-    [State.Unstarted]: []
+export function orderTasksByState(tasks: Task[], states: State[]) {
+  if (states.length === 0 || tasks.length === 0) {
+    return {}
   }
-  tasks.forEach((task) => orderedTasks[task.state].push(task))
+  const orderedTasks = states.reduce((acc, state) => {
+    acc[state.id] = []
+    return acc
+  }, {} as TasksByStateID)
+  tasks.forEach((task) => orderedTasks[task.stateId].push(task))
   return orderedTasks
 }
 

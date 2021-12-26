@@ -1,23 +1,24 @@
 import React, { createRef, useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { compareAsc } from 'date-fns'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form as CreateTaskForm } from './FormTaskCreate'
-import { derivedState, State, Task } from 'types/task'
-import { TagPrimitive } from 'types/tag'
+import { Task } from 'types/task'
+import { Tag } from 'types/tag'
 import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
 import LoadingBar from 'components/molecules/LoadingBar'
 import ModalCard from 'components/molecules/ModalCard'
 import FormTaskEdit, { Form as EditTaskForm } from './FormTaskEdit'
 import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
-import './ListView.css'
 import FilterReverse from 'components/molecules/FilterReverse'
+import { State } from 'types/state'
+import './ListView.css'
 
 type Props = {
   tasks: Task[]
-  tags: TagPrimitive[]
+  tags: Tag[]
+  states: State[]
   state: State
   loading: boolean
   events: {
@@ -32,7 +33,7 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: TagPrimitive) => void
+      cb: (tag: Tag) => void
     }) => any
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
     onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
@@ -86,6 +87,7 @@ function useTaskEditModal() {
 const ListView: React.FC<Props> = ({
   tasks: tasks_,
   tags,
+  states,
   state,
   loading,
   events
@@ -93,7 +95,7 @@ const ListView: React.FC<Props> = ({
   const listViewWrapper = createRef<HTMLDivElement>()
   const [tasks, setTasks] = useState<Task[]>([])
   const [currentSort, setCurrentSort] = useState<TaskSort>({
-    sortBy: TaskSortBy.CreatedAt,
+    sortBy: TaskSortBy.Name,
     reversed: TaskSortDirection.Ascending
   })
 
@@ -167,12 +169,6 @@ const ListView: React.FC<Props> = ({
   function sortTasks(tasks: Task[], sortBy: TaskSortBy) {
     return tasks.sort((a, b) => {
       switch (sortBy) {
-        case TaskSortBy.CreatedAt:
-          return !a.createdAt
-            ? 1
-            : !b.createdAt
-            ? -1
-            : compareAsc(new Date(a.createdAt), new Date(b.createdAt))
         case TaskSortBy.DueDate:
           return !a.dueAt
             ? 1
@@ -214,7 +210,7 @@ const ListView: React.FC<Props> = ({
 
   return (
     <div
-      className={clsx({ 'list-view': true, [state]: true })}
+      className="list-view"
       ref={listViewWrapper}
       onDragOver={onDragOver}
       onDrop={(e: React.DragEvent<HTMLDivElement>) => onDrop(e, state)}
@@ -228,6 +224,7 @@ const ListView: React.FC<Props> = ({
         <FormTaskCreate
           state={state}
           tags={tags}
+          states={states}
           events={{
             onSubmit: createTask,
             onCancel: closeTaskCreateCard,
@@ -243,6 +240,7 @@ const ListView: React.FC<Props> = ({
         >
           <FormTaskEdit
             task={openedTaskEdit}
+            states={states}
             tags={tags}
             events={{
               onSubmit: editTask,
@@ -253,7 +251,7 @@ const ListView: React.FC<Props> = ({
         </ModalCard>
       )}
       <div className="list-view-header">
-        <div className="list-view-title">{derivedState(state)}</div>
+        <div className="list-view-title">{state.name}</div>
         <div className="list-view-actions">
           <FilterSort events={{ onFilterSort }} />
           <FilterReverse events={{ onFilterReverse }} />

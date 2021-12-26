@@ -8,8 +8,6 @@
   position: relative;
   background-color: #fff;
   border-radius: 12px;
-  border-top-width: 10px;
-  border-top-style: solid;
   box-shadow: 1px 1px 16px 1px;
 }
 
@@ -28,18 +26,6 @@
 
 .list-view-actions > *:not(:last-child) {
   margin-right: 8px;
-}
-
-.list-view.Completed {
-  border-top-color: var(--green);
-}
-
-.list-view.Unstarted {
-  border-top-color: var(--yellow);
-}
-
-.list-view.InProgress {
-  border-top-color: var(--cyan);
 }
 
 .list-view-title {

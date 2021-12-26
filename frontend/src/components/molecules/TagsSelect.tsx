@@ -1,18 +1,18 @@
 import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
-import { TagPrimitive } from 'types/tag'
+import { Tag } from 'types/tag'
 import { Color, Colors } from 'types/common'
 import DropdownItem from './DropdownItem'
 import Icon from 'components/atoms/Icon'
-import Tag, { TagAction } from 'components/atoms/Tag'
+import TagItem, { TagAction } from 'components/atoms/TagItem'
 import Button from 'components/atoms/Button'
 import './TagsSelect.css'
 
 type Props = {
   tags: SelectableTag[]
   events: {
-    onSelect: (tag: TagPrimitive) => any
+    onSelect: (tag: Tag) => any
     onCreateTag: ({
       name,
       color,
@@ -20,12 +20,12 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: TagPrimitive) => void
+      cb: (tag: Tag) => void
     }) => any
   }
 }
 
-export interface SelectableTag extends TagPrimitive {
+export interface SelectableTag extends Tag {
   selected: boolean
 }
 
@@ -64,7 +64,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     events.onCreateTag({
       name: tagInput,
       color: Colors[tagInput.length % Colors.length],
-      cb: (tag: TagPrimitive) => {
+      cb: (tag: Tag) => {
         setIsCreatingTag(false)
         setTagInput('') // Reset search input
         setSelectableTags([...selectableTags, { ...tag, selected: true }])
@@ -78,7 +78,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     setActive(true) // Make sure the dropdown is active
   }
 
-  function isMatchTagInput(tag: TagPrimitive) {
+  function isMatchTagInput(tag: Tag) {
     return tag.name.toLowerCase().includes(tagInput.toLowerCase())
   }
 
@@ -100,7 +100,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
             {selectableTags.reduce((acc, tag) => {
               if (tag.selected) {
                 acc.push(
-                  <Tag
+                  <TagItem
                     key={tag.id}
                     className="selected-tag"
                     name={tag.name}
@@ -142,7 +142,8 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
                   events={{ onClick: onCreateTag }}
                   attr={{ disabled: isCreatingTag }}
                 >
-                  Create a new tag: <Tag className="new-tag" name={tagInput} />
+                  Create a new tag:{' '}
+                  <TagItem className="new-tag" name={tagInput} />
                 </Button>
               </span>
             )}

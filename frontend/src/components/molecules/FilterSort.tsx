@@ -2,16 +2,11 @@ import React, { Key } from 'react'
 import Dropdown from './DropdownSelect'
 
 export enum TaskSortBy {
-  CreatedAt = 'CreatedAt',
   Name = 'Name',
   DueDate = 'DueDate'
 }
 
 export const TaskSort = [
-  {
-    id: TaskSortBy.CreatedAt,
-    name: 'Created at'
-  },
   {
     id: TaskSortBy.Name,
     name: 'Name'
@@ -42,7 +37,7 @@ const FilterSort: React.FC<Props> = ({ events }) => {
 
   return (
     <Dropdown
-      initial={TaskSortBy.CreatedAt}
+      initial={TaskSortBy.Name}
       items={sortItems}
       events={{ onSelect: onFilterSort }}
     />

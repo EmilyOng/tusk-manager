@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { State, Task } from 'types/task'
+import { Task } from 'types/task'
 import { Color } from 'types/common'
-import { TagPrimitive } from 'types/tag'
+import { State } from 'types/state'
+import { Tag } from 'types/tag'
 import {
   orderTasksByState,
   useCreateTask,
@@ -13,9 +14,11 @@ import {
 import ListView from 'components/organisms/ListView'
 import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
 import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
+import LoadingBar from 'components/molecules/LoadingBar'
 import { useCreateTag, useTags } from 'composables/tag'
-import './TaskDashboard.css'
 import { NotificationType, useNotification } from 'composables/notification'
+import { useStates } from 'composables/state'
+import './TaskDashboard.css'
 
 function TaskDashboard() {
   const location = useLocation()
@@ -33,8 +36,16 @@ function TaskDashboard() {
     tags,
     updateTags
   } = useTags(boardId)
-  const orderedTasks = orderTasksByState(tasks)
-  const states = [State.Unstarted, State.InProgress, State.Completed]
+  const {
+    loading: statesLoading,
+    error: statesError,
+    states
+  } = useStates(boardId)
+
+  const orderedTasks = useMemo(
+    () => orderTasksByState(tasks, states),
+    [tasks, states]
+  )
 
   useEffect(() => {
     const id = location.pathname.replace('/', '')
@@ -49,7 +60,7 @@ function TaskDashboard() {
   const { error: deleteTaskError, deleteTask: deleteTask_ } = useDeleteTask()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
-    createTask_({ ...form, boardId: boardId! })
+    createTask_({ ...form, boardId: boardId!, stateId: form.stateId! })
       .then((task) => {
         if (!task) {
           return
@@ -70,6 +81,10 @@ function TaskDashboard() {
           return
         }
         updateTasks(tasks.filter((task) => task.id !== resId))
+        useNotification({
+          type: NotificationType.Success,
+          message: 'Task has been deleted successfully'
+        })
       })
       .finally(() => cb())
   }
@@ -92,7 +107,7 @@ function TaskDashboard() {
   }: {
     name: string
     color: Color
-    cb: (tag: TagPrimitive) => void
+    cb: (tag: Tag) => void
   }) {
     createTag_({
       name,
@@ -126,7 +141,7 @@ function TaskDashboard() {
       editTask(
         {
           ...task.current,
-          state
+          stateId: state.id
         },
         () => (task.current = null)
       )
@@ -147,14 +162,16 @@ function TaskDashboard() {
       tagsError ||
       createTagError ||
       updateTaskError ||
-      deleteTaskError,
+      deleteTaskError ||
+      statesError,
     [
       tasksError,
       createTaskError,
       tagsError,
       createTagError,
       updateTaskError,
-      deleteTaskError
+      deleteTaskError,
+      statesError
     ]
   )
 
@@ -171,26 +188,31 @@ function TaskDashboard() {
   return (
     <div className="task-dashboard">
       <div className="card-boards">
-        {states.map((state) => {
-          return (
-            <ListView
-              key={state}
-              tasks={orderedTasks[state]}
-              loading={tasksLoading || tagsLoading}
-              tags={tags}
-              state={state}
-              events={{
-                onEditTask: editTask,
-                onCreateTask: createTask,
-                onCreateTag: createTag,
-                onDeleteTask: deleteTask,
-                onDragTask,
-                onDragOver,
-                onDropTask
-              }}
-            />
-          )
-        })}
+        {statesLoading ? (
+          <LoadingBar />
+        ) : (
+          states.map((state) => {
+            return (
+              <ListView
+                key={state.id}
+                tasks={orderedTasks[state.id]}
+                states={states}
+                loading={tasksLoading || tagsLoading}
+                tags={tags}
+                state={state}
+                events={{
+                  onEditTask: editTask,
+                  onCreateTask: createTask,
+                  onCreateTag: createTag,
+                  onDeleteTask: deleteTask,
+                  onDragTask,
+                  onDragOver,
+                  onDropTask
+                }}
+              />
+            )
+          })
+        )}
       </div>
     </div>
   )

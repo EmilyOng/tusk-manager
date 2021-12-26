@@ -7,7 +7,7 @@ import {
   faEllipsisV,
   faTrash
 } from '@fortawesome/free-solid-svg-icons'
-import Tag from 'components/atoms/Tag'
+import TagItem from 'components/atoms/TagItem'
 import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
 import DropdownMenu from './DropdownMenu'
@@ -70,7 +70,7 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
         <div className="card-info-section">
           <div className="tags">
             {task.tags?.map((tag) => (
-              <Tag key={tag.id} name={tag.name} color={tag.color} />
+              <TagItem key={tag.id} name={tag.name} color={tag.color} />
             ))}
           </div>
           <div className="action-menu">

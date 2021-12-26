@@ -6,11 +6,12 @@ import (
 
 type Board struct {
 	CommonModel
-	Name   string  `gorm:"not null" json:"name"`
-	Color  Color   `gorm:"not null" json:"color"`
-	Tasks  *[]Task `gorm:"not null" json:"-"` // Tasks belonging to the board
-	Tags   *[]Tag  `gorm:"not null" json:"-"` // Tags belonging to the board
-	UserID uint8   `json:"-"`                 // Refers to the owner of the board
+	Name   string   `gorm:"not null" json:"name"`
+	Color  Color    `gorm:"not null" json:"color"`
+	Tasks  *[]Task  `gorm:"not null" json:"-"` // Tasks belonging to the board
+	Tags   *[]Tag   `gorm:"not null" json:"-"` // Tags belonging to the board
+	States *[]State `gorm:"not null" json:"-"` // States belonging to the board
+	UserID uint8    `json:"-"`                 // Refers to the owner of the board
 }
 
 func (board *Board) Create() error {
@@ -24,12 +25,17 @@ func (board *Board) Get() error {
 }
 
 func (board *Board) GetTasksWithTags() (tasks []Task, err error) {
-	err = db.DB.Model(board).Preload("Tags").Association("Tasks").Find(&tasks)
+	err = db.DB.Model(board).Order("Name").Preload("Tags").Association("Tasks").Find(&tasks)
 	return
 }
 
 func (board *Board) GetTags() (tags []Tag, err error) {
 	err = db.DB.Model(board).Association("Tags").Find(&tags)
+	return
+}
+
+func (board *Board) GetStates() (states []State, err error) {
+	err = db.DB.Model(board).Association("States").Find(&states)
 	return
 }
 

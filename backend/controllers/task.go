@@ -13,7 +13,7 @@ type CreateTaskPayload struct {
 	Name        string
 	Description string
 	DueAt       string
-	State       models.State
+	StateID     uint8
 	Tags        []models.Tag
 	BoardID     uint8
 }
@@ -23,7 +23,7 @@ type UpdateTaskPayload struct {
 	Name        string
 	Description string
 	DueAt       string
-	State       models.State
+	StateID     uint8
 	Tags        []models.Tag
 	BoardID     uint8
 }
@@ -47,8 +47,8 @@ func CreateTask(c *gin.Context) {
 	task := models.Task{
 		Name:        payload.Name,
 		Description: payload.Description,
-		State:       payload.State,
 		Tags:        &payload.Tags,
+		StateID:     payload.StateID,
 		BoardID:     payload.BoardID,
 		UserID:      user.ID,
 	}
@@ -85,8 +85,8 @@ func UpdateTask(c *gin.Context) {
 		CommonModel: models.CommonModel{ID: payload.ID},
 		Name:        payload.Name,
 		Description: payload.Description,
-		State:       payload.State,
 		Tags:        &payload.Tags,
+		StateID:     payload.StateID,
 		BoardID:     payload.BoardID,
 		UserID:      user.ID,
 	}

@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react'
 import { CreatingTag, TagAPI } from 'api/tag'
-import { TagPrimitive } from 'types/tag'
+import { Tag } from 'types/tag'
 
 export function useTags(boardId: number | null) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const api = new TagAPI()
-  const [tags, setTags] = useState<TagPrimitive[]>([])
+  const [tags, setTags] = useState<Tag[]>([])
 
-  function updateTags(tags: TagPrimitive[]) {
+  function updateTags(tags: Tag[]) {
     setTags(tags)
   }
 

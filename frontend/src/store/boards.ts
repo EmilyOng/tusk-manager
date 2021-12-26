@@ -3,20 +3,20 @@ import { BoardAPI } from 'api/board'
 import { NotificationType, useNotification } from 'composables/notification'
 import { BoardPrimitive } from 'types/board'
 
-type BoardState = {
+type BoardsState = {
   boards: BoardPrimitive[]
   loading: boolean
   currentBoardId: number | null
 }
 
-const initialState: BoardState = {
+const initialState: BoardsState = {
   boards: [],
   loading: false,
   currentBoardId: null
 }
 
 export const getBoards = createAsyncThunk(
-  'board/getBoards',
+  'boards/getBoards',
   async (_, thunkAPI) => {
     const api = new BoardAPI()
     return api.getBoards().then((res) => {
@@ -28,8 +28,8 @@ export const getBoards = createAsyncThunk(
   }
 )
 
-export const BoardSlice = createSlice({
-  name: 'Board',
+export const BoardsSlice = createSlice({
+  name: 'Boards',
   initialState,
   reducers: {
     setBoards(state, action: { payload: BoardPrimitive[] }) {
@@ -61,6 +61,7 @@ export const BoardSlice = createSlice({
   }
 })
 
-export const selectBoards = ({ board }: { board: BoardState }) => board
-export const { setBoards, updateBoards, setCurrentBoardId } = BoardSlice.actions
-export const BoardReducer = BoardSlice.reducer
+export const selectBoards = ({ board }: { board: BoardsState }) => board
+export const { setBoards, updateBoards, setCurrentBoardId } =
+  BoardsSlice.actions
+export const BoardsReducer = BoardsSlice.reducer

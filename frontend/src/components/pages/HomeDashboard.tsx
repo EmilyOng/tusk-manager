@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { faBan, faPlus } from '@fortawesome/free-solid-svg-icons'
-import { selectBoards, setCurrentBoardId, updateBoards } from 'store/board'
+import { selectBoards, setCurrentBoardId, updateBoards } from 'store/boards'
 import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
 import { useNavigate } from 'react-router-dom'

@@ -1,5 +1,5 @@
-import { TagPrimitive } from 'types/tag'
-import { State, Task } from 'types/task'
+import { Tag } from 'types/tag'
+import { Task } from 'types/task'
 import { RequestAPI, Response } from './request'
 
 type Tasks = Task[]
@@ -10,8 +10,8 @@ export interface CreatingTask {
   name: string
   description: string
   dueAt?: string
-  state: State
-  tags: TagPrimitive[]
+  tags: Tag[]
+  stateId: number
   boardId: number
 }
 

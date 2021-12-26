@@ -35,7 +35,7 @@ func GetBoards(c *gin.Context) {
 	c.JSON(http.StatusOK, boards)
 }
 
-func GetBoardTasksWithTags(c *gin.Context) {
+func GetBoardTasks(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
@@ -165,4 +165,22 @@ func DeleteBoard(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, board)
+}
+
+func GetBoardStates(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		return
+	}
+
+	var boardID uint8
+	fmt.Sscan(c.Param("board_id"), &boardID)
+	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
+	states, err := board.GetStates()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, states)
 }

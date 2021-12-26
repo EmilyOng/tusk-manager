@@ -16,6 +16,20 @@ func SeedData(user *User) (err error) {
 	for i := 0; i < 10; i++ {
 		var tags []Tag
 		var tasks []Task
+		var states []State
+
+		// Create sample states for the current board
+		for _, state := range GetDefaultStates() {
+			states = append(states, State{
+				Name: state,
+			})
+		}
+
+		res := db.DB.Create(&states)
+		if err = res.Error; err != nil {
+			return
+		}
+
 		// Create sample tags for the current board
 		for i := 0; i < 7; i++ {
 			tags = append(tags, Tag{
@@ -24,7 +38,7 @@ func SeedData(user *User) (err error) {
 			})
 		}
 
-		res := db.DB.Create(&tags)
+		res = db.DB.Create(&tags)
 		if err = res.Error; err != nil {
 			return
 		}
@@ -38,6 +52,7 @@ func SeedData(user *User) (err error) {
 				DueAt:       &t,
 				Tags:        &tags,
 				UserID:      user.ID,
+				StateID:     states[0].ID,
 			})
 		}
 		res = db.DB.Create(&tasks)
@@ -51,6 +66,7 @@ func SeedData(user *User) (err error) {
 			Color:  colors[i%6],
 			Tags:   &tags,
 			Tasks:  &tasks,
+			States: &states,
 		})
 	}
 

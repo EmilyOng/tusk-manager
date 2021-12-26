@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
 import { Color, ColorToAlias, Colors } from 'types/common'
-import './Tag.css'
+import './TagItem.css'
 
 export enum TagAction {
   Delete = 'Delete'
@@ -17,7 +17,12 @@ type Props = {
   className?: string
 }
 
-const Tag: React.FC<Props> = ({ name, color: color_, action, className }) => {
+const TagItem: React.FC<Props> = ({
+  name,
+  color: color_,
+  action,
+  className
+}) => {
   const color = color_ ?? Colors[name.length % Colors.length]
   const derivedClass = 'is-' + ColorToAlias(color)
   return (
@@ -38,4 +43,4 @@ const Tag: React.FC<Props> = ({ name, color: color_, action, className }) => {
   )
 }
 
-export default Tag
+export default TagItem

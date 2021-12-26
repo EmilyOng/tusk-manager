@@ -1,10 +1,10 @@
 import { Color } from 'types/common'
-import { TagPrimitive } from 'types/tag'
+import { Tag } from 'types/tag'
 import { RequestAPI, Response } from './request'
 
-type Tags = TagPrimitive[]
+type Tags = Tag[]
 interface TagsResponse extends Response, Tags {}
-interface TagResponse extends Response, TagPrimitive {}
+interface TagResponse extends Response, Tag {}
 
 export interface CreatingTag {
   name: string

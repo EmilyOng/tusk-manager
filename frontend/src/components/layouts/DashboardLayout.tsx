@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { Outlet } from 'react-router-dom'
 import BoardTabs from 'components/organisms/BoardTabs'
 import './DashboardLayout.css'
-import { getBoards } from 'store/board'
+import { getBoards } from 'store/boards'
 
 const DashboardLayout: React.FC = () => {
   const dispatch = useDispatch()
