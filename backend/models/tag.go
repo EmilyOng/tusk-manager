@@ -1,6 +1,8 @@
 package models
 
-import "main/db"
+import (
+	"main/db"
+)
 
 type Tag struct {
 	ID      uint8   `gorm:"primaryKey" json:"id"`

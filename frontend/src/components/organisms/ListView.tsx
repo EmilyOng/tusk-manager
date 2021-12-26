@@ -262,24 +262,27 @@ const ListView: React.FC<Props> = ({
           />
         </div>
       </div>
-      {loading && <LoadingBar />}
-      <div className="tasks">
-        {tasks.map((task) => (
-          <div
-            key={task.id}
-            draggable={true}
-            onDragStart={() => events.onDragTask(task)}
-          >
-            <CardTask
-              task={task}
-              events={{
-                onTaskEditing: openTaskEditCard,
-                onDeleteTask: events.onDeleteTask
-              }}
-            />
-          </div>
-        ))}
-      </div>
+      {loading ? (
+        <LoadingBar />
+      ) : (
+        <div className="tasks">
+          {tasks.map((task) => (
+            <div
+              key={task.id}
+              draggable={true}
+              onDragStart={() => events.onDragTask(task)}
+            >
+              <CardTask
+                task={task}
+                events={{
+                  onTaskEditing: openTaskEditCard,
+                  onDeleteTask: events.onDeleteTask
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
       {showDropzone && (
         <div className="dropzone-overlay">
           <div className="dropzone-info">Drop tasks here!</div>

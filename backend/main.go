@@ -36,6 +36,10 @@ func main() {
 		}
 		guard := api.Group("/")
 		{
+			states := guard.Group("/states")
+			{
+				states.POST("/", controllers.CreateState)
+			}
 			boards := guard.Group("/boards")
 			{
 				boards.GET("/", controllers.GetBoards)

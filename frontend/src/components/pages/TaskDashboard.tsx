@@ -5,7 +5,6 @@ import { Color } from 'types/common'
 import { State } from 'types/state'
 import { Tag } from 'types/tag'
 import {
-  orderTasksByState,
   useCreateTask,
   useEditTask,
   useDeleteTask,
@@ -17,8 +16,9 @@ import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import LoadingBar from 'components/molecules/LoadingBar'
 import { useCreateTag, useTags } from 'composables/tag'
 import { NotificationType, useNotification } from 'composables/notification'
-import { useStates } from 'composables/state'
+import { useCreateState, useStates } from 'composables/state'
 import './TaskDashboard.css'
+import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
 
 function TaskDashboard() {
   const location = useLocation()
@@ -39,13 +39,9 @@ function TaskDashboard() {
   const {
     loading: statesLoading,
     error: statesError,
-    states
+    states,
+    updateStates
   } = useStates(boardId)
-
-  const orderedTasks = useMemo(
-    () => orderTasksByState(tasks, states),
-    [tasks, states]
-  )
 
   useEffect(() => {
     const id = location.pathname.replace('/', '')
@@ -58,6 +54,8 @@ function TaskDashboard() {
   const { error: createTaskError, createTask: createTask_ } = useCreateTask()
   const { error: updateTaskError, editTask: editTask_ } = useEditTask()
   const { error: deleteTaskError, deleteTask: deleteTask_ } = useDeleteTask()
+  const { error: createStateError, createState: createState_ } =
+    useCreateState()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
     createTask_({ ...form, boardId: boardId!, stateId: form.stateId! })
@@ -122,6 +120,20 @@ function TaskDashboard() {
     })
   }
 
+  function createState(cb: () => void) {
+    createState_({
+      name: 'Untitled',
+      boardId: boardId!
+    })
+      .then((state) => {
+        if (!state) {
+          return
+        }
+        updateStates([...states, state])
+      })
+      .finally(() => cb())
+  }
+
   function useDragTask() {
     const task = useRef<Task | null>(null)
 
@@ -163,7 +175,8 @@ function TaskDashboard() {
       createTagError ||
       updateTaskError ||
       deleteTaskError ||
-      statesError,
+      statesError ||
+      createStateError,
     [
       tasksError,
       createTaskError,
@@ -171,7 +184,8 @@ function TaskDashboard() {
       createTagError,
       updateTaskError,
       deleteTaskError,
-      statesError
+      statesError,
+      createStateError
     ]
   )
 
@@ -195,7 +209,7 @@ function TaskDashboard() {
             return (
               <ListView
                 key={state.id}
-                tasks={orderedTasks[state.id]}
+                tasks={tasks.filter((task) => task.stateId === state.id)}
                 states={states}
                 loading={tasksLoading || tagsLoading}
                 tags={tags}
@@ -213,6 +227,7 @@ function TaskDashboard() {
             )
           })
         )}
+        <ListViewPlaceholder events={{ createState }} />
       </div>
     </div>
   )

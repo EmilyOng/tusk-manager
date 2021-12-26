@@ -27,7 +27,7 @@ func (task *Task) Get() error {
 }
 
 func (task *Task) Update() error {
-	if task.Tags != nil {
+	if len(*task.Tags) != 0 {
 		err := db.DB.Model(task).Association("Tags").Replace(task.Tags)
 		if err != nil {
 			return err
@@ -42,7 +42,7 @@ func (task *Task) Delete() error {
 	if err != nil {
 		return err
 	}
-	err = db.DB.Debug().Model(task).Association("Tags").Delete(task.Tags)
+	err = db.DB.Model(task).Association("Tags").Delete(task.Tags)
 	if err != nil {
 		return err
 	}

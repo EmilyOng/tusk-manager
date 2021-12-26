@@ -1,5 +1,7 @@
 package models
 
+import "main/db"
+
 type State struct {
 	ID      uint8   `gorm:"primaryKey" json:"id"`
 	Name    string  `gorm:"not null" json:"name"`
@@ -9,4 +11,9 @@ type State struct {
 
 func GetDefaultStates() []string {
 	return []string{"To Do", "In Progress", "Completed"}
+}
+
+func (state *State) Create() error {
+	result := db.DB.Create(state)
+	return result.Error
 }

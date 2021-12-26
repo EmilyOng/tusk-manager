@@ -2,7 +2,13 @@ import { State } from 'types/state'
 import { RequestAPI, Response } from './request'
 
 type States = State[]
+interface StateResponse extends Response, State {}
 interface StatesResponse extends Response, States {}
+
+export interface CreatingState {
+  name: string
+  boardId: number
+}
 
 export class StateAPI {
   private req: RequestAPI
@@ -13,5 +19,9 @@ export class StateAPI {
 
   async getStates(boardId: number): Promise<StatesResponse> {
     return this.req.get(`/boards/${boardId}/states`)
+  }
+
+  async createState(state: CreatingState): Promise<StateResponse> {
+    return this.req.post('/states/', state)
   }
 }
