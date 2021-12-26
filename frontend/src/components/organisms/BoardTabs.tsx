@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Key, useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
@@ -13,8 +13,10 @@ import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from './FormBoardCreate'
 import { NotificationType, useNotification } from 'composables/notification'
 import BoardHeader from 'components/organisms/BoardHeader'
-import './BoardTabs.css'
 import { selectBoards, setCurrentBoardId, updateBoards } from 'store/board'
+import { useMediaQuery } from 'utils/mediaQuery'
+import './BoardTabs.css'
+import Dropdown from 'components/molecules/DropdownSelect'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -34,6 +36,8 @@ function useBoardCreateModal() {
 
 const BoardTabs: React.FC = () => {
   const dispatch = useDispatch()
+  const { isSmall } = useMediaQuery()
+
   const {
     boards,
     loading: boardsLoading,
@@ -142,6 +146,11 @@ const BoardTabs: React.FC = () => {
     [createBoardError, editBoardError, deleteBoardError]
   )
 
+  const loading = useMemo(
+    () => boardsLoading || createBoardLoading,
+    [boardsLoading, createBoardLoading]
+  )
+
   useEffect(() => {
     if (!error) {
       return
@@ -167,32 +176,45 @@ const BoardTabs: React.FC = () => {
         />
       </ModalCard>
       <div className="tabs-container">
-        {(boardsLoading || createBoardLoading) && <LoadingBar />}
         <Button
           className={clsx({
-            'is-info': true,
-            'is-light': true,
+            'is-ghost': true,
+            'is-medium': true,
             'is-active': !currentBoardId
           })}
           icon={faHome}
           events={{ onClick: () => selectBoard(null) }}
         />
-        <Tabs>
-          {boards.map((board) => {
-            return (
-              <TabItem
-                key={board.id}
-                className={clsx({ 'board-tab': true, [board.color]: true })}
-                label={board.name}
-                selected={board.id === currentBoardId}
-                events={{ onClick: () => selectBoard(board.id) }}
-              />
-            )
-          })}
-        </Tabs>
+        {loading ? (
+          <LoadingBar />
+        ) : isSmall ? (
+          <Dropdown
+            initial={currentBoardId?.toString() as Key}
+            items={boards.map((board) => {
+              return <span key={board.id}>{board.name}</span>
+            })}
+            events={{
+              onSelect: (key: Key | null) => selectBoard(key as number)
+            }}
+          />
+        ) : (
+          <Tabs>
+            {boards.map((board) => {
+              return (
+                <TabItem
+                  key={board.id}
+                  className={clsx({ 'board-tab': true, [board.color]: true })}
+                  label={board.name}
+                  selected={board.id === currentBoardId}
+                  events={{ onClick: () => selectBoard(board.id) }}
+                />
+              )
+            })}
+          </Tabs>
+        )}
 
         <Button
-          className="is-link is-light"
+          className="is-ghost is-medium create-board-button"
           icon={faPlus}
           events={{ onClick: openBoardCreateCard }}
         />

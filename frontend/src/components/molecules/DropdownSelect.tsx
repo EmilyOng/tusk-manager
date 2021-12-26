@@ -16,6 +16,7 @@ const Dropdown: React.FC<Props> = ({ initial, items, events }) => {
   if (items.length === 0) {
     return null
   }
+
   const [selected, setSelected] = useState<Key | null>(initial ?? items[0].key)
 
   function onSelectDropdownItem(key: Key | null) {

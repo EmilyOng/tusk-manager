@@ -193,7 +193,12 @@ const ListView: React.FC<Props> = ({
 
   function onFilterSort(sortBy: TaskSortBy) {
     setCurrentSort({ ...currentSort, sortBy })
-    setTasks([...sortTasks(tasks, sortBy)])
+    const sortedTasks = sortTasks(tasks, sortBy)
+    setTasks(
+      currentSort.reversed === TaskSortDirection.Ascending
+        ? [...sortedTasks]
+        : [...reverseTasks(sortedTasks)]
+    )
   }
 
   function onFilterReverse() {
