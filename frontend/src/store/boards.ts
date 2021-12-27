@@ -16,7 +16,7 @@ const initialState: BoardsState = {
 }
 
 export const getBoards = createAsyncThunk(
-  'boards/getBoards',
+  'Boards/getBoards',
   async (_, thunkAPI) => {
     const api = new BoardAPI()
     return api.getBoards().then((res) => {

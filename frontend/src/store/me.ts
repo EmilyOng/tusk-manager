@@ -13,7 +13,7 @@ const initialState: MeState = {
   loading: false
 }
 
-export const getMe = createAsyncThunk('me/getMe', async (_, thunkAPI) => {
+export const getMe = createAsyncThunk('Me/getMe', async (_, thunkAPI) => {
   const api = new AuthAPI()
   return api.getAuthUser().then((res) => {
     if (res.error) {

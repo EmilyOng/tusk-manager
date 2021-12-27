@@ -32,6 +32,7 @@ func main() {
 		{
 			auth.POST("/login", controllers.Login)
 			auth.POST("/signup", controllers.SignUp)
+			auth.POST("/logout", controllers.Logout)
 			auth.GET("/", controllers.IsAuthenticated)
 		}
 		guard := api.Group("/")

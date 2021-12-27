@@ -30,4 +30,8 @@ export class AuthAPI {
   async getAuthUser(): Promise<AuthUserResponse> {
     return this.req.get('/auth/')
   }
+
+  async logout(): Promise<Response> {
+    return this.req.post('/auth/logout')
+  }
 }

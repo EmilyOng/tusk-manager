@@ -1,7 +1,7 @@
 .board-tab {
   border-top-width: 5px;
   border-top-style: solid;
-  width: 200px;
+  max-width: 200px;
 }
 
 .tabs {
@@ -41,4 +41,17 @@
 
 .create-board-button {
   margin-left: auto;
+}
+
+.me-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.me-info > *:not(:last-child) {
+  margin-bottom: 4px;
+}
+
+.account-info {
+  font-weight: bold;
 }

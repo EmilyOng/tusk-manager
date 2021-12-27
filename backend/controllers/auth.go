@@ -150,3 +150,10 @@ func SignUp(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
 }
+
+func Logout(c *gin.Context) {
+	// Delete the cookie
+	c.SetCookie("token", "", int(time.Now().Add(-24*time.Hour).Unix()), "", "", true, false)
+	c.Set("user", nil)
+	c.JSON(http.StatusOK, gin.H{})
+}

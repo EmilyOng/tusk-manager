@@ -1,5 +1,5 @@
 import React, { Key } from 'react'
-import Dropdown from './DropdownSelect'
+import DropdownSelect from './DropdownSelect'
 
 export enum TaskSortBy {
   Name = 'Name',
@@ -36,7 +36,7 @@ const FilterSort: React.FC<Props> = ({ events }) => {
   }
 
   return (
-    <Dropdown
+    <DropdownSelect
       initial={TaskSortBy.Name}
       items={sortItems}
       events={{ onSelect: onFilterSort }}

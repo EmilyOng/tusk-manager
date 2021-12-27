@@ -2,7 +2,13 @@ import React, { Key, useEffect, useMemo, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
-import { faHome, faPlus } from '@fortawesome/free-solid-svg-icons'
+import {
+  faHome,
+  faPlus,
+  faUser,
+  faSignOutAlt
+} from '@fortawesome/free-solid-svg-icons'
+import { AuthAPI } from 'api/auth'
 import { BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Tabs from 'components/molecules/Tabs'
@@ -14,9 +20,11 @@ import FormBoardCreate, { Form } from './FormBoardCreate'
 import { NotificationType, useNotification } from 'composables/notification'
 import BoardHeader from 'components/organisms/BoardHeader'
 import { selectBoards, setCurrentBoardId, updateBoards } from 'store/boards'
+import { resetMe, selectMe } from 'store/me'
 import { useMediaQuery } from 'utils/mediaQuery'
+import DropdownSelect from 'components/molecules/DropdownSelect'
+import DropdownMenu from 'components/molecules/DropdownMenu'
 import './BoardTabs.css'
-import Dropdown from 'components/molecules/DropdownSelect'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -43,6 +51,7 @@ const BoardTabs: React.FC = () => {
     loading: boardsLoading,
     currentBoardId
   } = useSelector(selectBoards)
+  const { user: me } = useSelector(selectMe)
 
   const {
     loading: createBoardLoading,
@@ -141,6 +150,29 @@ const BoardTabs: React.FC = () => {
       })
   }
 
+  function logout() {
+    const auth = new AuthAPI()
+    useNotification({
+      type: NotificationType.Info,
+      message: 'Logging you out'
+    })
+    auth.logout().then((res) => {
+      if (res.error) {
+        useNotification({
+          type: NotificationType.Error,
+          message: res.error
+        })
+        return
+      }
+      dispatch(resetMe())
+      useNotification({
+        type: NotificationType.Info,
+        message: 'Goodbye!'
+      })
+      navigate('/')
+    })
+  }
+
   const error = useMemo(
     () => createBoardError || editBoardError || deleteBoardError,
     [createBoardError, editBoardError, deleteBoardError]
@@ -176,6 +208,23 @@ const BoardTabs: React.FC = () => {
         />
       </ModalCard>
       <div className="tabs-container">
+        <DropdownMenu
+          closeOnContentClick={false}
+          items={[
+            <div key="" className="me-info">
+              <span className="account-info">Account Information</span>
+              <span>
+                {me?.name} ({me?.email})
+              </span>
+              <Button
+                icon={faSignOutAlt}
+                label="Logout"
+                events={{ onClick: logout }}
+              />
+            </div>
+          ]}
+          trigger={<Button className="is-ghost is-medium" icon={faUser} />}
+        />
         <Button
           className={clsx({
             'is-ghost': true,
@@ -188,7 +237,7 @@ const BoardTabs: React.FC = () => {
         {loading ? (
           <LoadingBar />
         ) : isSmall ? (
-          <Dropdown
+          <DropdownSelect
             initial={currentBoardId?.toString() as Key}
             items={boards.map((board) => {
               return <span key={board.id}>{board.name}</span>
