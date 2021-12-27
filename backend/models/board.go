@@ -62,6 +62,14 @@ func (board *Board) Delete() error {
 		}
 	}
 
+	states, err := board.GetStates()
+	for _, state := range states {
+		err = state.Delete()
+		if err != nil {
+			return err
+		}
+	}
+
 	result := db.DB.Where(&Tag{BoardID: board.ID}).Delete(Tag{})
 
 	if result.Error != nil {

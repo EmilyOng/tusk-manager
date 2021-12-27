@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"fmt"
+	"main/db"
 	"main/models"
 	"net/http"
 
@@ -69,7 +70,19 @@ func CreateBoard(c *gin.Context) {
 		return
 	}
 
-	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: user.ID}
+	var states []models.State
+	for _, state := range models.GetDefaultStates() {
+		states = append(states, models.State{
+			Name: state,
+		})
+	}
+
+	res := db.DB.Create(&states)
+	if err = res.Error; err != nil {
+		return
+	}
+
+	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: user.ID, States: &states}
 	err = board.Create()
 
 	if err != nil {
