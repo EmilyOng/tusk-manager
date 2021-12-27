@@ -9,14 +9,16 @@ import (
 )
 
 type CreateStatePayload struct {
-	Name    string
-	BoardID uint8
+	Name            string
+	BoardID         uint8
+	CurrentPosition int
 }
 
 type UpdateStatePayload struct {
-	ID      uint8
-	Name    string
-	BoardID uint8
+	ID              uint8
+	Name            string
+	BoardID         uint8
+	CurrentPosition int
 }
 
 func CreateState(c *gin.Context) {
@@ -35,8 +37,9 @@ func CreateState(c *gin.Context) {
 	}
 
 	state := models.State{
-		Name:    payload.Name,
-		BoardID: payload.BoardID,
+		Name:            payload.Name,
+		BoardID:         payload.BoardID,
+		CurrentPosition: payload.CurrentPosition,
 	}
 
 	err = state.Create()
@@ -64,9 +67,10 @@ func UpdateState(c *gin.Context) {
 	}
 
 	state := models.State{
-		ID:      payload.ID,
-		Name:    payload.Name,
-		BoardID: payload.BoardID,
+		ID:              payload.ID,
+		Name:            payload.Name,
+		BoardID:         payload.BoardID,
+		CurrentPosition: payload.CurrentPosition,
 	}
 
 	err = state.Update()

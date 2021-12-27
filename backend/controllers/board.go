@@ -71,9 +71,10 @@ func CreateBoard(c *gin.Context) {
 	}
 
 	var states []models.State
-	for _, state := range models.GetDefaultStates() {
+	for i, state := range models.GetDefaultStates() {
 		states = append(states, models.State{
-			Name: state,
+			Name:            state,
+			CurrentPosition: i,
 		})
 	}
 

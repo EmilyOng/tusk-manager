@@ -25,7 +25,7 @@ func (board *Board) Get() error {
 }
 
 func (board *Board) GetTasksWithTags() (tasks []Task, err error) {
-	err = db.DB.Model(board).Order("Name").Preload("Tags").Association("Tasks").Find(&tasks)
+	err = db.DB.Model(board).Order("tasks.name").Preload("Tags").Association("Tasks").Find(&tasks)
 	return
 }
 
@@ -35,7 +35,7 @@ func (board *Board) GetTags() (tags []Tag, err error) {
 }
 
 func (board *Board) GetStates() (states []State, err error) {
-	err = db.DB.Model(board).Association("States").Find(&states)
+	err = db.DB.Debug().Model(board).Order("states.current_position").Association("States").Find(&states)
 	return
 }
 

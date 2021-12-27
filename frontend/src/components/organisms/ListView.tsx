@@ -1,7 +1,12 @@
 import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { compareAsc } from 'date-fns'
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
+import {
+  faPlus,
+  faTrash,
+  faArrowLeft,
+  faArrowRight
+} from '@fortawesome/free-solid-svg-icons'
 import CardTask from '../molecules/CardTask'
 import FormTaskCreate, { Form as CreateTaskForm } from './FormTaskCreate'
 import { Task } from 'types/task'
@@ -23,6 +28,10 @@ type Props = {
   states: State[]
   state: State
   loading: boolean
+  position: {
+    current: number
+    limit: number
+  }
   events: {
     onEditTask: (form: EditTaskForm, cb: () => void) => void
     onCreateTask: (form: CreateTaskForm, cb: () => void) => void
@@ -41,6 +50,8 @@ type Props = {
     onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
     onEditState: (newState: State) => void
     onDeleteState: (stateId: number, cb: () => void) => void
+    onMoveStateLeft: (state: State) => void
+    onMoveStateRight: (state: State) => void
   }
 }
 
@@ -112,6 +123,7 @@ const ListView: React.FC<Props> = ({
   tags,
   states,
   state,
+  position,
   loading,
   events
 }) => {
@@ -329,6 +341,18 @@ const ListView: React.FC<Props> = ({
           events={{ onEditState: events.onEditState }}
         />
         <div className="list-view-actions">
+          {position.current > 0 && (
+            <Button
+              icon={faArrowLeft}
+              events={{ onClick: () => events.onMoveStateLeft(state) }}
+            />
+          )}
+          {position.current < position.limit && (
+            <Button
+              icon={faArrowRight}
+              events={{ onClick: () => events.onMoveStateRight(state) }}
+            />
+          )}
           <Button
             className="is-link is-light"
             icon={faPlus}

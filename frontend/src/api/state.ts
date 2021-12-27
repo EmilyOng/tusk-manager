@@ -8,6 +8,7 @@ interface StatesResponse extends Response, States {}
 export interface CreatingState {
   name: string
   boardId: number
+  currentPosition: number
 }
 
 export interface EditingState extends CreatingState {

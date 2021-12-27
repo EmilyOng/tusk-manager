@@ -19,9 +19,10 @@ func SeedData(user *User) (err error) {
 		var states []State
 
 		// Create sample states for the current board
-		for _, state := range GetDefaultStates() {
+		for i, state := range GetDefaultStates() {
 			states = append(states, State{
-				Name: state,
+				Name:            state,
+				CurrentPosition: i,
 			})
 		}
 

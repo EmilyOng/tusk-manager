@@ -48,6 +48,8 @@ function TaskDashboard() {
     updateStates
   } = useStates(boardId)
 
+  const numStates = useMemo(() => states.length, [states])
+
   useEffect(() => {
     const id = location.pathname.replace('/', '')
     if (!id) {
@@ -131,7 +133,8 @@ function TaskDashboard() {
   function createState(cb: () => void) {
     createState_({
       name: 'Untitled',
-      boardId: boardId!
+      boardId: boardId!,
+      currentPosition: numStates
     })
       .then((state) => {
         if (!state) {
@@ -200,6 +203,58 @@ function TaskDashboard() {
       .finally(() => cb())
   }
 
+  function onMoveStateLeft(state: State) {
+    for (let i = 0; i < states.length; i++) {
+      const s = states[i]
+      if (s.id === state.id) {
+        const prev = {
+          ...states[i - 1],
+          currentPosition: states[i - 1].currentPosition + 1,
+          boardId: boardId!
+        }
+        const curr = {
+          ...state,
+          currentPosition: state.currentPosition - 1,
+          boardId: boardId!
+        }
+        Promise.all([editState_(prev), editState_(curr)]).then(() => {
+          const copied = states.map((s) =>
+            s.id === prev.id ? prev : s.id === curr.id ? curr : s
+          )
+          copied.sort((a, b) => a.currentPosition - b.currentPosition)
+          updateStates(copied)
+        })
+        break
+      }
+    }
+  }
+
+  function onMoveStateRight(state: State) {
+    for (let i = 0; i < states.length; i++) {
+      const s = states[i]
+      if (s.id === state.id) {
+        const prev = {
+          ...states[i + 1],
+          currentPosition: states[i + 1].currentPosition - 1,
+          boardId: boardId!
+        }
+        const curr = {
+          ...state,
+          currentPosition: state.currentPosition + 1,
+          boardId: boardId!
+        }
+        Promise.all([editState_(prev), editState_(curr)]).then(() => {
+          const copied = states.map((s) =>
+            s.id === prev.id ? prev : s.id === curr.id ? curr : s
+          )
+          copied.sort((a, b) => a.currentPosition - b.currentPosition)
+          updateStates(copied)
+        })
+        break
+      }
+    }
+  }
+
   const { onDragTask, onDragOver, onDropTask } = useDragTask()
   const error = useMemo(
     () =>
@@ -252,6 +307,10 @@ function TaskDashboard() {
                 loading={tasksLoading || tagsLoading}
                 tags={tags}
                 state={state}
+                position={{
+                  current: state.currentPosition,
+                  limit: numStates - 1
+                }}
                 events={{
                   onEditTask: editTask,
                   onCreateTask: createTask,
@@ -261,7 +320,9 @@ function TaskDashboard() {
                   onDragOver,
                   onDropTask,
                   onEditState: editState,
-                  onDeleteState: deleteState
+                  onDeleteState: deleteState,
+                  onMoveStateLeft,
+                  onMoveStateRight
                 }}
               />
             )
