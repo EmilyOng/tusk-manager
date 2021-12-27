@@ -9,3 +9,50 @@
 .has-no-boards > *:not(:last-child) {
   margin-bottom: 8px;
 }
+
+.has-boards {
+  display: flex;
+  flex-direction: column;
+  margin: 32px 16px;
+}
+
+.boards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+@media only screen and (max-width: 768px) {
+  .boards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.board {
+  border-top-width: 5px;
+  border-top-style: solid;
+}
+
+.board.Turquoise {
+  border-top-color: var(--turquoise);
+}
+
+.board.Blue {
+  border-top-color: var(--blue);
+}
+
+.board.Cyan {
+  border-top-color: var(--cyan);
+}
+
+.board.Green {
+  border-top-color: var(--green);
+}
+
+.board.Yellow {
+  border-top-color: var(--yellow);
+}
+
+.board.Red {
+  border-top-color: var(--red);
+}
