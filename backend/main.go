@@ -67,5 +67,5 @@ func main() {
 		}
 	}
 
-	router.Run(":5000")
+	router.Run()
 }
