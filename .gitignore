@@ -6,4 +6,5 @@ tmp/
 cvwo.db
 .env
 .env.development
+.env.production
 .gitignore

@@ -31,6 +31,13 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const [form, setForm] = useState<Form>(defaultForm)
 
   useEffect(() => {
+    setForm(defaultForm)
+    return () => {
+      setForm(defaultForm)
+    }
+  }, [mode])
+
+  useEffect(() => {
     return () => {
       // Clean-up
       setSubmitting(false)

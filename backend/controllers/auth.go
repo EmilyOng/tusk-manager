@@ -4,7 +4,7 @@ import (
 	"main/models"
 	"main/utils"
 	"net/http"
-	"time"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,14 +24,21 @@ type UserResponse struct {
 	ID    uint8  `json:"id"`
 	Name  string `json:"name"`
 	Email string `json:"email"`
+	Token string `json:"token"`
 }
 
-func SetAuthUser(c *gin.Context) {
-	token, err := c.Cookie("token")
-	if err != nil {
+func GetAuthToken(c *gin.Context) (token string) {
+	token_ := strings.Split(c.Request.Header.Get("Authorization"), "Bearer ")
+	if len(token_) < 2 {
 		c.Set("user", nil)
 		return
 	}
+	token = strings.Trim(token_[1], " ")
+	return
+}
+
+func SetAuthUser(c *gin.Context) {
+	token := GetAuthToken(c)
 
 	secretKey, err := utils.GetSecretKey()
 	if err != nil {
@@ -57,7 +64,8 @@ func IsAuthenticated(c *gin.Context) {
 		return
 	}
 	user := userInterface.(models.User)
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
+	token := GetAuthToken(c)
+	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: token})
 }
 
 func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err error) {
@@ -76,7 +84,6 @@ func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err
 		return
 	}
 
-	c.SetCookie("token", signedToken, int(time.Now().Add(24*time.Hour).Unix()), "", "", true, false)
 	return
 }
 
@@ -101,12 +108,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	_, err = generateJWTToken(c, user)
+	signedToken, err := generateJWTToken(c, user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
+	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: signedToken})
 }
 
 func SignUp(c *gin.Context) {
@@ -136,7 +143,7 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	_, err = generateJWTToken(c, user)
+	signedToken, err := generateJWTToken(c, user)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -148,12 +155,10 @@ func SignUp(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email})
+	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: signedToken})
 }
 
 func Logout(c *gin.Context) {
-	// Delete the cookie
-	c.SetCookie("token", "", int(time.Now().Add(-24*time.Hour).Unix()), "", "", true, false)
 	c.Set("user", nil)
 	c.JSON(http.StatusOK, gin.H{})
 }

@@ -18,9 +18,9 @@ func main() {
 	db.DB.AutoMigrate(&models.User{}, &models.Task{}, &models.Tag{}, &models.Board{}, &models.State{})
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://tusk-manager.vercel.app"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders:     []string{"Content-Type", "Content-Length", "Accept-Encoding", "accept", "credentials", "origin", "Cache-Control"},
+		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
 	}))
 

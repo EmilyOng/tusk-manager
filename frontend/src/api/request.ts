@@ -1,3 +1,5 @@
+import { getAuthToken } from 'utils/authToken'
+
 enum Method {
   GET = 'get',
   POST = 'post',
@@ -37,11 +39,13 @@ export class RequestAPI {
   }
 
   private async request(method: Method, path: string, body: any = {}) {
+    const token = getAuthToken()
     return fetch(this.url + path, {
       method,
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
       },
       credentials: 'include',
       ...(method === Method.GET ? {} : { body: JSON.stringify(body) })

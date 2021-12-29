@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import Logo from 'assets/mosnter.png'
 import FormAuthentication, {
   Form,
   FormMode
@@ -57,7 +58,24 @@ function Authentication() {
 
   return (
     <div className="box form-authentication">
-      <div className="tabs is-fullwidth is-toggle">
+      <div className="header-container">
+        <h1 className="title">Tusk Manager</h1>
+        <img src={Logo} height={128} width={128} />
+        <div className="logo-attribution">
+          Icons made by{' '}
+          <a
+            href="https://www.flaticon.com/authors/smashicons"
+            title="Smashicons"
+          >
+            Smashicons
+          </a>{' '}
+          from{' '}
+          <a href="https://www.flaticon.com/" title="Flaticon">
+            www.flaticon.com
+          </a>
+        </div>
+      </div>
+      <div className="tabs is-fullwidth is-toggle select-form-mode">
         <ul>
           <li
             className={clsx({ 'is-active': mode === FormMode.SignUp })}

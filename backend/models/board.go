@@ -35,7 +35,7 @@ func (board *Board) GetTags() (tags []Tag, err error) {
 }
 
 func (board *Board) GetStates() (states []State, err error) {
-	err = db.DB.Debug().Model(board).Order("states.current_position").Association("States").Find(&states)
+	err = db.DB.Model(board).Order("states.current_position").Association("States").Find(&states)
 	return
 }
 

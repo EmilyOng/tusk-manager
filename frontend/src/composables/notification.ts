@@ -9,10 +9,10 @@ export enum NotificationType {
 
 export function useNotification({
   type,
-  message
+  message = 'An unknown error has occurred'
 }: {
   type: NotificationType
-  message: string
+  message?: string
 }) {
   toast({
     type,
