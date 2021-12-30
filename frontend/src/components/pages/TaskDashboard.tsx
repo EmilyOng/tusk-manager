@@ -164,6 +164,9 @@ function TaskDashboard() {
       editTask(
         {
           ...task.current,
+          ...(task.current.dueAt
+            ? { dueAt: new Date(task.current.dueAt).toDateString() }
+            : {}),
           stateId: state.id
         },
         () => (task.current = null)
