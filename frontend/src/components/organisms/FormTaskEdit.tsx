@@ -114,7 +114,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
           date={form.dueAt ? new Date(form.dueAt) : undefined}
           events={{
             onChange: (dueAt: Date) =>
-              setForm({ ...form, dueAt: dueAt.toUTCString() })
+              setForm({ ...form, dueAt: dueAt.toDateString() })
           }}
         />
       </div>

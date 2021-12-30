@@ -122,7 +122,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, states, tags, events }) => {
         <DatePicker
           events={{
             onChange: (dueAt: Date) =>
-              setForm({ ...form, dueAt: dueAt.toUTCString() })
+              setForm({ ...form, dueAt: dueAt.toDateString() })
           }}
         />
       </div>

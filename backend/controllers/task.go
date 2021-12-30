@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"main/models"
+	"main/utils"
 	"net/http"
 	"time"
 
@@ -53,7 +54,7 @@ func CreateTask(c *gin.Context) {
 		UserID:      user.ID,
 	}
 	if len(payload.DueAt) > 0 {
-		t, _ := time.Parse(time.RFC1123, payload.DueAt)
+		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
 		task.DueAt = &t
 	}
 	err = task.Create()
@@ -91,7 +92,7 @@ func UpdateTask(c *gin.Context) {
 		UserID:      user.ID,
 	}
 	if len(payload.DueAt) > 0 {
-		t, _ := time.Parse(time.RFC1123, payload.DueAt)
+		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
 		task.DueAt = &t
 	}
 
