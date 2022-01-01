@@ -10,7 +10,7 @@ import (
 var DB *gorm.DB
 
 func OpenDB() (err error) {
-	DB_URL := os.Getenv("DB_URL")
+	DB_URL := os.Getenv("DATABASE_URL")
 	DB, err = gorm.Open(postgres.Open(DB_URL), &gorm.Config{})
 	return
 }
