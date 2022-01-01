@@ -23,7 +23,7 @@ type Props = {
 const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
   const isSignUp = mode === FormMode.SignUp
   const defaultForm = {
-    ...(isSignUp ? { name: '' } : {}),
+    name: '',
     email: '',
     password: ''
   }
