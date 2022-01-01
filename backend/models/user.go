@@ -13,8 +13,8 @@ type User struct {
 	Name     string   `gorm:"not null" json:"name"`
 	Email    string   `gorm:"not null" json:"email"`
 	Password string   `gorm:"not null" json:"-"`
-	Boards   *[]Board `json:"-"` // Boards that the user owns
-	Tasks    *[]Task  `json:"-"` // Tasks that the user owns
+	Boards   []*Board `json:"-"` // Boards that the user owns
+	Tasks    []*Task  `json:"-"` // Tasks that the user owns
 }
 
 func (user *User) Exist() bool {

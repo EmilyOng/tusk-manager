@@ -14,13 +14,13 @@ func SeedData(user *User) (err error) {
 
 	// Create sample boards
 	for i := 0; i < 10; i++ {
-		var tags []Tag
-		var tasks []Task
-		var states []State
+		var tags []*Tag
+		var tasks []*Task
+		var states []*State
 
 		// Create sample states for the current board
 		for i, state := range GetDefaultStates() {
-			states = append(states, State{
+			states = append(states, &State{
 				Name:            state,
 				CurrentPosition: i,
 			})
@@ -33,7 +33,7 @@ func SeedData(user *User) (err error) {
 
 		// Create sample tags for the current board
 		for i := 0; i < 7; i++ {
-			tags = append(tags, Tag{
+			tags = append(tags, &Tag{
 				Name:  "Tag-" + fmt.Sprint(i),
 				Color: colors[i%6],
 			})
@@ -47,13 +47,13 @@ func SeedData(user *User) (err error) {
 		// Create sample tasks for the current board
 		for i := 0; i < 10; i++ {
 			t := time.Now().Add(24 * time.Hour)
-			tasks = append(tasks, Task{
+			tasks = append(tasks, &Task{
 				Name:        "Sample Task-" + fmt.Sprint(i),
 				Description: "The quick brown fox jumps over the lazy dog",
 				DueAt:       &t,
-				Tags:        &tags,
-				UserID:      user.ID,
-				StateID:     states[0].ID,
+				Tags:        tags,
+				UserID:      &user.ID,
+				StateID:     &states[i%3].ID,
 			})
 		}
 		res = db.DB.Create(&tasks)
@@ -63,11 +63,11 @@ func SeedData(user *User) (err error) {
 
 		boards = append(boards, Board{
 			Name:   "Board-" + fmt.Sprint(i),
-			UserID: user.ID,
+			UserID: &user.ID,
 			Color:  colors[i%6],
-			Tags:   &tags,
-			Tasks:  &tasks,
-			States: &states,
+			Tags:   tags,
+			Tasks:  tasks,
+			States: states,
 		})
 	}
 

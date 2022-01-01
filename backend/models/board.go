@@ -8,10 +8,10 @@ type Board struct {
 	CommonModel
 	Name   string   `gorm:"not null" json:"name"`
 	Color  Color    `gorm:"not null" json:"color"`
-	Tasks  *[]Task  `gorm:"not null" json:"-"` // Tasks belonging to the board
-	Tags   *[]Tag   `gorm:"not null" json:"-"` // Tags belonging to the board
-	States *[]State `gorm:"not null" json:"-"` // States belonging to the board
-	UserID uint8    `json:"-"`                 // Refers to the owner of the board
+	Tasks  []*Task  `gorm:"not null" json:"-"` // Tasks belonging to the board
+	Tags   []*Tag   `gorm:"not null" json:"-"` // Tags belonging to the board
+	States []*State `gorm:"not null" json:"-"` // States belonging to the board
+	UserID *uint8   `json:"-"`                 // Refers to the owner of the board
 }
 
 func (board *Board) Create() error {
@@ -63,6 +63,9 @@ func (board *Board) Delete() error {
 	}
 
 	states, err := board.GetStates()
+	if err != nil {
+		return err
+	}
 	for _, state := range states {
 		err = state.Delete()
 		if err != nil {
@@ -70,7 +73,7 @@ func (board *Board) Delete() error {
 		}
 	}
 
-	result := db.DB.Where(&Tag{BoardID: board.ID}).Delete(Tag{})
+	result := db.DB.Where(&Tag{BoardID: &board.ID}).Delete(Tag{})
 
 	if result.Error != nil {
 		return result.Error

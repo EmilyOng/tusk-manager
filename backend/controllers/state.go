@@ -38,7 +38,7 @@ func CreateState(c *gin.Context) {
 
 	state := models.State{
 		Name:            payload.Name,
-		BoardID:         payload.BoardID,
+		BoardID:         &payload.BoardID,
 		CurrentPosition: payload.CurrentPosition,
 	}
 
@@ -69,7 +69,7 @@ func UpdateState(c *gin.Context) {
 	state := models.State{
 		ID:              payload.ID,
 		Name:            payload.Name,
-		BoardID:         payload.BoardID,
+		BoardID:         &payload.BoardID,
 		CurrentPosition: payload.CurrentPosition,
 	}
 

@@ -31,7 +31,7 @@ func CreateTag(c *gin.Context) {
 	tag := models.Tag{
 		Name:    payload.Name,
 		Color:   payload.Color,
-		BoardID: payload.BoardID,
+		BoardID: &payload.BoardID,
 	}
 	err = tag.Create()
 

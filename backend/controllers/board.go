@@ -70,9 +70,9 @@ func CreateBoard(c *gin.Context) {
 		return
 	}
 
-	var states []models.State
+	var states []*models.State
 	for i, state := range models.GetDefaultStates() {
-		states = append(states, models.State{
+		states = append(states, &models.State{
 			Name:            state,
 			CurrentPosition: i,
 		})
@@ -83,7 +83,7 @@ func CreateBoard(c *gin.Context) {
 		return
 	}
 
-	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: user.ID, States: &states}
+	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: &user.ID, States: states}
 	err = board.Create()
 
 	if err != nil {
@@ -149,7 +149,7 @@ func UpdateBoard(c *gin.Context) {
 		CommonModel: models.CommonModel{ID: payload.ID},
 		Name:        payload.Name,
 		Color:       payload.Color,
-		UserID:      user.ID,
+		UserID:      &user.ID,
 	}
 
 	err = board.Update()

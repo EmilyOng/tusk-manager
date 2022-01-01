@@ -10,10 +10,10 @@ type Task struct {
 	Name        string     `gorm:"not null" json:"name"`
 	Description string     `gorm:"default:''" json:"description"`
 	DueAt       *time.Time `json:"dueAt"`
-	Tags        *[]Tag     `gorm:"many2many:task_tags" json:"tags"`
-	UserID      uint8      `json:"-"`                       // Owner of the task
-	BoardID     uint8      `json:"-"`                       // Board that the task belongs to
-	StateID     uint8      `gorm:"not null" json:"stateId"` // State that the task is at
+	Tags        []*Tag     `gorm:"many2many:task_tags" json:"tags"`
+	UserID      *uint8     `json:"-"`                       // Owner of the task
+	BoardID     *uint8     `json:"-"`                       // Board that the task belongs to
+	StateID     *uint8     `gorm:"not null" json:"stateId"` // State that the task is at
 }
 
 func (task *Task) Create() error {
@@ -27,7 +27,7 @@ func (task *Task) Get() error {
 }
 
 func (task *Task) Update() error {
-	if len(*task.Tags) != 0 {
+	if len(task.Tags) != 0 {
 		err := db.DB.Model(task).Association("Tags").Replace(task.Tags)
 		if err != nil {
 			return err

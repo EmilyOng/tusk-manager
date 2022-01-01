@@ -15,7 +15,7 @@ type CreateTaskPayload struct {
 	Description string
 	DueAt       string
 	StateID     uint8
-	Tags        []models.Tag
+	Tags        []*models.Tag
 	BoardID     uint8
 }
 
@@ -25,7 +25,7 @@ type UpdateTaskPayload struct {
 	Description string
 	DueAt       string
 	StateID     uint8
-	Tags        []models.Tag
+	Tags        []*models.Tag
 	BoardID     uint8
 }
 
@@ -48,10 +48,10 @@ func CreateTask(c *gin.Context) {
 	task := models.Task{
 		Name:        payload.Name,
 		Description: payload.Description,
-		Tags:        &payload.Tags,
-		StateID:     payload.StateID,
-		BoardID:     payload.BoardID,
-		UserID:      user.ID,
+		Tags:        payload.Tags,
+		StateID:     &payload.StateID,
+		BoardID:     &payload.BoardID,
+		UserID:      &user.ID,
 	}
 	if len(payload.DueAt) > 0 {
 		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
@@ -86,10 +86,10 @@ func UpdateTask(c *gin.Context) {
 		CommonModel: models.CommonModel{ID: payload.ID},
 		Name:        payload.Name,
 		Description: payload.Description,
-		Tags:        &payload.Tags,
-		StateID:     payload.StateID,
-		BoardID:     payload.BoardID,
-		UserID:      user.ID,
+		Tags:        payload.Tags,
+		StateID:     &payload.StateID,
+		BoardID:     &payload.BoardID,
+		UserID:      &user.ID,
 	}
 	if len(payload.DueAt) > 0 {
 		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
@@ -118,7 +118,7 @@ func DeleteTask(c *gin.Context) {
 
 	task := models.Task{
 		CommonModel: models.CommonModel{ID: taskId},
-		UserID:      user.ID,
+		UserID:      &user.ID,
 	}
 
 	err := task.Delete()
