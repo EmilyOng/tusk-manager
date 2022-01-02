@@ -17,3 +17,10 @@
 .board-actions > *:not(:last-child) {
   margin-right: 8px;
 }
+
+.form-control {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

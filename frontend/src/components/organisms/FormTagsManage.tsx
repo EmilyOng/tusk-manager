@@ -8,8 +8,8 @@ import LoadingBar from 'components/molecules/LoadingBar'
 import InputField from 'components/molecules/InputField'
 import Button from 'components/atoms/Button'
 import DropdownColor from 'components/molecules/DropdownColor'
-import './FormTagsManage.css'
 import { TagAPI } from 'api/tag'
+import './FormTagsManage.scoped.css'
 
 type Props = {
   board: BoardPrimitive

@@ -10,6 +10,7 @@ import DropdownSelect from '../molecules/DropdownSelect'
 import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
+import './FormTaskCreate.scoped.css'
 
 export type Form = {
   name: string

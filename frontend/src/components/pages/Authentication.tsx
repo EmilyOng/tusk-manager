@@ -7,7 +7,7 @@ import FormAuthentication, {
 } from 'components/organisms/FormAuthentication'
 import Message from 'components/atoms/Message'
 import clsx from 'clsx'
-import './Authentication.css'
+import './Authentication.scoped.css'
 import { AuthUser } from 'types/user'
 import { useNavigate } from 'react-router-dom'
 import { selectMe, setMe } from 'store/me'

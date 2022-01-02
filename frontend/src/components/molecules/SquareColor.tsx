@@ -1,7 +1,7 @@
 import React from 'react'
 import clsx from 'clsx'
 import { Color } from 'types/common'
-import './SquareColor.css'
+import './SquareColor.scoped.css'
 
 type Props = {
   color: Color

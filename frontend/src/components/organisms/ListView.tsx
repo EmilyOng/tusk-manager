@@ -20,7 +20,7 @@ import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
 import FilterReverse from 'components/molecules/FilterReverse'
 import ListViewHeader from 'components/molecules/ListViewHeader'
 import { State } from 'types/state'
-import './ListView.css'
+import './ListView.scoped.css'
 
 type Props = {
   tasks: Task[]

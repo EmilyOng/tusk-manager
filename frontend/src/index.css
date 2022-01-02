@@ -8,14 +8,6 @@
   --red: hsl(347, 90%, 75%);
 }
 
-/* Common CSS style for form controls */
-.form-control {
-  margin-top: 8px;
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-end;
-}
-
 html,
 body {
   height: 100%;

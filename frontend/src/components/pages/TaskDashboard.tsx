@@ -22,7 +22,7 @@ import {
   useEditState,
   useStates
 } from 'composables/state'
-import './TaskDashboard.css'
+import './TaskDashboard.scoped.css'
 import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
 
 function TaskDashboard() {

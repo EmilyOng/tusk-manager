@@ -24,7 +24,7 @@ import { resetMe, selectMe } from 'store/me'
 import { useMediaQuery } from 'utils/mediaQuery'
 import DropdownSelect from 'components/molecules/DropdownSelect'
 import DropdownMenu from 'components/molecules/DropdownMenu'
-import './BoardTabs.css'
+import './BoardTabs.scoped.css'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)

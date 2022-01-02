@@ -8,7 +8,7 @@ import Icon from 'components/atoms/Icon'
 import TagItem from 'components/atoms/TagItem'
 import Button from 'components/atoms/Button'
 import TagItemAddon from './TagItemAddon'
-import './TagsSelect.css'
+import './TagsSelect.scoped.css'
 
 type Props = {
   tags: SelectableTag[]

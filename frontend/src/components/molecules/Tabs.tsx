@@ -1,5 +1,5 @@
 import React from 'react'
-import './Tabs.css'
+import './Tabs.scoped.css'
 
 const Tabs: React.FC = ({ children }) => {
   return (

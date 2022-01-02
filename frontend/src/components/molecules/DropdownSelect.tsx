@@ -2,7 +2,7 @@ import React, { Key, useState } from 'react'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/atoms/Button'
 import DropdownMenu from './DropdownMenu'
-import './DropdownSelect.css'
+import './DropdownSelect.scoped.css'
 
 type Props = {
   initial?: Key

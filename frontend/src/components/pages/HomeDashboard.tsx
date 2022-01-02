@@ -14,7 +14,7 @@ import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from 'components/organisms/FormBoardCreate'
 import CardBoard from 'components/molecules/CardBoard'
 import InputField from 'components/molecules/InputField'
-import './HomeDashboard.css'
+import './HomeDashboard.scoped.css'
 import LoadingBar from 'components/molecules/LoadingBar'
 
 function useBoardCreateModal() {

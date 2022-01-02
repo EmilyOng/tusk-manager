@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/atoms/Button'
 import Icon from 'components/atoms/Icon'
-import './ListViewPlaceholder.css'
+import './ListViewPlaceholder.scoped.css'
 
 type Props = {
   events: {

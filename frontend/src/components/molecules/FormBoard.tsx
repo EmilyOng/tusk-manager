@@ -5,7 +5,7 @@ import { Color } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from './InputField'
 import DropdownColor from './DropdownColor'
-import './FormBoard.css'
+import './FormBoard.scoped.css'
 
 export type Form = {
   id?: number

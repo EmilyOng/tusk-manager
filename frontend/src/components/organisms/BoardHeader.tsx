@@ -6,8 +6,8 @@ import ModalCard from 'components/molecules/ModalCard'
 import { useBoard } from 'composables/board'
 import { BoardPrimitive } from 'types/board'
 import FormBoardEdit, { Form } from './FormBoardEdit'
-import './BoardHeader.css'
 import FormTagsManage from './FormTagsManage'
+import './BoardHeader.scoped.css'
 
 type Props = {
   boardId: number | null

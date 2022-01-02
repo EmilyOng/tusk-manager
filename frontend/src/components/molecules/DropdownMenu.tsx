@@ -1,7 +1,7 @@
 import React, { createRef, Key, useEffect, useRef, useState } from 'react'
 import Portal from './Portal'
 import DropdownItem from './DropdownItem'
-import './DropdownMenu.css'
+import './DropdownMenu.scoped.css'
 
 type Props = {
   trigger: JSX.Element

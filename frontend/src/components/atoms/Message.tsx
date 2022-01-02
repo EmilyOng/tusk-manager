@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import React from 'react'
-import './Message.css'
+import './Message.scoped.css'
 
 type Props = {
   type: 'success' | 'danger'

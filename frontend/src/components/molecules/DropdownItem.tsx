@@ -1,5 +1,5 @@
 import React from 'react'
-import './DropdownItem.css'
+import './DropdownItem.scoped.css'
 
 type Props = {
   onSelect: any

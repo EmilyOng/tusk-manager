@@ -3,7 +3,7 @@ import { faPen } from '@fortawesome/free-solid-svg-icons'
 import { State } from 'types/state'
 import InputField from './InputField'
 import Button from 'components/atoms/Button'
-import './ListViewHeader.css'
+import './ListViewHeader.scoped.css'
 
 type Props = {
   state: State

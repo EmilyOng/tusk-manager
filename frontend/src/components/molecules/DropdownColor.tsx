@@ -2,7 +2,7 @@ import React, { Key } from 'react'
 import { Colors, Color } from 'types/common'
 import DropdownSelect from './DropdownSelect'
 import SquareColor from './SquareColor'
-import './DropdownColor.css'
+import './DropdownColor.scoped.css'
 
 type Props = {
   initialColor?: string

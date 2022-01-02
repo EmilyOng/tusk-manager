@@ -1,7 +1,6 @@
 import clsx from 'clsx'
 import React from 'react'
 import { Color, ColorToAlias, Colors } from 'types/common'
-import './TagItem.css'
 
 type Props = {
   name: string

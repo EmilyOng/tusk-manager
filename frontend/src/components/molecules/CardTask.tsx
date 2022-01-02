@@ -11,7 +11,7 @@ import TagItem from 'components/atoms/TagItem'
 import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
 import DropdownMenu from './DropdownMenu'
-import './CardTask.css'
+import './CardTask.scoped.css'
 
 type Props = {
   task: Task
