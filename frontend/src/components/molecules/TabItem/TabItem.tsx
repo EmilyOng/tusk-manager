@@ -1,7 +1,8 @@
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import clsx from 'clsx'
 import React, { RefObject } from 'react'
+import clsx from 'clsx'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import Icon from 'components/atoms/Icon'
+import { getSelectorHash } from 'utils/selectorHash'
 
 type Props = {
   label?: string
@@ -14,14 +15,8 @@ type Props = {
   }
 }
 
-const TabItem: React.FC<Props> = ({
-  label,
-  selected,
-  icon,
-  className,
-  ref,
-  events
-}) => {
+const TabItem: React.FC<Props> = (props) => {
+  const { label, selected, icon, className, ref, events } = props
   return (
     <li
       ref={ref}
@@ -29,6 +24,7 @@ const TabItem: React.FC<Props> = ({
         'is-active': selected,
         [className ?? '']: !!className
       })}
+      {...getSelectorHash(props)}
       {...events}
     >
       <a>

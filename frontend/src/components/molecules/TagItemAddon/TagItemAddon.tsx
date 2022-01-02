@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import React from 'react'
+import { getSelectorHash } from 'utils/selectorHash'
 
 type Props = {
   className?: string
@@ -8,16 +9,20 @@ type Props = {
   }
 }
 
-const TagItemAddon: React.FC<Props> = ({ className, events, children }) => (
-  <a
-    className={clsx({
-      tag: true,
-      [className ?? '']: true
-    })}
-    onClick={events.onClick}
-  >
-    {children}
-  </a>
-)
+const TagItemAddon: React.FC<Props> = (props) => {
+  const { className, events, children } = props
+  return (
+    <a
+      className={clsx({
+        tag: true,
+        [className ?? '']: true
+      })}
+      {...getSelectorHash(props)}
+      onClick={events.onClick}
+    >
+      {children}
+    </a>
+  )
+}
 
 export default TagItemAddon

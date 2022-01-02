@@ -1,6 +1,7 @@
+import React from 'react'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import clsx from 'clsx'
-import React from 'react'
+import { getSelectorHash } from 'utils/selectorHash'
 import Icon from '../Icon'
 
 type Props = {
@@ -15,16 +16,18 @@ type Props = {
   }
 }
 
-const Button: React.FC<Props> = ({
-  className,
-  type = 'button',
-  icon,
-  iconPosition = 'left',
-  label,
-  attr,
-  events,
-  children
-}) => {
+const Button: React.FC<Props> = (props) => {
+  const {
+    className,
+    type = 'button',
+    icon,
+    iconPosition = 'left',
+    label,
+    attr,
+    events,
+    children
+  } = props
+
   const iconComponent = icon && (
     <span className="icon">
       <Icon icon={icon} />
@@ -34,6 +37,7 @@ const Button: React.FC<Props> = ({
     <button
       type={type}
       className={clsx({ button: true, [className ?? '']: true })}
+      {...getSelectorHash(props)}
       {...events}
       {...attr}
     >

@@ -1,6 +1,7 @@
-import clsx from 'clsx'
 import React from 'react'
+import clsx from 'clsx'
 import { Color, ColorToAlias, Colors } from 'types/common'
+import { getSelectorHash } from 'utils/selectorHash'
 
 type Props = {
   name: string
@@ -8,12 +9,8 @@ type Props = {
   className?: string
 }
 
-const TagItem: React.FC<Props> = ({
-  name,
-  color: color_,
-  className,
-  children
-}) => {
+const TagItem: React.FC<Props> = (props) => {
+  const { name, color: color_, className, children } = props
   const color = color_ ?? Colors[name.length % Colors.length]
   const derivedClass = 'is-' + ColorToAlias(color)
   const baseTag = (
@@ -24,6 +21,7 @@ const TagItem: React.FC<Props> = ({
         [className ?? '']: true,
         [derivedClass]: true
       })}
+      {...getSelectorHash(props)}
     >
       {name}
     </span>
