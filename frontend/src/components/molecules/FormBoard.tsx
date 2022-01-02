@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Color, Colors } from 'types/common'
+import { Color } from 'types/common'
 import Button from '../atoms/Button'
 import InputField from './InputField'
-import DropdownSelect from './DropdownSelect'
+import DropdownColor from './DropdownColor'
 import './FormBoard.css'
 
 export type Form = {
@@ -40,34 +40,6 @@ const FormBoard: React.FC<Props> = ({ initial, actionLabels, events }) => {
     }
   }, [])
 
-  const colorItems = Colors.map((color) => {
-    return (
-      <div key={color} className="color-dropdown-item">
-        <span
-          className={clsx({
-            square: true,
-            [color]: true
-          })}
-        />
-        <span>{color}</span>
-      </div>
-    )
-  })
-
-  if (initial?.color) {
-    colorItems.sort((a, b) => {
-      const aKey = a.key as Color
-      const bKey = b.key as Color
-      if (aKey === initial.color) {
-        return -1
-      }
-      if (bKey === initial.color) {
-        return 1
-      }
-      return 0
-    })
-  }
-
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitting(true)
@@ -96,8 +68,8 @@ const FormBoard: React.FC<Props> = ({ initial, actionLabels, events }) => {
         </div>
         <div className="color-field field">
           <label className="label">Color</label>
-          <DropdownSelect
-            items={colorItems}
+          <DropdownColor
+            initialColor={initial?.color}
             events={{
               onSelect: (key) => setForm({ ...form, color: key as Color })
             }}

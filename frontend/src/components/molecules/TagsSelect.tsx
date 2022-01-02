@@ -1,12 +1,13 @@
 import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
-import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
+import { faAngleDown, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { Tag } from 'types/tag'
 import { Color, Colors } from 'types/common'
 import DropdownItem from './DropdownItem'
 import Icon from 'components/atoms/Icon'
-import TagItem, { TagAction } from 'components/atoms/TagItem'
+import TagItem from 'components/atoms/TagItem'
 import Button from 'components/atoms/Button'
+import TagItemAddon from './TagItemAddon'
 import './TagsSelect.css'
 
 type Props = {
@@ -105,11 +106,11 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
                     className="selected-tag"
                     name={tag.name}
                     color={tag.color}
-                    action={{
-                      type: TagAction.Delete,
-                      onAction: () => onSelect(tag.id)
-                    }}
-                  />
+                  >
+                    <TagItemAddon events={{ onClick: () => onSelect(tag.id) }}>
+                      <Icon icon={faTimes} />
+                    </TagItemAddon>
+                  </TagItem>
                 )
               }
               return acc

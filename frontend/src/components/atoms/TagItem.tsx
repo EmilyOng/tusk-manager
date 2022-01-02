@@ -3,42 +3,44 @@ import React from 'react'
 import { Color, ColorToAlias, Colors } from 'types/common'
 import './TagItem.css'
 
-export enum TagAction {
-  Delete = 'Delete'
-}
-
 type Props = {
   name: string
   color?: Color
-  action?: {
-    type: TagAction
-    onAction: () => any
-  }
   className?: string
 }
 
 const TagItem: React.FC<Props> = ({
   name,
   color: color_,
-  action,
-  className
+  className,
+  children
 }) => {
   const color = color_ ?? Colors[name.length % Colors.length]
   const derivedClass = 'is-' + ColorToAlias(color)
-  return (
+  const baseTag = (
     <span
       className={clsx({
         tag: true,
         'is-light': true,
         [className ?? '']: true,
-        [derivedClass]: true,
-        'has-addons': !!action
+        [derivedClass]: true
       })}
     >
-      <span>{name}</span>
-      {action?.type === TagAction.Delete && (
-        <a className="tag is-delete" onClick={action.onAction}></a>
-      )}
+      {name}
+    </span>
+  )
+  if (!children) {
+    return baseTag
+  }
+  return (
+    <span
+      className={clsx({
+        tags: true,
+        'has-addons': !!children
+      })}
+    >
+      {baseTag}
+      {children}
     </span>
   )
 }

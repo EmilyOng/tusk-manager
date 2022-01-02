@@ -12,6 +12,10 @@ export interface CreatingTag {
   boardId: number
 }
 
+export interface EditingTag extends CreatingTag {
+  id: number
+}
+
 export class TagAPI {
   private req: RequestAPI
 
@@ -25,5 +29,13 @@ export class TagAPI {
 
   async createTag(tag: CreatingTag): Promise<TagResponse> {
     return this.req.post('/tags/', tag)
+  }
+
+  async deleteTag(tagId: number): Promise<Response> {
+    return this.req.delete(`/tags/${tagId}`)
+  }
+
+  async editTag(tag: EditingTag): Promise<TagResponse> {
+    return this.req.put('/tags/', tag)
   }
 }

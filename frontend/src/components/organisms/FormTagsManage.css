@@ -1,0 +1,18 @@
+.tags-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tag-action-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between !important;
+}
+
+.tag-action-field > *:not(:last-child) {
+  margin-right: 8px;
+}
+
+.deleted-field {
+  opacity: 0.3;
+}

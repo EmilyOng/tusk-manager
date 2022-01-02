@@ -63,6 +63,8 @@ func main() {
 			tags := guard.Group(("/tags"))
 			{
 				tags.POST("/", controllers.CreateTag)
+				tags.DELETE("/:tag_id", controllers.DeleteTag)
+				tags.PUT("/", controllers.UpdateTag)
 			}
 		}
 	}

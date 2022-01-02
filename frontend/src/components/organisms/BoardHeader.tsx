@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import clsx from 'clsx'
 import Button from 'components/atoms/Button'
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faEdit, faTrash, faTag } from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
 import { useBoard } from 'composables/board'
 import { BoardPrimitive } from 'types/board'
 import FormBoardEdit, { Form } from './FormBoardEdit'
 import './BoardHeader.css'
+import FormTagsManage from './FormTagsManage'
 
 type Props = {
   boardId: number | null
@@ -37,6 +38,26 @@ function useBoardEditModal() {
 }
 
 function useBoardDeleteModal() {
+  const [visible, setVisible] = useState(false)
+  const [board, setBoard] = useState<BoardPrimitive>()
+
+  function openCard(board: BoardPrimitive) {
+    setBoard(board)
+    setVisible(true)
+  }
+  function closeCard() {
+    setBoard(undefined)
+    setVisible(false)
+  }
+  return {
+    board,
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
+function useTagsManageModal() {
   const [visible, setVisible] = useState(false)
   const [board, setBoard] = useState<BoardPrimitive>()
 
@@ -90,8 +111,27 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     closeCard: closeBoardDeleteCard
   } = useBoardDeleteModal()
 
+  const {
+    board: openedBoardTagsManage,
+    visible: isTagsManaging,
+    openCard: openTagsManageCard,
+    closeCard: closeTagsManageCard
+  } = useTagsManageModal()
+
   return (
     <div className="board-header">
+      {openedBoardTagsManage && (
+        <ModalCard
+          visible={isTagsManaging}
+          title="Manage tags"
+          events={{ onClose: closeTagsManageCard }}
+        >
+          <FormTagsManage
+            board={openedBoardTagsManage}
+            events={{ onSubmit: closeTagsManageCard }}
+          />
+        </ModalCard>
+      )}
       {openedBoardEdit && (
         <ModalCard
           visible={isBoardEditing}
@@ -142,6 +182,11 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
         <div className="board-information">
           <h1 className="title">{board.name}</h1>
           <div className="board-actions">
+            <Button
+              className="is-info is-light"
+              icon={faTag}
+              events={{ onClick: () => openTagsManageCard(board) }}
+            />
             <Button
               className="is-link is-light"
               icon={faEdit}

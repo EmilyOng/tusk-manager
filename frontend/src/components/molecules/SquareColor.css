@@ -1,0 +1,29 @@
+.square {
+  height: 12px;
+  width: 12px;
+  margin-right: 4px;
+}
+
+.square.Turquoise {
+  background-color: var(--turquoise);
+}
+
+.square.Blue {
+  background-color: var(--blue);
+}
+
+.square.Cyan {
+  background-color: var(--cyan);
+}
+
+.square.Green {
+  background-color: var(--green);
+}
+
+.square.Yellow {
+  background-color: var(--yellow);
+}
+
+.square.Red {
+  background-color: var(--red);
+}
