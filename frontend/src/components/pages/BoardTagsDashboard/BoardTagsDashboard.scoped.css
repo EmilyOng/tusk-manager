@@ -1,3 +1,16 @@
+.board-tags-dashboard {
+  margin: 16px;
+}
+
+.board-tags-header {
+  display: flex;
+  margin-bottom: 16px;
+}
+
+.board-tags-header > *:not(:last-child) {
+  margin-right: 8px;
+}
+
 .tags-container {
   display: flex;
   flex-direction: column;

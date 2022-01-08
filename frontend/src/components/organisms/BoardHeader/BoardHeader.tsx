@@ -5,9 +5,9 @@ import { faEdit, faTrash, faTag } from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
 import { useBoard } from 'composables/board'
 import FormBoardEdit, { Form } from '../FormBoardEdit'
-import FormTagsManage from '../FormTagsManage'
 import './BoardHeader.scoped.css'
 import { BoardPrimitive } from 'generated/models'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
   boardId: number | null
@@ -57,27 +57,8 @@ function useBoardDeleteModal() {
   }
 }
 
-function useTagsManageModal() {
-  const [visible, setVisible] = useState(false)
-  const [board, setBoard] = useState<BoardPrimitive>()
-
-  function openCard(board: BoardPrimitive) {
-    setBoard(board)
-    setVisible(true)
-  }
-  function closeCard() {
-    setBoard(undefined)
-    setVisible(false)
-  }
-  return {
-    board,
-    visible,
-    openCard,
-    closeCard
-  }
-}
-
 const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
+  const navigate = useNavigate()
   const { board, updateBoard } = useBoard(boardId)
 
   function onEditBoard(form: Form, cb: () => void) {
@@ -111,27 +92,8 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     closeCard: closeBoardDeleteCard
   } = useBoardDeleteModal()
 
-  const {
-    board: openedBoardTagsManage,
-    visible: isTagsManaging,
-    openCard: openTagsManageCard,
-    closeCard: closeTagsManageCard
-  } = useTagsManageModal()
-
   return (
     <div className="board-header">
-      {openedBoardTagsManage && (
-        <ModalCard
-          visible={isTagsManaging}
-          title="Manage tags"
-          events={{ onClose: closeTagsManageCard }}
-        >
-          <FormTagsManage
-            board={openedBoardTagsManage}
-            events={{ onSubmit: closeTagsManageCard }}
-          />
-        </ModalCard>
-      )}
       {openedBoardEdit && (
         <ModalCard
           visible={isBoardEditing}
@@ -185,7 +147,7 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
             <Button
               className="is-info is-light"
               icon={faTag}
-              events={{ onClick: () => openTagsManageCard(board) }}
+              events={{ onClick: () => navigate(`/${board.id}/tags`) }}
             />
             <Button
               className="is-link is-light"
