@@ -1,19 +1,20 @@
 import React, { createRef, useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faAngleDown, faTimes } from '@fortawesome/free-solid-svg-icons'
-import { Tag } from 'types/tag'
-import { Color, Colors } from 'types/common'
+import { Colors } from 'utils/color'
 import DropdownItem from '../DropdownItem'
 import Icon from 'components/atoms/Icon'
 import TagItem from 'components/atoms/TagItem'
 import Button from 'components/atoms/Button'
 import TagItemAddon from '../TagItemAddon'
 import './TagsSelect.scoped.css'
+import { Color } from 'generated/types'
+import { TagPrimitive } from 'generated/models'
 
 type Props = {
   tags: SelectableTag[]
   events: {
-    onSelect: (tag: Tag) => any
+    onSelect: (tag: TagPrimitive) => any
     onCreateTag: ({
       name,
       color,
@@ -21,12 +22,12 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: Tag) => void
+      cb: (tag: TagPrimitive) => void
     }) => any
   }
 }
 
-export interface SelectableTag extends Tag {
+export interface SelectableTag extends TagPrimitive {
   selected: boolean
 }
 
@@ -65,7 +66,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     events.onCreateTag({
       name: tagInput,
       color: Colors[tagInput.length % Colors.length],
-      cb: (tag: Tag) => {
+      cb: (tag: TagPrimitive) => {
         setIsCreatingTag(false)
         setTagInput('') // Reset search input
         setSelectableTags([...selectableTags, { ...tag, selected: true }])
@@ -79,7 +80,7 @@ const TagsSelect: React.FC<Props> = ({ tags, events }) => {
     setActive(true) // Make sure the dropdown is active
   }
 
-  function isMatchTagInput(tag: Tag) {
+  function isMatchTagInput(tag: TagPrimitive) {
     return tag.name.toLowerCase().includes(tagInput.toLowerCase())
   }
 

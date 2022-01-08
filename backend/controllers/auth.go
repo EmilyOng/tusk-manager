@@ -1,31 +1,19 @@
 package controllers
 
 import (
-	"main/models"
-	"main/utils"
+	"errors"
 	"net/http"
 	"strings"
 
+	"github.com/EmilyOng/cvwo/backend/db"
+	"github.com/EmilyOng/cvwo/backend/models"
+	userService "github.com/EmilyOng/cvwo/backend/services/user"
+	authUtils "github.com/EmilyOng/cvwo/backend/utils/auth"
+	seedUtils "github.com/EmilyOng/cvwo/backend/utils/seed"
+
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
-
-type LoginPayload struct {
-	Email    string `binding:"required"`
-	Password string `binding:"required"`
-}
-
-type SignUpPayload struct {
-	Name     string `binding:"required"`
-	Email    string `binding:"required"`
-	Password string `binding:"required"`
-}
-
-type UserResponse struct {
-	ID    uint8  `json:"id"`
-	Name  string `json:"name"`
-	Email string `json:"email"`
-	Token string `json:"token"`
-}
 
 func GetAuthToken(c *gin.Context) (token string) {
 	token_ := strings.Split(c.Request.Header.Get("Authorization"), "Bearer ")
@@ -37,45 +25,13 @@ func GetAuthToken(c *gin.Context) (token string) {
 	return
 }
 
-func SetAuthUser(c *gin.Context) {
-	token := GetAuthToken(c)
-
-	secretKey, err := utils.GetSecretKey()
+func GenerateJWTToken(c *gin.Context, user models.UserPrimitive) (signedToken string, err error) {
+	secretKey, err := authUtils.GetSecretKey()
 	if err != nil {
-		c.Set("user", nil)
 		return
 	}
 
-	jwtAuth := &utils.JWTAuth{SecretKey: secretKey}
-	claims, err := jwtAuth.ValidateToken(token)
-	if err != nil {
-		c.Set("user", nil)
-		return
-	}
-	user := models.User{ID: claims.UserID, Name: claims.UserName, Email: claims.UserEmail}
-
-	c.Set("user", user)
-}
-
-func IsAuthenticated(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-	token := GetAuthToken(c)
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: token})
-}
-
-func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err error) {
-	secretKey, err := utils.GetSecretKey()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
-	jwtAuth := utils.JWTAuth{
+	jwtAuth := authUtils.JWTAuth{
 		SecretKey: secretKey,
 	}
 
@@ -87,75 +43,113 @@ func generateJWTToken(c *gin.Context, user models.User) (signedToken string, err
 	return
 }
 
+func IsAuthenticated(c *gin.Context) {
+	userInterface, _ := c.Get("user")
+	if userInterface == nil {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_UNAUTHORIZED})
+		return
+	}
+	user := userInterface.(models.AuthUser)
+	token := GetAuthToken(c)
+	c.JSON(http.StatusOK, models.AuthUserResponse{
+		User: models.AuthUser{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Token: token,
+		},
+	})
+}
+
 func Login(c *gin.Context) {
-	var payload LoginPayload
+	var payload models.LoginPayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	user := models.User{Email: payload.Email, Password: payload.Password}
-	if !user.Exist() {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Invalid email/password"})
+	var user models.UserPrimitive
+	err = db.DB.Model(&models.User{}).Where("Email = ?", payload.Email).Find(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		// User record does not exist
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_INVALID_EMAIL})
 		return
 	}
 
-	err = user.CheckPassword(payload.Password)
+	err = authUtils.ComparePassword(user.Password, payload.Password)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_INVALID_PASSWORD})
 		return
 	}
 
-	signedToken, err := generateJWTToken(c, user)
+	signedToken, err := GenerateJWTToken(c, user)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: error_UNEXPECTED})
 		return
 	}
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: signedToken})
+	c.JSON(http.StatusOK, models.LoginResponse{
+		User: models.AuthUser{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Token: signedToken,
+		},
+	})
 }
 
 func SignUp(c *gin.Context) {
-	var payload SignUpPayload
+	var payload models.SignUpPayload
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	user := models.User{Name: payload.Name, Email: payload.Email, Password: payload.Password}
+	var user models.UserPrimitive
+	err = db.DB.Model(&models.User{}).Where("Email = ?", payload.Email).First(&user).Error
 
-	if user.Exist() {
-		c.AbortWithStatusJSON(http.StatusOK, gin.H{"error": "User already exists"})
-		return
-	}
-
-	err = user.HashPassword(user.Password)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		// User record already exists
+		c.AbortWithStatusJSON(http.StatusOK, models.Response{Error: error_USER_EXISTS})
 		return
 	}
 
-	err = user.Create()
+	hashedPassword, err := authUtils.HashPassword(payload.Password)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	signedToken, err := generateJWTToken(c, user)
+	user.Password = hashedPassword
+	user, err = userService.CreateUser(user)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: error_UNEXPECTED})
+		return
+	}
+
+	signedToken, err := GenerateJWTToken(c, user)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
 	// Generate seed data
-	err = models.SeedData(&user)
+	err = seedUtils.SeedData(&user)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: error_UNEXPECTED})
 		return
 	}
-	c.JSON(http.StatusOK, UserResponse{ID: user.ID, Name: user.Name, Email: user.Email, Token: signedToken})
+	c.JSON(http.StatusOK, models.SignUpResponse{
+		User: models.AuthUser{
+			ID:    user.ID,
+			Name:  user.Name,
+			Email: user.Email,
+			Token: signedToken,
+		},
+	})
 }
 
 func Logout(c *gin.Context) {

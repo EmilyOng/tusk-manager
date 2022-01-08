@@ -4,10 +4,10 @@ import Button from 'components/atoms/Button'
 import { faEdit, faTrash, faTag } from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
 import { useBoard } from 'composables/board'
-import { BoardPrimitive } from 'types/board'
 import FormBoardEdit, { Form } from '../FormBoardEdit'
 import FormTagsManage from '../FormTagsManage'
 import './BoardHeader.scoped.css'
+import { BoardPrimitive } from 'generated/models'
 
 type Props = {
   boardId: number | null

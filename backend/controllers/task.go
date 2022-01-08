@@ -2,130 +2,44 @@ package controllers
 
 import (
 	"fmt"
-	"main/models"
-	"main/utils"
 	"net/http"
-	"time"
+
+	"github.com/EmilyOng/cvwo/backend/models"
+	taskService "github.com/EmilyOng/cvwo/backend/services/task"
 
 	"github.com/gin-gonic/gin"
 )
 
-type CreateTaskPayload struct {
-	Name        string
-	Description string
-	DueAt       string
-	StateID     uint8
-	Tags        []*models.Tag
-	BoardID     uint8
-}
-
-type UpdateTaskPayload struct {
-	ID          uint8
-	Name        string
-	Description string
-	DueAt       string
-	StateID     uint8
-	Tags        []*models.Tag
-	BoardID     uint8
-}
-
 func CreateTask(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-
-	var payload CreateTaskPayload
+	var payload models.CreateTaskPayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	task := models.Task{
-		Name:        payload.Name,
-		Description: payload.Description,
-		Tags:        payload.Tags,
-		StateID:     &payload.StateID,
-		BoardID:     &payload.BoardID,
-		UserID:      &user.ID,
-	}
-	if len(payload.DueAt) > 0 {
-		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
-		task.DueAt = &t
-	}
-	err = task.Create()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, task)
+	createTaskResponse := taskService.CreateTask(payload)
+	c.JSON(http.StatusOK, createTaskResponse)
 }
 
 func UpdateTask(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-
-	var payload UpdateTaskPayload
+	var payload models.UpdateTaskPayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	task := models.Task{
-		CommonModel: models.CommonModel{ID: payload.ID},
-		Name:        payload.Name,
-		Description: payload.Description,
-		Tags:        payload.Tags,
-		StateID:     &payload.StateID,
-		BoardID:     &payload.BoardID,
-		UserID:      &user.ID,
-	}
-	if len(payload.DueAt) > 0 {
-		t, _ := time.Parse(utils.DatetimeLayout, payload.DueAt)
-		task.DueAt = &t
-	}
-
-	err = task.Update()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, task)
+	updateTaskResponse := taskService.UpdateTask(payload)
+	c.JSON(http.StatusOK, updateTaskResponse)
 }
 
 func DeleteTask(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-
 	var taskId uint8
 	fmt.Sscan(c.Param("task_id"), &taskId)
 
-	task := models.Task{
-		CommonModel: models.CommonModel{ID: taskId},
-		UserID:      &user.ID,
-	}
-
-	err := task.Delete()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, task)
+	deleteTaskResponse := taskService.DeleteTask(models.DeleteTaskPayload{ID: taskId})
+	c.JSON(http.StatusOK, deleteTaskResponse)
 }

@@ -2,76 +2,50 @@ package controllers
 
 import (
 	"fmt"
-	"main/db"
-	"main/models"
 	"net/http"
+
+	"github.com/EmilyOng/cvwo/backend/db"
+	"github.com/EmilyOng/cvwo/backend/models"
+	boardService "github.com/EmilyOng/cvwo/backend/services/board"
+	userService "github.com/EmilyOng/cvwo/backend/services/user"
+	commonUtils "github.com/EmilyOng/cvwo/backend/utils/common"
 
 	"github.com/gin-gonic/gin"
 )
 
-type CreateBoardPayload struct {
-	Name  string
-	Color models.Color
-}
-
-type UpdateBoardPayload struct {
-	ID    uint8
-	Name  string
-	Color models.Color
-}
-
-func GetBoards(c *gin.Context) {
+func GetUserBoards(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_UNAUTHORIZED})
 		return
 	}
-	user := userInterface.(models.User)
+	user := userInterface.(models.AuthUser)
 
-	boards, err := user.GetBoards()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, boards)
+	boards, err := userService.GetUserBoards(user.ID)
+	c.JSON(http.StatusOK, models.GetUserBoardsResponse{
+		Response: models.Response{Error: err},
+		Boards:   boards,
+	})
 }
 
 func GetBoardTasks(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
-	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-	tasks, err := board.GetTasksWithTags()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, tasks)
+	getBoardTasksResponse := boardService.GetBoardTasks(models.GetBoardTasksPayload{BoardID: boardID})
+	c.JSON(http.StatusOK, getBoardTasksResponse)
 }
 
 func CreateBoard(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-
-	var payload CreateBoardPayload
+	var payload models.CreateBoardPayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
 	var states []*models.State
-	for i, state := range models.GetDefaultStates() {
+	for i, state := range commonUtils.GetDefaultStates() {
 		states = append(states, &models.State{
 			Name:            state,
 			CurrentPosition: i,
@@ -83,118 +57,47 @@ func CreateBoard(c *gin.Context) {
 		return
 	}
 
-	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: &user.ID, States: states}
-	err = board.Create()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, board)
+	createBoardResponse := boardService.CreateBoard(payload)
+	c.JSON(http.StatusOK, createBoardResponse)
 }
 
 func GetBoardTags(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
-	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-	tags, err := board.GetTags()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, tags)
+	getBoardTagsResponse := boardService.GetBoardTags(models.GetBoardTagsPayload{BoardID: boardID})
+	c.JSON(http.StatusOK, getBoardTagsResponse)
 }
 
 func GetBoard(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
-	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-	err := board.Get()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, board)
+	getBoardResponse := boardService.GetBoard(models.GetBoardPayload{ID: boardID})
+	c.JSON(http.StatusOK, getBoardResponse)
 }
 
 func UpdateBoard(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-	user := userInterface.(models.User)
-
-	var payload UpdateBoardPayload
+	var payload models.UpdateBoardPayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	board := models.Board{
-		CommonModel: models.CommonModel{ID: payload.ID},
-		Name:        payload.Name,
-		Color:       payload.Color,
-		UserID:      &user.ID,
-	}
-
-	err = board.Update()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, board)
+	updateBoardResponse := boardService.UpdateBoard(payload)
+	c.JSON(http.StatusOK, updateBoardResponse)
 }
 
 func DeleteBoard(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
-	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-
-	err := board.Delete()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, board)
+	deleteBoardResponse := boardService.DeleteBoard(models.DeleteBoardPayload{ID: boardID})
+	c.JSON(http.StatusOK, deleteBoardResponse)
 }
 
 func GetBoardStates(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
-	board := models.Board{CommonModel: models.CommonModel{ID: boardID}}
-	states, err := board.GetStates()
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, states)
+	getBoardStatesResponse := boardService.GetBoardStates(models.GetBoardStatesPayload{BoardID: boardID})
+	c.JSON(http.StatusOK, getBoardStatesResponse)
 }

@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
-import { State } from 'types/state'
 import InputField from '../InputField'
 import Button from 'components/atoms/Button'
 import './ListViewHeader.scoped.css'
+import { StatePrimitive } from 'generated/models'
 
 type Props = {
-  state: State
+  state: StatePrimitive
   events: {
-    onEditState: (newState: State) => void
+    onEditState: (newState: StatePrimitive) => void
   }
 }
 

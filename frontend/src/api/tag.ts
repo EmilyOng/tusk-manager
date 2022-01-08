@@ -1,20 +1,14 @@
-import { Color } from 'types/common'
-import { Tag } from 'types/tag'
-import { RequestAPI, Response } from './request'
-
-type Tags = Tag[]
-interface TagsResponse extends Response, Tags {}
-interface TagResponse extends Response, Tag {}
-
-export interface CreatingTag {
-  name: string
-  color: Color
-  boardId: number
-}
-
-export interface EditingTag extends CreatingTag {
-  id: number
-}
+import {
+  CreateTagPayload,
+  CreateTagResponse,
+  DeleteTagPayload,
+  DeleteTagResponse,
+  GetBoardTagsPayload,
+  GetBoardTagsResponse,
+  UpdateTagPayload,
+  UpdateTagResponse
+} from 'generated/models'
+import { RequestAPI } from './request'
 
 export class TagAPI {
   private req: RequestAPI
@@ -23,19 +17,19 @@ export class TagAPI {
     this.req = new RequestAPI()
   }
 
-  async getTags(boardId: number): Promise<TagsResponse> {
-    return this.req.get(`/boards/${boardId}/tags`)
+  async getTags(payload: GetBoardTagsPayload): Promise<GetBoardTagsResponse> {
+    return this.req.get(`/boards/${payload.boardId}/tags`)
   }
 
-  async createTag(tag: CreatingTag): Promise<TagResponse> {
-    return this.req.post('/tags/', tag)
+  async createTag(payload: CreateTagPayload): Promise<CreateTagResponse> {
+    return this.req.post('/tags/', payload)
   }
 
-  async deleteTag(tagId: number): Promise<Response> {
-    return this.req.delete(`/tags/${tagId}`)
+  async deleteTag(payload: DeleteTagPayload): Promise<DeleteTagResponse> {
+    return this.req.delete(`/tags/${payload.id}`)
   }
 
-  async editTag(tag: EditingTag): Promise<TagResponse> {
-    return this.req.put('/tags/', tag)
+  async editTag(payload: UpdateTagPayload): Promise<UpdateTagResponse> {
+    return this.req.put('/tags/', payload)
   }
 }

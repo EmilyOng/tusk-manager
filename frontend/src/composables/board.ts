@@ -1,37 +1,9 @@
 import { useState, useEffect } from 'react'
-import { BoardPrimitive } from 'types/board'
-import { BoardAPI, CreatingBoard, EditingBoard } from 'api/board'
-
-export function useCreateBoard() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new BoardAPI()
-
-  function createBoard(board: CreatingBoard) {
-    setLoading(true)
-    return api
-      .createBoard(board)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    createBoard
-  }
-}
+import { BoardAPI } from 'api/board'
+import { BoardPrimitive } from 'generated/models'
 
 export function useBoard(boardId: number | null) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const api = new BoardAPI()
   const [board, setBoard] = useState<BoardPrimitive>()
@@ -46,81 +18,23 @@ export function useBoard(boardId: number | null) {
     }
     setLoading(true)
     api
-      .getBoard(boardId)
+      .getBoard({ id: boardId })
       .then((res) => {
-        if (res.error) {
-          setError(res.error)
-        } else {
-          setBoard(res)
+        if (!res.error) {
+          setBoard(res.data)
         }
       })
       .finally(() => setLoading(false))
     return () => {
       // Clean-up
       setLoading(false)
-      setError('')
       setBoard(undefined)
     }
   }, [boardId])
 
   return {
     loading,
-    error,
     board,
     updateBoard
-  }
-}
-
-export function useEditBoard() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new BoardAPI()
-
-  function editBoard(board: EditingBoard) {
-    setLoading(true)
-    return api
-      .editBoard(board)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    editBoard
-  }
-}
-
-export function useDeleteBoard() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new BoardAPI()
-
-  function deleteBoard(boardId: number) {
-    setLoading(true)
-    return api
-      .deleteBoard(boardId)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return boardId
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    deleteBoard
   }
 }

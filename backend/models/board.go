@@ -1,83 +1,92 @@
 package models
 
-import (
-	"main/db"
-)
-
 type Board struct {
-	CommonModel
+	ID     uint8    `gorm:"primary_key" json:"id"`
 	Name   string   `gorm:"not null" json:"name"`
-	Color  Color    `gorm:"not null" json:"color"`
-	Tasks  []*Task  `gorm:"not null" json:"-"` // Tasks belonging to the board
-	Tags   []*Tag   `gorm:"not null" json:"-"` // Tags belonging to the board
-	States []*State `gorm:"not null" json:"-"` // States belonging to the board
-	UserID *uint8   `json:"-"`                 // Refers to the owner of the board
+	Color  Color    `gorm:"not null" json:"color" ts_type:"Color"`
+	Tasks  []*Task  `gorm:"not null" json:"tasks"`  // Tasks belonging to the board
+	Tags   []*Tag   `gorm:"not null" json:"tags"`   // Tags belonging to the board
+	States []*State `gorm:"not null" json:"states"` // States belonging to the board
+	UserID *uint8   `json:"userId"`                 // Refers to the owner of the board
 }
 
-func (board *Board) Create() error {
-	result := db.DB.Create(board)
-	return result.Error
+type BoardPrimitive struct {
+	ID     uint8  `json:"id"`
+	Name   string `json:"name"`
+	Color  Color  `json:"color" ts_type:"Color"`
+	UserID *uint8 `json:"userId"`
 }
 
-func (board *Board) Get() error {
-	result := db.DB.Where(&Board{CommonModel: CommonModel{ID: board.ID}}).First(&board)
-	return result.Error
+// Get Board
+type GetBoardPayload struct {
+	ID uint8 `json:"id"`
 }
 
-func (board *Board) GetTasksWithTags() (tasks []Task, err error) {
-	err = db.DB.Model(board).Order("tasks.name").Preload("Tags").Association("Tasks").Find(&tasks)
-	return
+type GetBoardResponse struct {
+	Response
+	Board Board `json:"data"`
 }
 
-func (board *Board) GetTags() (tags []Tag, err error) {
-	err = db.DB.Model(board).Association("Tags").Find(&tags)
-	return
+// Create Board
+type CreateBoardPayload struct {
+	Name   string `json:"name"`
+	Color  Color  `json:"color" ts_type:"Color"`
+	UserID uint8  `json:"userId"`
 }
 
-func (board *Board) GetStates() (states []State, err error) {
-	err = db.DB.Model(board).Order("states.current_position").Association("States").Find(&states)
-	return
+type CreateBoardResponse struct {
+	Response
+	Board BoardPrimitive `json:"data"`
 }
 
-func (board *Board) GetTasks() (tasks []Task, err error) {
-	err = db.DB.Model(board).Association("Tasks").Find(&tasks)
-	return
+// Update Board
+type UpdateBoardPayload struct {
+	ID     uint8  `json:"id"`
+	Name   string `json:"name"`
+	Color  Color  `json:"color" ts_type:"Color"`
+	UserID uint8  `json:"userId"`
 }
 
-func (board *Board) Update() error {
-	result := db.DB.Model(board).Save(board)
-	return result.Error
+type UpdateBoardResponse struct {
+	Response
+	Board BoardPrimitive `json:"data"`
 }
 
-func (board *Board) Delete() error {
-	tasks, err := board.GetTasks()
-	if err != nil {
-		return err
-	}
+// Get Board Tasks
+type GetBoardTasksPayload struct {
+	BoardID uint8 `json:"boardId"`
+}
 
-	for _, task := range tasks {
-		err = task.Delete()
-		if err != nil {
-			return err
-		}
-	}
+type GetBoardTasksResponse struct {
+	Response
+	Tasks []Task `json:"data"`
+}
 
-	states, err := board.GetStates()
-	if err != nil {
-		return err
-	}
-	for _, state := range states {
-		err = state.Delete()
-		if err != nil {
-			return err
-		}
-	}
+// Get Board Tags
+type GetBoardTagsPayload struct {
+	BoardID uint8 `json:"boardId"`
+}
 
-	result := db.DB.Where(&Tag{BoardID: &board.ID}).Delete(Tag{})
+type GetBoardTagsResponse struct {
+	Response
+	Tags []TagPrimitive `json:"data"`
+}
 
-	if result.Error != nil {
-		return result.Error
-	}
-	result = db.DB.Delete(board)
-	return result.Error
+// Get Board States
+type GetBoardStatesPayload struct {
+	BoardID uint8 `json:"boardId"`
+}
+
+type GetBoardStatesResponse struct {
+	Response
+	States []StatePrimitive `json:"data"`
+}
+
+// Delete Board
+type DeleteBoardPayload struct {
+	ID uint8 `json:"id"`
+}
+
+type DeleteBoardResponse struct {
+	Response
 }

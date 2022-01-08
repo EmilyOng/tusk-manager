@@ -7,15 +7,15 @@ import { selectMe } from 'store/me'
 import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
 import { useNavigate } from 'react-router-dom'
-import { useCreateBoard } from 'composables/board'
 import { useNotification, NotificationType } from 'composables/notification'
-import { BoardPrimitive } from 'types/board'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from 'components/organisms/FormBoardCreate'
 import CardBoard from 'components/molecules/CardBoard'
 import InputField from 'components/molecules/InputField'
 import './HomeDashboard.scoped.css'
 import LoadingBar from 'components/molecules/LoadingBar'
+import { BoardPrimitive } from 'generated/models'
+import { BoardAPI } from 'api/board'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -50,37 +50,27 @@ function HomeDashboard() {
     }
   }, [boards])
 
-  const { error: createBoardError, createBoard: createBoard_ } =
-    useCreateBoard()
-
   const {
     visible: isBoardCreating,
     openCard: openBoardCreateCard,
     closeCard: closeBoardCreateCard
   } = useBoardCreateModal()
 
-  const error = useMemo(() => createBoardError, [createBoardError])
-
-  useEffect(() => {
-    if (!error) {
-      return
-    }
-    useNotification({
-      type: NotificationType.Error,
-      message: error
-    })
-  }, [error])
-
   function createBoard(form: Form, cb: () => void) {
-    createBoard_(form)
-      .then((board: BoardPrimitive | null) => {
-        if (!board) {
+    const api = new BoardAPI()
+    api
+      .createBoard({
+        ...form,
+        userId: me!.id
+      })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        dispatch(updateBoards([...boards, board]))
-        dispatch(setCurrentBoardId(board.id))
+        dispatch(updateBoards([...boards, res.data]))
+        dispatch(setCurrentBoardId(res.data.id))
         // Navigate to the new board
-        navigate(`/${board.id}`)
+        navigate(`/${res.data.id}`)
         closeBoardCreateCard()
         useNotification({
           type: NotificationType.Success,

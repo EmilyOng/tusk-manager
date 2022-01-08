@@ -1,14 +1,22 @@
 import { getAuthToken } from 'utils/authToken'
+import { Response } from 'generated/models'
+import { NotificationType, useNotification } from 'composables/notification'
+
+export function guardError(res: Response | any) {
+  if (res.error) {
+    useNotification({
+      type: NotificationType.Error,
+      message: res.error as string
+    })
+  }
+  return res
+}
 
 enum Method {
   GET = 'get',
   POST = 'post',
   PUT = 'put',
   DELETE = 'delete'
-}
-
-export interface Response {
-  error?: string
 }
 
 export class RequestAPI {
@@ -51,6 +59,7 @@ export class RequestAPI {
       ...(method === Method.GET ? {} : { body: JSON.stringify(body) })
     })
       .then((res) => res.json())
+      .then(guardError)
       .catch((e) => {
         // eslint-disable-next-line no-console
         console.error(e)

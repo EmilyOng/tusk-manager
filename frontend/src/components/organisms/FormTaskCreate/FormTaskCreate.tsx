@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Tag } from 'types/tag'
-import { Color } from 'types/common'
-import { State } from 'types/state'
 import Button from 'components/atoms/Button'
 import InputField from 'components/molecules/InputField'
 import DropdownSelect from 'components/molecules/DropdownSelect'
@@ -11,19 +8,21 @@ import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
 import './FormTaskCreate.scoped.css'
+import { StatePrimitive, TagPrimitive } from 'generated/models'
+import { Color } from 'generated/types'
 
 export type Form = {
   name: string
   description: string
-  dueAt?: string
+  dueAt?: Date
   stateId: number | null
-  tags: Tag[]
+  tags: TagPrimitive[]
 }
 
 type Props = {
-  state: State
-  tags: Tag[]
-  states: State[]
+  state: StatePrimitive
+  tags: TagPrimitive[]
+  states: StatePrimitive[]
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
@@ -34,7 +33,7 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: Tag) => void
+      cb: (tag: TagPrimitive) => void
     }) => any
   }
 }
@@ -84,7 +83,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, states, tags, events }) => {
     })
   }
 
-  function updateTags(tag: Tag) {
+  function updateTags(tag: TagPrimitive) {
     const existing = form.tags.find((t) => t.id === tag.id)
     if (existing) {
       setForm({
@@ -122,8 +121,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, states, tags, events }) => {
         <label className="label">Due Date</label>
         <DatePicker
           events={{
-            onChange: (dueAt: Date) =>
-              setForm({ ...form, dueAt: dueAt.toDateString() })
+            onChange: (dueAt: Date) => setForm({ ...form, dueAt })
           }}
         />
       </div>
@@ -134,7 +132,7 @@ const FormTaskCreate: React.FC<Props> = ({ state, states, tags, events }) => {
             return { ...t, selected: false }
           })}
           events={{
-            onSelect: (tag: Tag) => updateTags(tag),
+            onSelect: (tag: TagPrimitive) => updateTags(tag),
             onCreateTag: events.onCreateTag
           }}
         />

@@ -8,7 +8,6 @@ import FormAuthentication, {
 import Message from 'components/atoms/Message'
 import clsx from 'clsx'
 import './Authentication.scoped.css'
-import { AuthUser } from 'types/user'
 import { useNavigate } from 'react-router-dom'
 import { selectMe, setMe } from 'store/me'
 import { AuthAPI } from 'api/auth'
@@ -31,25 +30,25 @@ function Authentication() {
   function onSubmit(form: Form, cb: () => void) {
     if (mode === FormMode.SignUp) {
       auth
-        .signUp(form as AuthUser)
+        .signUp({ ...form, name: form.name! })
         .then((res) => {
           if (res.error) {
             setError(res.error)
             return
           }
-          dispatch(setMe(res))
+          dispatch(setMe(res.data))
           navigate('/', { replace: true })
         })
         .finally(() => cb())
     } else {
       auth
-        .login(form as Omit<AuthUser, 'name'>)
+        .login(form)
         .then((res) => {
           if (res.error) {
             setError(res.error)
             return
           }
-          dispatch(setMe(res))
+          dispatch(setMe(res.data))
           navigate('/', { replace: true })
         })
         .finally(() => cb())

@@ -2,9 +2,10 @@ package main
 
 import (
 	"log"
-	"main/controllers"
-	"main/db"
-	"main/models"
+
+	"github.com/EmilyOng/cvwo/backend/controllers"
+	"github.com/EmilyOng/cvwo/backend/db"
+	"github.com/EmilyOng/cvwo/backend/models"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -35,7 +36,7 @@ func main() {
 			auth.POST("/logout", controllers.Logout)
 			auth.GET("/", controllers.IsAuthenticated)
 		}
-		guard := api.Group("/")
+		guard := api.Group("/", controllers.AuthGuard)
 		{
 			states := guard.Group("/states")
 			{
@@ -45,7 +46,7 @@ func main() {
 			}
 			boards := guard.Group("/boards")
 			{
-				boards.GET("/", controllers.GetBoards)
+				boards.GET("/", controllers.GetUserBoards)
 				boards.PUT("/", controllers.UpdateBoard)
 				boards.DELETE("/:board_id", controllers.DeleteBoard)
 				boards.GET("/:board_id", controllers.GetBoard)

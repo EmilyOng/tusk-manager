@@ -1,52 +1,30 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Task } from 'types/task'
-import { Color } from 'types/common'
-import { State } from 'types/state'
-import { Tag } from 'types/tag'
-import {
-  useCreateTask,
-  useEditTask,
-  useDeleteTask,
-  useTasks
-} from 'composables/task'
+import { useTasks } from 'composables/task'
 import ListView from 'components/organisms/ListView'
 import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
 import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import LoadingBar from 'components/molecules/LoadingBar'
-import { useCreateTag, useTags } from 'composables/tag'
+import { useTags } from 'composables/tag'
 import { NotificationType, useNotification } from 'composables/notification'
-import {
-  useCreateState,
-  useDeleteState,
-  useEditState,
-  useStates
-} from 'composables/state'
+import { useStates } from 'composables/state'
 import './TaskDashboard.scoped.css'
 import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
+import { TagAPI } from 'api/tag'
+import { TaskAPI } from 'api/task'
+import { Task, StatePrimitive, TagPrimitive } from 'generated/models'
+import { Color } from 'generated/types'
+import { useSelector } from 'react-redux'
+import { selectMe } from 'store/me'
+import { StateAPI } from 'api/state'
 
 function TaskDashboard() {
   const location = useLocation()
+  const { user: me } = useSelector(selectMe)
   const [boardId, setBoardId] = useState<number | null>(null)
-  const {
-    loading: tasksLoading,
-    error: tasksError,
-    tasks,
-    updateTasks
-  } = useTasks(boardId)
-  const { error: createTagError, createTag: createTag_ } = useCreateTag()
-  const {
-    loading: tagsLoading,
-    error: tagsError,
-    tags,
-    updateTags
-  } = useTags(boardId)
-  const {
-    loading: statesLoading,
-    error: statesError,
-    states,
-    updateStates
-  } = useStates(boardId)
+  const { loading: tasksLoading, tasks, updateTasks } = useTasks(boardId)
+  const { loading: tagsLoading, tags, updateTags } = useTags(boardId)
+  const { loading: statesLoading, states, updateStates } = useStates(boardId)
 
   const numStates = useMemo(() => states.length, [states])
 
@@ -58,22 +36,23 @@ function TaskDashboard() {
     setBoardId(parseInt(id))
   }, [location])
 
-  const { error: createTaskError, createTask: createTask_ } = useCreateTask()
-  const { error: updateTaskError, editTask: editTask_ } = useEditTask()
-  const { error: deleteTaskError, deleteTask: deleteTask_ } = useDeleteTask()
-  const { error: createStateError, createState: createState_ } =
-    useCreateState()
-  const { error: editStateError, editState: editState_ } = useEditState()
-  const { error: deleteStateError, deleteState: deleteState_ } =
-    useDeleteState()
+  const taskAPI = new TaskAPI()
+  const tagAPI = new TagAPI()
+  const stateAPI = new StateAPI()
 
   function createTask(form: CreateTaskForm, cb: () => void) {
-    createTask_({ ...form, boardId: boardId!, stateId: form.stateId! })
-      .then((task) => {
-        if (!task) {
+    taskAPI
+      .createTask({
+        ...form,
+        boardId: boardId!,
+        stateId: form.stateId!,
+        userId: me!.id
+      })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        updateTasks([...tasks, task])
+        updateTasks([...tasks, res.data])
         useNotification({
           type: NotificationType.Success,
           message: 'Task has been created successfully'
@@ -83,12 +62,13 @@ function TaskDashboard() {
   }
 
   function deleteTask(taskId: number, cb: () => void) {
-    deleteTask_(taskId)
-      .then((resId) => {
-        if (!resId) {
+    taskAPI
+      .deleteTask({ id: taskId })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        updateTasks(tasks.filter((task) => task.id !== resId))
+        updateTasks(tasks.filter((task) => task.id !== taskId))
         useNotification({
           type: NotificationType.Success,
           message: 'Task has been deleted successfully'
@@ -98,12 +78,13 @@ function TaskDashboard() {
   }
 
   function editTask(form: EditTaskForm, cb: () => void) {
-    editTask_({ ...form, boardId: boardId! })
-      .then((task) => {
-        if (!task) {
+    taskAPI
+      .editTask({ ...form, boardId: boardId!, userId: me!.id })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        updateTasks(tasks.map((t) => (t.id === task.id ? task : t)))
+        updateTasks(tasks.map((t) => (t.id === res.data.id ? res.data : t)))
       })
       .finally(() => cb())
   }
@@ -115,32 +96,35 @@ function TaskDashboard() {
   }: {
     name: string
     color: Color
-    cb: (tag: Tag) => void
+    cb: (tag: TagPrimitive) => void
   }) {
-    createTag_({
-      name,
-      color,
-      boardId: boardId!
-    }).then((tag) => {
-      if (!tag) {
-        return
-      }
-      updateTags([...tags, tag])
-      cb(tag)
-    })
+    tagAPI
+      .createTag({
+        name,
+        color,
+        boardId: boardId!
+      })
+      .then((res) => {
+        if (res.error) {
+          return
+        }
+        updateTags([...tags, res.data])
+        cb(res.data)
+      })
   }
 
   function createState(cb: () => void) {
-    createState_({
-      name: 'Untitled',
-      boardId: boardId!,
-      currentPosition: numStates
-    })
-      .then((state) => {
-        if (!state) {
+    stateAPI
+      .createState({
+        name: 'Untitled',
+        boardId: boardId!,
+        currentPosition: numStates
+      })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        updateStates([...states, state])
+        updateStates([...states, res.data])
       })
       .finally(() => cb())
   }
@@ -156,7 +140,10 @@ function TaskDashboard() {
       e.preventDefault()
     }
 
-    function onDropTask(e: React.DragEvent<HTMLDivElement>, state: State) {
+    function onDropTask(
+      e: React.DragEvent<HTMLDivElement>,
+      state: StatePrimitive
+    ) {
       e.preventDefault()
       if (!task.current) {
         return
@@ -164,9 +151,6 @@ function TaskDashboard() {
       editTask(
         {
           ...task.current,
-          ...(task.current.dueAt
-            ? { dueAt: new Date(task.current.dueAt).toDateString() }
-            : {}),
           stateId: state.id
         },
         () => (task.current = null)
@@ -180,24 +164,25 @@ function TaskDashboard() {
     }
   }
 
-  function editState(newState: State) {
-    editState_({ ...newState, boardId: boardId! }).then((res) => {
-      if (!res) {
+  function editState(newState: StatePrimitive) {
+    stateAPI.editState({ ...newState, boardId: boardId! }).then((res) => {
+      if (res.error) {
         return
       }
       updateStates(
-        states.map((state) => (state.id === newState.id ? newState : state))
+        states.map((state) => (state.id === res.data.id ? res.data : state))
       )
     })
   }
 
   function deleteState(stateId: number, cb: () => void) {
-    deleteState_(stateId)
-      .then((resId) => {
-        if (!resId) {
+    stateAPI
+      .deleteState({ id: stateId })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        updateStates(states.filter((state) => state.id !== resId))
+        updateStates(states.filter((state) => state.id !== stateId))
         useNotification({
           type: NotificationType.Success,
           message: 'State has been deleted successfully'
@@ -206,7 +191,7 @@ function TaskDashboard() {
       .finally(() => cb())
   }
 
-  function onMoveStateLeft(state: State) {
+  function onMoveStateLeft(state: StatePrimitive) {
     for (let i = 0; i < states.length; i++) {
       const s = states[i]
       if (s.id === state.id) {
@@ -220,19 +205,21 @@ function TaskDashboard() {
           currentPosition: state.currentPosition - 1,
           boardId: boardId!
         }
-        Promise.all([editState_(prev), editState_(curr)]).then(() => {
-          const copied = states.map((s) =>
-            s.id === prev.id ? prev : s.id === curr.id ? curr : s
-          )
-          copied.sort((a, b) => a.currentPosition - b.currentPosition)
-          updateStates(copied)
-        })
+        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)]).then(
+          () => {
+            const copied = states.map((s) =>
+              s.id === prev.id ? prev : s.id === curr.id ? curr : s
+            )
+            copied.sort((a, b) => a.currentPosition - b.currentPosition)
+            updateStates(copied)
+          }
+        )
         break
       }
     }
   }
 
-  function onMoveStateRight(state: State) {
+  function onMoveStateRight(state: StatePrimitive) {
     for (let i = 0; i < states.length; i++) {
       const s = states[i]
       if (s.id === state.id) {
@@ -246,54 +233,21 @@ function TaskDashboard() {
           currentPosition: state.currentPosition + 1,
           boardId: boardId!
         }
-        Promise.all([editState_(prev), editState_(curr)]).then(() => {
-          const copied = states.map((s) =>
-            s.id === prev.id ? prev : s.id === curr.id ? curr : s
-          )
-          copied.sort((a, b) => a.currentPosition - b.currentPosition)
-          updateStates(copied)
-        })
+        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)]).then(
+          () => {
+            const copied = states.map((s) =>
+              s.id === prev.id ? prev : s.id === curr.id ? curr : s
+            )
+            copied.sort((a, b) => a.currentPosition - b.currentPosition)
+            updateStates(copied)
+          }
+        )
         break
       }
     }
   }
 
   const { onDragTask, onDragOver, onDropTask } = useDragTask()
-  const error = useMemo(
-    () =>
-      tasksError ||
-      createTaskError ||
-      tagsError ||
-      createTagError ||
-      updateTaskError ||
-      deleteTaskError ||
-      statesError ||
-      createStateError ||
-      editStateError ||
-      deleteStateError,
-    [
-      tasksError,
-      createTaskError,
-      tagsError,
-      createTagError,
-      updateTaskError,
-      deleteTaskError,
-      statesError,
-      createStateError,
-      editStateError,
-      deleteStateError
-    ]
-  )
-
-  useEffect(() => {
-    if (!error) {
-      return
-    }
-    useNotification({
-      type: NotificationType.Error,
-      message: error
-    })
-  }, [error])
 
   return (
     <div className="task-dashboard">

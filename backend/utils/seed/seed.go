@@ -2,25 +2,28 @@ package models
 
 import (
 	"fmt"
-	"main/db"
 	"time"
+
+	"github.com/EmilyOng/cvwo/backend/db"
+	"github.com/EmilyOng/cvwo/backend/models"
+	commonUtils "github.com/EmilyOng/cvwo/backend/utils/common"
 )
 
 // Generates sample seed data
-func SeedData(user *User) (err error) {
-	var boards []Board
+func SeedData(user *models.UserPrimitive) (err error) {
+	var boards []models.Board
 
-	colors := []Color{Turquoise, Blue, Cyan, Green, Red, Yellow}
+	colors := commonUtils.GetDefaultColors()
 
 	// Create sample boards
 	for i := 0; i < 10; i++ {
-		var tags []*Tag
-		var tasks []*Task
-		var states []*State
+		var tags []*models.Tag
+		var tasks []*models.Task
+		var states []*models.State
 
 		// Create sample states for the current board
-		for i, state := range GetDefaultStates() {
-			states = append(states, &State{
+		for i, state := range commonUtils.GetDefaultStates() {
+			states = append(states, &models.State{
 				Name:            state,
 				CurrentPosition: i,
 			})
@@ -33,7 +36,7 @@ func SeedData(user *User) (err error) {
 
 		// Create sample tags for the current board
 		for i := 0; i < 7; i++ {
-			tags = append(tags, &Tag{
+			tags = append(tags, &models.Tag{
 				Name:  "Tag-" + fmt.Sprint(i),
 				Color: colors[i%6],
 			})
@@ -47,7 +50,7 @@ func SeedData(user *User) (err error) {
 		// Create sample tasks for the current board
 		for i := 0; i < 10; i++ {
 			t := time.Now().Add(24 * time.Hour)
-			tasks = append(tasks, &Task{
+			tasks = append(tasks, &models.Task{
 				Name:        "Sample Task-" + fmt.Sprint(i),
 				Description: "The quick brown fox jumps over the lazy dog",
 				DueAt:       &t,
@@ -61,7 +64,7 @@ func SeedData(user *User) (err error) {
 			return
 		}
 
-		boards = append(boards, Board{
+		boards = append(boards, models.Board{
 			Name:   "Board-" + fmt.Sprint(i),
 			UserID: &user.ID,
 			Color:  colors[i%6],

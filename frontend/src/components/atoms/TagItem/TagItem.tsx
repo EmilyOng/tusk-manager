@@ -1,7 +1,9 @@
 import React from 'react'
 import clsx from 'clsx'
-import { Color, ColorToAlias, Colors } from 'types/common'
+import { ColorToAlias, Colors } from 'utils/color'
 import { getSelectorHash } from 'utils/selectorHash'
+import { Color } from 'generated/types'
+import './TagItem.scoped.css'
 
 type Props = {
   name: string

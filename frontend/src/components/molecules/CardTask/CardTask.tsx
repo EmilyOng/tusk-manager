@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { format } from 'date-fns'
-import { Task } from 'types/task'
 import {
   faClock,
   faEllipsisV,
@@ -12,6 +11,7 @@ import Icon from 'components/atoms/Icon'
 import Button from 'components/atoms/Button'
 import DropdownMenu from '../DropdownMenu'
 import './CardTask.scoped.css'
+import { Task } from 'generated/models'
 
 type Props = {
   task: Task

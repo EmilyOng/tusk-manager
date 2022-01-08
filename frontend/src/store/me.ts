@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AuthAPI } from 'api/auth'
 import { NotificationType, useNotification } from 'composables/notification'
-import { User } from 'types/user'
+import { AuthUser } from 'generated/models'
 import { setAuthToken, removeAuthToken } from 'utils/authToken'
 
 type MeState = {
-  user: User | null
+  user: AuthUser | null
   loading: boolean
 }
 
@@ -28,7 +28,7 @@ export const MeSlice = createSlice({
   name: 'Me',
   initialState,
   reducers: {
-    setMe(state, action: { payload: User }) {
+    setMe(state, action: { payload: AuthUser }) {
       state.user = action.payload
       setAuthToken(action.payload.token)
     },
@@ -43,9 +43,9 @@ export const MeSlice = createSlice({
         state.loading = true
       })
       .addCase(getMe.fulfilled, (state, { payload }) => {
-        state.user = payload
+        state.user = payload.data
         state.loading = false
-        setAuthToken(payload.token)
+        setAuthToken(payload.data.token)
       })
       .addCase(getMe.rejected, (state, { payload }) => {
         state.loading = false

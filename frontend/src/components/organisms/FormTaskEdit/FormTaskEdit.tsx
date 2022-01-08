@@ -1,10 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import { Task } from 'types/task'
-import { State } from 'types/state'
-import { Tag } from 'types/tag'
-import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
 import InputField from 'components/molecules/InputField'
 import DropdownSelect from 'components/molecules/DropdownSelect'
@@ -12,20 +8,22 @@ import DatePicker from 'components/molecules/DatePicker'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
 import './FormTaskEdit.scoped.css'
+import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
+import { Color } from 'generated/types'
 
 export type Form = {
   id: number
   name: string
   description: string
-  dueAt?: string
+  dueAt?: Date
   stateId: number
-  tags: Tag[]
+  tags: TagPrimitive[]
 }
 
 type Props = {
   task: Task
-  tags: Tag[]
-  states: State[]
+  tags: TagPrimitive[]
+  states: StatePrimitive[]
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
@@ -36,14 +34,14 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: Tag) => void
+      cb: (tag: TagPrimitive) => void
     }) => any
   }
 }
 
 const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
   const [submitting, setSubmitting] = useState(false)
-  const [form, setForm] = useState<Form>(task)
+  const [form, setForm] = useState<Form>({ ...task, stateId: task.stateId! })
 
   const stateItems = states.map((state) => (
     <div key={state.id}>{state.name}</div>
@@ -53,7 +51,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
     return () => {
       // Clean-up
       setSubmitting(false)
-      setForm(task)
+      setForm({ ...task, stateId: task.stateId! })
     }
   }, [])
 
@@ -75,7 +73,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
     })
   }
 
-  function updateTags(tag: Tag) {
+  function updateTags(tag: TagPrimitive) {
     const existing = form.tags.find((t) => t.id === tag.id)
     if (existing) {
       setForm({
@@ -114,8 +112,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
         <DatePicker
           date={form.dueAt ? new Date(form.dueAt) : undefined}
           events={{
-            onChange: (dueAt: Date) =>
-              setForm({ ...form, dueAt: dueAt.toDateString() })
+            onChange: (dueAt: Date) => setForm({ ...form, dueAt })
           }}
         />
       </div>
@@ -126,7 +123,7 @@ const FormTaskEdit: React.FC<Props> = ({ task, states, tags, events }) => {
             return { ...t, selected: form.tags.map((t) => t.id).includes(t.id) }
           })}
           events={{
-            onSelect: (tag: Tag) => updateTags(tag),
+            onSelect: (tag: TagPrimitive) => updateTags(tag),
             onCreateTag: events.onCreateTag
           }}
         />

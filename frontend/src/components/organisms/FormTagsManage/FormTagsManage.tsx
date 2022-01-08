@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit, faTimes, faRedo } from '@fortawesome/free-solid-svg-icons'
-import { BoardPrimitive } from 'types/board'
-import { Tag } from 'types/tag'
 import { useTags } from 'composables/tag'
 import LoadingBar from 'components/molecules/LoadingBar'
 import InputField from 'components/molecules/InputField'
@@ -10,6 +8,8 @@ import Button from 'components/atoms/Button'
 import DropdownColor from 'components/molecules/DropdownColor'
 import { TagAPI } from 'api/tag'
 import './FormTagsManage.scoped.css'
+import { BoardPrimitive, TagPrimitive } from 'generated/models'
+import { Color } from 'generated/types'
 
 type Props = {
   board: BoardPrimitive
@@ -18,7 +18,7 @@ type Props = {
   }
 }
 
-interface DeletableTag extends Tag {
+interface DeletableTag extends TagPrimitive {
   deleted: boolean
 }
 
@@ -51,7 +51,7 @@ const FormTagsManage: React.FC<Props> = ({ board, events }) => {
     Promise.all(
       tags.map((tag) =>
         tag.deleted
-          ? tagsAPI.deleteTag(tag.id)
+          ? tagsAPI.deleteTag({ id: tag.id })
           : tagsAPI.editTag({ ...tag, boardId: board.id })
       )
     ).finally(() => {
@@ -92,7 +92,7 @@ const FormTagsManage: React.FC<Props> = ({ board, events }) => {
             />
             <DropdownColor
               initialColor={tag.color}
-              events={{ onSelect: () => {} }}
+              events={{ onSelect: (key) => (tag.color = key as Color) }}
             />
             <Button
               className="is-danger is-inverted"

@@ -1,19 +1,14 @@
-import { State } from 'types/state'
-import { RequestAPI, Response } from './request'
-
-type States = State[]
-interface StateResponse extends Response, State {}
-interface StatesResponse extends Response, States {}
-
-export interface CreatingState {
-  name: string
-  boardId: number
-  currentPosition: number
-}
-
-export interface EditingState extends CreatingState {
-  id: number
-}
+import {
+  CreateStatePayload,
+  CreateStateResponse,
+  DeleteStatePayload,
+  DeleteStateResponse,
+  GetBoardStatesPayload,
+  GetBoardStatesResponse,
+  UpdateStatePayload,
+  UpdateStateResponse
+} from 'generated/models'
+import { RequestAPI } from './request'
 
 export class StateAPI {
   private req: RequestAPI
@@ -22,19 +17,21 @@ export class StateAPI {
     this.req = new RequestAPI()
   }
 
-  async getStates(boardId: number): Promise<StatesResponse> {
-    return this.req.get(`/boards/${boardId}/states`)
+  async getStates(
+    payload: GetBoardStatesPayload
+  ): Promise<GetBoardStatesResponse> {
+    return this.req.get(`/boards/${payload.boardId}/states`)
   }
 
-  async createState(state: CreatingState): Promise<StateResponse> {
-    return this.req.post('/states/', state)
+  async createState(payload: CreateStatePayload): Promise<CreateStateResponse> {
+    return this.req.post('/states/', payload)
   }
 
-  async editState(state: EditingState): Promise<StateResponse> {
-    return this.req.put('/states/', state)
+  async editState(payload: UpdateStatePayload): Promise<UpdateStateResponse> {
+    return this.req.put('/states/', payload)
   }
 
-  async deleteState(stateId: number): Promise<Response> {
-    return this.req.delete(`/states/${stateId}`)
+  async deleteState(payload: DeleteStatePayload): Promise<DeleteStateResponse> {
+    return this.req.delete(`/states/${payload.id}`)
   }
 }

@@ -9,11 +9,9 @@ import {
   faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
 import { AuthAPI } from 'api/auth'
-import { BoardPrimitive } from 'types/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import Tabs from 'components/molecules/Tabs'
 import TabItem from 'components/molecules/TabItem'
-import { useCreateBoard, useDeleteBoard, useEditBoard } from 'composables/board'
 import Button from 'components/atoms/Button'
 import ModalCard from 'components/molecules/ModalCard'
 import FormBoardCreate, { Form } from '../FormBoardCreate'
@@ -25,6 +23,7 @@ import { useMediaQuery } from 'utils/mediaQuery'
 import DropdownSelect from 'components/molecules/DropdownSelect'
 import DropdownMenu from 'components/molecules/DropdownMenu'
 import './BoardTabs.scoped.css'
+import { BoardAPI } from 'api/board'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -53,15 +52,7 @@ const BoardTabs: React.FC = () => {
   } = useSelector(selectBoards)
   const { user: me } = useSelector(selectMe)
 
-  const {
-    loading: createBoardLoading,
-    error: createBoardError,
-    createBoard: createBoard_
-  } = useCreateBoard()
-  const { error: editBoardError, editBoard: editBoard_ } = useEditBoard()
-  const { error: deleteBoardError, deleteBoard: deleteBoard_ } =
-    useDeleteBoard()
-
+  const boardAPI = new BoardAPI()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -100,14 +91,18 @@ const BoardTabs: React.FC = () => {
   }
 
   function createBoard(form: Form, cb: () => void) {
-    createBoard_(form)
-      .then((board: BoardPrimitive | null) => {
-        if (!board) {
+    boardAPI
+      .createBoard({
+        ...form,
+        userId: me!.id
+      })
+      .then((res) => {
+        if (res.error) {
           return
         }
-        dispatch(updateBoards([...boards, board]))
+        dispatch(updateBoards([...boards, res.data]))
         // Navigate to the new board
-        selectBoard(board.id)
+        selectBoard(res.data.id)
         closeBoardCreateCard()
         useNotification({
           type: NotificationType.Success,
@@ -118,14 +113,15 @@ const BoardTabs: React.FC = () => {
   }
 
   function editBoard(form: Form, cb: () => void) {
-    editBoard_({ ...form, id: form.id! })
+    boardAPI
+      .editBoard({ ...form, id: form.id!, userId: me!.id })
       .then((res) => {
-        if (!res) {
+        if (res.error) {
           return
         }
         dispatch(
           updateBoards(
-            boards.map((board) => (board.id === res.id ? res : board))
+            boards.map((board) => (board.id === res.data.id ? res.data : board))
           )
         )
       })
@@ -133,9 +129,10 @@ const BoardTabs: React.FC = () => {
   }
 
   function deleteBoard(boardId: number, cb: () => void) {
-    deleteBoard_(boardId)
+    boardAPI
+      .deleteBoard({ id: boardId })
       .then((res) => {
-        if (!res) {
+        if (res.error) {
           return
         }
         dispatch(updateBoards(boards.filter((board) => board.id !== boardId)))
@@ -173,25 +170,7 @@ const BoardTabs: React.FC = () => {
     })
   }
 
-  const error = useMemo(
-    () => createBoardError || editBoardError || deleteBoardError,
-    [createBoardError, editBoardError, deleteBoardError]
-  )
-
-  const loading = useMemo(
-    () => boardsLoading || createBoardLoading,
-    [boardsLoading, createBoardLoading]
-  )
-
-  useEffect(() => {
-    if (!error) {
-      return
-    }
-    useNotification({
-      type: NotificationType.Error,
-      message: error
-    })
-  }, [error])
+  const loading = useMemo(() => boardsLoading, [boardsLoading])
 
   return (
     <div className="board-tabs">

@@ -1,23 +1,14 @@
-import { Tag } from 'types/tag'
-import { Task } from 'types/task'
-import { RequestAPI, Response } from './request'
-
-type Tasks = Task[]
-interface TasksResposne extends Response, Tasks {}
-interface TaskResponse extends Response, Task {}
-
-export interface CreatingTask {
-  name: string
-  description: string
-  dueAt?: string
-  tags: Tag[]
-  stateId: number
-  boardId: number
-}
-
-export interface EditingTask extends CreatingTask {
-  id: number
-}
+import {
+  CreateTaskPayload,
+  CreateTaskResponse,
+  DeleteTaskPayload,
+  DeleteTaskResponse,
+  GetBoardTasksPayload,
+  GetBoardTasksResponse,
+  UpdateTaskPayload,
+  UpdateTaskResponse
+} from 'generated/models'
+import { RequestAPI } from './request'
 
 export class TaskAPI {
   private req: RequestAPI
@@ -26,19 +17,21 @@ export class TaskAPI {
     this.req = new RequestAPI()
   }
 
-  async getTasks(boardId: number): Promise<TasksResposne> {
-    return this.req.get(`/boards/${boardId}/tasks`)
+  async getTasks(
+    payload: GetBoardTasksPayload
+  ): Promise<GetBoardTasksResponse> {
+    return this.req.get(`/boards/${payload.boardId}/tasks`)
   }
 
-  async createTask(task: CreatingTask): Promise<TaskResponse> {
-    return this.req.post('/tasks/', task)
+  async createTask(payload: CreateTaskPayload): Promise<CreateTaskResponse> {
+    return this.req.post('/tasks/', payload)
   }
 
-  async editTask(task: EditingTask): Promise<TaskResponse> {
-    return this.req.put('/tasks/', task)
+  async editTask(payload: UpdateTaskPayload): Promise<UpdateTaskResponse> {
+    return this.req.put('/tasks/', payload)
   }
 
-  async deleteTask(taskId: number): Promise<Response> {
-    return this.req.delete(`/tasks/${taskId}`)
+  async deleteTask(payload: DeleteTaskPayload): Promise<DeleteTaskResponse> {
+    return this.req.delete(`/tasks/${payload.id}`)
   }
 }

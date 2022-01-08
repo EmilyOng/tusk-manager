@@ -1,9 +1,12 @@
-import { AuthUser, User } from 'types/user'
-import { RequestAPI, Response } from './request'
-
-interface SignUpResponse extends Response, User {}
-interface LoginResponse extends Response, User {}
-interface AuthUserResponse extends Response, User {}
+import {
+  Response,
+  SignUpResponse,
+  AuthUserResponse,
+  LoginResponse,
+  SignUpPayload,
+  LoginPayload
+} from 'generated/models'
+import { RequestAPI } from './request'
 
 export class AuthAPI {
   private req: RequestAPI
@@ -12,19 +15,12 @@ export class AuthAPI {
     this.req = new RequestAPI()
   }
 
-  async signUp(user: AuthUser): Promise<SignUpResponse> {
-    return this.req.post('/auth/signup', {
-      Name: user.name,
-      Email: user.email,
-      Password: user.password
-    })
+  async signUp(payload: SignUpPayload): Promise<SignUpResponse> {
+    return this.req.post('/auth/signup', payload)
   }
 
-  async login(user: Omit<AuthUser, 'name'>): Promise<LoginResponse> {
-    return this.req.post('/auth/login', {
-      Email: user.email,
-      Password: user.password
-    })
+  async login(payload: LoginPayload): Promise<LoginResponse> {
+    return this.req.post('/auth/login', payload)
   }
 
   async getAuthUser(): Promise<AuthUserResponse> {

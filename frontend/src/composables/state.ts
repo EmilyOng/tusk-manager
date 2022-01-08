@@ -1,15 +1,14 @@
+import { StateAPI } from 'api/state'
+import { StatePrimitive } from 'generated/models'
 import { useState, useEffect } from 'react'
-import { CreatingState, EditingState, StateAPI } from 'api/state'
-import { State } from 'types/state'
 
 export function useStates(boardId: number | null) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const api = new StateAPI()
-  const [states, setStates] = useState<State[]>([])
+  const [states, setStates] = useState<StatePrimitive[]>([])
 
-  function updateStates(states: State[]) {
+  function updateStates(states: StatePrimitive[]) {
     setStates(states)
   }
 
@@ -20,108 +19,23 @@ export function useStates(boardId: number | null) {
     setStates([])
     setLoading(true)
     api
-      .getStates(boardId)
+      .getStates({ boardId })
       .then((res) => {
-        if (res.error) {
-          setError(res.error)
-        } else {
-          setStates(res)
+        if (!res.error) {
+          setStates(res.data)
         }
       })
       .finally(() => setLoading(false))
     return () => {
       // Clean-up
       setLoading(false)
-      setError('')
       setStates([])
     }
   }, [boardId])
 
   return {
     loading,
-    error,
     states,
     updateStates
-  }
-}
-
-export function useCreateState() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new StateAPI()
-
-  function createState(state: CreatingState) {
-    setLoading(true)
-    return api
-      .createState(state)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    createState
-  }
-}
-
-export function useEditState() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new StateAPI()
-
-  function editState(state: EditingState) {
-    setLoading(true)
-    return api
-      .editState(state)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    editState
-  }
-}
-
-export function useDeleteState() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new StateAPI()
-
-  function deleteState(stateId: number) {
-    setLoading(true)
-    return api
-      .deleteState(stateId)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return stateId
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    deleteState
   }
 }

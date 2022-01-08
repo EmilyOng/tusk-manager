@@ -1,10 +1,11 @@
 import React from 'react'
 import FormBoard, { Form as Form_ } from 'components/molecules/FormBoard'
+import { BoardPrimitive } from 'generated/models'
 
 export type Form = Form_
 
 type Props = {
-  board: Form
+  board: BoardPrimitive
   events: {
     onSubmit: (form: Form, cb: () => void) => any
     onCancel: () => any
@@ -13,7 +14,11 @@ type Props = {
 
 const FormBoardEdit: React.FC<Props> = ({ board, events }) => {
   return (
-    <FormBoard initial={board} events={events} actionLabels={{ ok: 'Edit' }} />
+    <FormBoard
+      initial={{ id: board.id, name: board.name, color: board.color }}
+      events={events}
+      actionLabels={{ ok: 'Edit' }}
+    />
   )
 }
 

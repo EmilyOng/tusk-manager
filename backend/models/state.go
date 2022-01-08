@@ -1,48 +1,50 @@
 package models
 
-import (
-	"main/db"
-)
-
 type State struct {
 	ID              uint8   `gorm:"primaryKey" json:"id"`
 	Name            string  `gorm:"not null" json:"name"`
 	CurrentPosition int     `gorm:"not null" json:"currentPosition"` // Sort key
-	Tasks           []*Task `gorm:"not null" json:"-"`               // Tasks belonging to the state
-	BoardID         *uint8  `json:"-"`                               // Board that the state belongs to
+	Tasks           []*Task `gorm:"not null" json:"tasks"`           // Tasks belonging to the state
+	BoardID         *uint8  `json:"boardId"`                         // Board that the state belongs to
 }
 
-func GetDefaultStates() []string {
-	return []string{"To Do", "In Progress", "Completed"}
+type StatePrimitive struct {
+	ID              uint8  `json:"id"`
+	Name            string `json:"name"`
+	CurrentPosition int    `json:"currentPosition"`
+	BoardID         *uint8 `json:"boardId"`
 }
 
-func (state *State) Create() error {
-	result := db.DB.Create(state)
-	return result.Error
+// Create State
+type CreateStatePayload struct {
+	Name            string `json:"name"`
+	BoardID         uint8  `json:"boardId"`
+	CurrentPosition int    `json:"currentPosition"`
 }
 
-func (state *State) Update() error {
-	result := db.DB.Model(state).Save(state)
-	return result.Error
+type CreateStateResponse struct {
+	Response
+	State State `json:"data"`
 }
 
-func (state *State) GetTasks() (tasks []Task, err error) {
-	err = db.DB.Model(state).Association("Tasks").Find(&tasks)
-	return
+// Update State
+type UpdateStatePayload struct {
+	ID              uint8  `json:"id"`
+	Name            string `json:"name"`
+	BoardID         uint8  `json:"boardId"`
+	CurrentPosition int    `json:"currentPosition"`
 }
 
-func (state *State) Delete() error {
-	tasks, err := state.GetTasks()
-	if err != nil {
-		return err
-	}
-	for _, task := range tasks {
-		err = task.Delete()
-		if err != nil {
-			return err
-		}
-	}
+type UpdateStateResponse struct {
+	Response
+	State StatePrimitive `json:"data"`
+}
 
-	result := db.DB.Delete(state)
-	return result.Error
+// Delete State
+type DeleteStatePayload struct {
+	ID uint8 `json:"id"`
+}
+
+type DeleteStateResponse struct {
+	Response
 }

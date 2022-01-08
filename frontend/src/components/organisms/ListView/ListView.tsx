@@ -9,9 +9,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import CardTask from 'components/molecules/CardTask'
 import FormTaskCreate, { Form as CreateTaskForm } from '../FormTaskCreate'
-import { Task } from 'types/task'
-import { Tag } from 'types/tag'
-import { Color } from 'types/common'
 import Button from 'components/atoms/Button'
 import LoadingBar from 'components/molecules/LoadingBar'
 import ModalCard from 'components/molecules/ModalCard'
@@ -19,14 +16,15 @@ import FormTaskEdit, { Form as EditTaskForm } from '../FormTaskEdit'
 import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
 import FilterReverse from 'components/molecules/FilterReverse'
 import ListViewHeader from 'components/molecules/ListViewHeader'
-import { State } from 'types/state'
 import './ListView.scoped.css'
+import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
+import { Color } from 'generated/types'
 
 type Props = {
   tasks: Task[]
-  tags: Tag[]
-  states: State[]
-  state: State
+  tags: TagPrimitive[]
+  states: StatePrimitive[]
+  state: StatePrimitive
   loading: boolean
   position: {
     current: number
@@ -44,14 +42,17 @@ type Props = {
     }: {
       name: string
       color: Color
-      cb: (tag: Tag) => void
+      cb: (tag: TagPrimitive) => void
     }) => any
     onDragOver: (e: React.DragEvent<HTMLDivElement>) => void
-    onDropTask: (e: React.DragEvent<HTMLDivElement>, state: State) => void
-    onEditState: (newState: State) => void
+    onDropTask: (
+      e: React.DragEvent<HTMLDivElement>,
+      state: StatePrimitive
+    ) => void
+    onEditState: (newState: StatePrimitive) => void
     onDeleteState: (stateId: number, cb: () => void) => void
-    onMoveStateLeft: (state: State) => void
-    onMoveStateRight: (state: State) => void
+    onMoveStateLeft: (state: StatePrimitive) => void
+    onMoveStateRight: (state: StatePrimitive) => void
   }
 }
 
@@ -100,9 +101,9 @@ function useTaskEditModal() {
 }
 
 function useStateDeleteModal() {
-  const [state, setState] = useState<State>()
+  const [state, setState] = useState<StatePrimitive>()
   const [visible, setVisible] = useState(false)
-  function openCard(state: State) {
+  function openCard(state: StatePrimitive) {
     setState(state)
     setVisible(true)
   }
@@ -181,7 +182,7 @@ const ListView: React.FC<Props> = ({
     setShowDropzone(true)
   }
 
-  function onDrop(e: React.DragEvent<HTMLDivElement>, state: State) {
+  function onDrop(e: React.DragEvent<HTMLDivElement>, state: StatePrimitive) {
     events.onDropTask(e, state)
     e.stopPropagation()
     setShowDropzone(false)

@@ -1,51 +1,68 @@
 package models
 
 import (
-	"main/db"
 	"time"
 )
 
 type Task struct {
-	CommonModel
+	ID          uint8      `gorm:"primary_key" json:"id"`
 	Name        string     `gorm:"not null" json:"name"`
 	Description string     `gorm:"default:''" json:"description"`
-	DueAt       *time.Time `json:"dueAt"`
+	DueAt       *time.Time `json:"dueAt" ts_type:"Date" ts_transform:"new Date(__VALUE__)"`
 	Tags        []*Tag     `gorm:"many2many:task_tags" json:"tags"`
-	UserID      *uint8     `json:"-"`                       // Owner of the task
-	BoardID     *uint8     `json:"-"`                       // Board that the task belongs to
+	UserID      *uint8     `json:"userId"`                  // Owner of the task
+	BoardID     *uint8     `json:"boardId"`                 // Board that the task belongs to
 	StateID     *uint8     `gorm:"not null" json:"stateId"` // State that the task is at
 }
 
-func (task *Task) Create() error {
-	result := db.DB.Create(task)
-	return result.Error
+type TaskPrimitive struct {
+	ID          uint8      `json:"id"`
+	Name        string     `json:"name"`
+	Description string     `json:"description"`
+	DueAt       *time.Time `json:"dueAt" ts_type:"Date" ts_transform:"new Date(__VALUE__)"`
+	UserID      *uint8     `json:"userId"`
+	BoardID     *uint8     `json:"boardId"`
+	StateID     *uint8     `gorm:"not null" json:"stateId"`
 }
 
-func (task *Task) Get() error {
-	result := db.DB.Model(task).Preload("Tags").Find(task)
-	return result.Error
+// Create Task
+type CreateTaskPayload struct {
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	DueAt       string          `json:"dueAt,omitempty" ts_type:"Date" ts_transform:"new Date(__VALUE__)"`
+	StateID     uint8           `json:"stateId"`
+	Tags        []*TagPrimitive `json:"tags"`
+	BoardID     uint8           `json:"boardId"`
+	UserID      uint8           `json:"userId"`
 }
 
-func (task *Task) Update() error {
-	if len(task.Tags) != 0 {
-		err := db.DB.Model(task).Association("Tags").Replace(task.Tags)
-		if err != nil {
-			return err
-		}
-	}
-	result := db.DB.Model(task).Preload("Tags").Save(task)
-	return result.Error
+type CreateTaskResponse struct {
+	Response
+	Task Task `json:"data"`
 }
 
-func (task *Task) Delete() error {
-	err := task.Get()
-	if err != nil {
-		return err
-	}
-	err = db.DB.Model(task).Association("Tags").Delete(task.Tags)
-	if err != nil {
-		return err
-	}
-	result := db.DB.Delete(task)
-	return result.Error
+// Update Task
+type UpdateTaskPayload struct {
+	ID          uint8           `json:"id"`
+	Name        string          `json:"name"`
+	Description string          `json:"description"`
+	DueAt       string          `json:"dueAt,omitempty" ts_type:"Date" ts_transform:"new Date(__VALUE__)"`
+	StateID     uint8           `json:"stateId"`
+	Tags        []*TagPrimitive `json:"tags"`
+	BoardID     uint8           `json:"boardId"`
+	UserID      uint8           `json:"userId"`
+}
+
+type UpdateTaskResponse struct {
+	Response
+	Task Task `json:"data"`
+}
+
+// Delete Task
+type DeleteTaskPayload struct {
+	ID uint8 `json:"id"`
+}
+
+type DeleteTaskResponse struct {
+	Response
 }

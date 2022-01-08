@@ -1,5 +1,6 @@
+import { Color } from 'generated/types'
 import React, { Key } from 'react'
-import { Colors, Color } from 'types/common'
+import { Colors } from 'utils/color'
 import DropdownSelect from '../DropdownSelect'
 import SquareColor from '../SquareColor'
 import './DropdownColor.scoped.css'

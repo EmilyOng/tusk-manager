@@ -1,18 +1,4 @@
-export interface Base {
-  id: number
-  createdAt?: string
-  updatedAt?: string
-  deletedAt?: string
-}
-
-export enum Color {
-  Turquoise = 'Turquoise',
-  Blue = 'Blue',
-  Cyan = 'Cyan',
-  Green = 'Green',
-  Yellow = 'Yellow',
-  Red = 'Red'
-}
+import { Color } from 'generated/types'
 
 export const Colors = [
   Color.Blue,

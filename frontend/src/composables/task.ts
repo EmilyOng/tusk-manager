@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Task } from 'types/task'
-import { TaskAPI, CreatingTask, EditingTask } from 'api/task'
+import { TaskAPI } from 'api/task'
+import { Task } from 'generated/models'
 
 export function useTasks(boardId: number | null) {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
   const api = new TaskAPI()
   const [tasks, setTasks] = useState<Task[]>([])
@@ -20,108 +19,23 @@ export function useTasks(boardId: number | null) {
     setTasks([])
     setLoading(true)
     api
-      .getTasks(boardId)
+      .getTasks({ boardId })
       .then((res) => {
-        if (res.error) {
-          setError(res.error)
-        } else {
-          setTasks(res)
+        if (!res.error) {
+          setTasks(res.data)
         }
       })
       .finally(() => setLoading(false))
     return () => {
       // Clean-up
       setLoading(false)
-      setError('')
       setTasks([])
     }
   }, [boardId])
 
   return {
     loading,
-    error,
     tasks,
     updateTasks
-  }
-}
-
-export function useCreateTask() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new TaskAPI()
-
-  function createTask(task: CreatingTask) {
-    setLoading(true)
-    return api
-      .createTask(task)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    createTask
-  }
-}
-
-export function useEditTask() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new TaskAPI()
-
-  function editTask(task: EditingTask) {
-    setLoading(true)
-    return api
-      .editTask(task)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return res
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    editTask
-  }
-}
-
-export function useDeleteTask() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const api = new TaskAPI()
-
-  function deleteTask(taskId: number) {
-    setLoading(true)
-    return api
-      .deleteTask(taskId)
-      .then((res) => {
-        if (res.error) {
-          setError(res.error)
-          return null
-        }
-        return taskId
-      })
-      .finally(() => setLoading(false))
-  }
-
-  return {
-    loading,
-    error,
-    deleteTask
   }
 }

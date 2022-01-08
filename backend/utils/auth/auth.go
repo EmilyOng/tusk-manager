@@ -3,12 +3,14 @@ package utils
 import (
 	"errors"
 	"log"
-	"main/models"
 	"os"
 	"time"
 
+	"github.com/EmilyOng/cvwo/backend/models"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/joho/godotenv"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type JWTAuth struct {
@@ -34,7 +36,7 @@ func GetSecretKey() (secretKey string, err error) {
 	return
 }
 
-func (j *JWTAuth) GenerateToken(user models.User) (signedToken string, err error) {
+func (j *JWTAuth) GenerateToken(user models.UserPrimitive) (signedToken string, err error) {
 	// Token expires in 24 hours
 	claims := &Claim{
 		UserID:    user.ID,
@@ -67,5 +69,20 @@ func (j *JWTAuth) ValidateToken(signedToken string) (claims *Claim, err error) {
 		err = errors.New("token has expired")
 		return
 	}
+	return
+}
+
+func HashPassword(password string) (hashed string, err error) {
+	// uses hashing cost of 10
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	if err != nil {
+		return
+	}
+	hashed = string(bytes)
+	return
+}
+
+func ComparePassword(userPassword string, passwordInput string) (err error) {
+	err = bcrypt.CompareHashAndPassword([]byte(userPassword), []byte(passwordInput))
 	return
 }

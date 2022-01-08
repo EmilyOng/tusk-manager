@@ -2,102 +2,44 @@ package controllers
 
 import (
 	"fmt"
-	"main/models"
 	"net/http"
+
+	"github.com/EmilyOng/cvwo/backend/models"
+	stateService "github.com/EmilyOng/cvwo/backend/services/state"
 
 	"github.com/gin-gonic/gin"
 )
 
-type CreateStatePayload struct {
-	Name            string
-	BoardID         uint8
-	CurrentPosition int
-}
-
-type UpdateStatePayload struct {
-	ID              uint8
-	Name            string
-	BoardID         uint8
-	CurrentPosition int
-}
-
 func CreateState(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
-	var payload CreateStatePayload
+	var payload models.CreateStatePayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	state := models.State{
-		Name:            payload.Name,
-		BoardID:         &payload.BoardID,
-		CurrentPosition: payload.CurrentPosition,
-	}
-
-	err = state.Create()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, state)
+	createStateResponse := stateService.CreateState(payload)
+	c.JSON(http.StatusOK, createStateResponse)
 }
 
 func UpdateState(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
-	var payload UpdateStatePayload
+	var payload models.UpdateStatePayload
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
 		return
 	}
 
-	state := models.State{
-		ID:              payload.ID,
-		Name:            payload.Name,
-		BoardID:         &payload.BoardID,
-		CurrentPosition: payload.CurrentPosition,
-	}
-
-	err = state.Update()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, state)
+	updateStateResponse := stateService.UpdateState(payload)
+	c.JSON(http.StatusOK, updateStateResponse)
 }
 
 func DeleteState(c *gin.Context) {
-	userInterface, _ := c.Get("user")
-	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-		return
-	}
-
 	var stateID uint8
 	fmt.Sscan(c.Param("state_id"), &stateID)
-	state := models.State{ID: stateID}
 
-	err := state.Delete()
-
-	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, state)
+	deleteStateResponse := stateService.DeleteState(models.DeleteStatePayload{ID: stateID})
+	c.JSON(http.StatusOK, deleteStateResponse)
 }
