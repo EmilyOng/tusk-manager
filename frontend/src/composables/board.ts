@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { BoardAPI } from 'api/board'
 import {
   BoardPrimitive,
+  MemberProfile,
   StatePrimitive,
   TagPrimitive,
   Task
@@ -155,5 +156,43 @@ export function useBoardTasks(boardId: number | null) {
     loading,
     tasks,
     updateTasks
+  }
+}
+
+export function useBoardMemberProfiles(boardId: number | null) {
+  const [loading, setLoading] = useState(false)
+
+  const api = new BoardAPI()
+  const [memberProfiles, setMemberProfiles] = useState<MemberProfile[]>([])
+
+  function updateMemberProfiles(memberProfiles: MemberProfile[]) {
+    setMemberProfiles(memberProfiles)
+  }
+
+  useEffect(() => {
+    if (!boardId) {
+      return
+    }
+    setMemberProfiles([])
+    setLoading(true)
+    api
+      .getMemberProfiles({ boardId })
+      .then((res) => {
+        if (!res.error) {
+          setMemberProfiles(res.data)
+        }
+      })
+      .finally(() => setLoading(false))
+    return () => {
+      // Clean-up
+      setLoading(false)
+      setMemberProfiles([])
+    }
+  }, [boardId])
+
+  return {
+    loading,
+    memberProfiles,
+    updateMemberProfiles
   }
 }

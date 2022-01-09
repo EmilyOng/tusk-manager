@@ -7,6 +7,7 @@ type Props = {
   trigger: JSX.Element
   items: JSX.Element[]
   closeOnContentClick?: boolean
+  hoverable?: boolean
   events?: {
     onClickDropdownItem?: (key: Key | null) => any
     onClickDropdown?: () => any
@@ -16,6 +17,7 @@ type Props = {
 const DropdownMenu: React.FC<Props> = ({
   trigger,
   closeOnContentClick = true,
+  hoverable,
   items,
   events
 }) => {
@@ -55,6 +57,19 @@ const DropdownMenu: React.FC<Props> = ({
     animationRef.current = requestAnimationFrame(updateDropdownMenuPosition)
   }
 
+  const onHover = {
+    in: (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setDropdownMenuVisible(true)
+      events?.onClickDropdown?.()
+    },
+    out: (e: React.MouseEvent<HTMLDivElement>) => {
+      e.stopPropagation()
+      setDropdownMenuVisible(false)
+      events?.onClickDropdown?.()
+    }
+  }
+
   useEffect(() => {
     animationRef.current = requestAnimationFrame(updateDropdownMenuPosition)
     return () => {
@@ -67,7 +82,12 @@ const DropdownMenu: React.FC<Props> = ({
 
   return (
     <div className="dropdown">
-      <div className="dropdown-trigger" onClick={onClickDropdown}>
+      <div
+        className="dropdown-trigger"
+        onMouseOver={hoverable ? onHover.in : () => {}}
+        onMouseOut={hoverable ? onHover.out : () => {}}
+        onClick={onClickDropdown}
+      >
         <div ref={dropdownTriggerWrapper}>{trigger}</div>
       </div>
       <Portal>

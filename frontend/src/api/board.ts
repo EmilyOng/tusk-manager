@@ -3,6 +3,8 @@ import {
   CreateBoardResponse,
   DeleteBoardPayload,
   DeleteBoardResponse,
+  GetBoardMemberProfilesPayload,
+  GetBoardMemberProfilesResponse,
   GetBoardPayload,
   GetBoardResponse,
   GetBoardStatesPayload,
@@ -43,6 +45,12 @@ export class BoardAPI {
     payload: GetBoardTasksPayload
   ): Promise<GetBoardTasksResponse> {
     return this.req.get(`/boards/${payload.boardId}/tasks`)
+  }
+
+  async getMemberProfiles(
+    payload: GetBoardMemberProfilesPayload
+  ): Promise<GetBoardMemberProfilesResponse> {
+    return this.req.get(`/boards/${payload.boardId}/member_profiles`)
   }
 
   async getBoard(payload: GetBoardPayload): Promise<GetBoardResponse> {

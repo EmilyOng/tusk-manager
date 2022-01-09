@@ -1,0 +1,37 @@
+.avatar {
+  border-radius: 50%;
+  height: 40px;
+  text-align: center;
+  width: 40px;
+}
+
+.initials {
+  font-size: calc(40px / 2);
+  line-height: 1;
+  position: relative;
+  top: 25%;
+}
+
+.avatar.Turquoise {
+  background-color: var(--turquoise);
+}
+
+.avatar.Blue {
+  background-color: var(--blue);
+}
+
+.avatar.Cyan {
+  background-color: var(--cyan);
+}
+
+.avatar.Green {
+  background-color: var(--green);
+}
+
+.avatar.Yellow {
+  background-color: var(--yellow);
+}
+
+.avatar.Red {
+  background-color: var(--red);
+}

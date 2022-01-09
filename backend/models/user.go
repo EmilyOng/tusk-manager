@@ -16,6 +16,12 @@ type UserPrimitive struct {
 	Password string `gorm:"not null" json:"password"`
 }
 
+type Profile struct {
+	ID    uint8  `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
 // Auth User
 type AuthUser struct {
 	ID    uint8  `json:"id"`

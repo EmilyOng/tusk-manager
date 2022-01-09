@@ -69,7 +69,16 @@ func GetBoardTags(c *gin.Context) {
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
 	getBoardTagsResponse := boardService.GetBoardTags(models.GetBoardTagsPayload{BoardID: boardID})
-	c.JSON(http.StatusOK, getBoardTagsResponse)
+	c.JSON(errorUtils.MakeResponseCode(getBoardTagsResponse.Response), getBoardTagsResponse)
+}
+
+func GetBoardMemberProfiles(c *gin.Context) {
+	var boardID uint8
+	fmt.Sscan(c.Param("board_id"), &boardID)
+	getBoardMemberProfilesResponse := boardService.GetBoardMemberProfiles(
+		models.GetBoardMemberProfilesPayload{BoardID: boardID},
+	)
+	c.JSON(errorUtils.MakeResponseCode(getBoardMemberProfilesResponse.Response), getBoardMemberProfilesResponse)
 }
 
 func GetBoard(c *gin.Context) {

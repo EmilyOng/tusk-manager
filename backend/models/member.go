@@ -12,3 +12,9 @@ type MemberPrimitive struct {
 	Role   Role   `json:"role"`
 	UserID *uint8 `json:"userId"` // User ID of the board member
 }
+
+type MemberProfile struct {
+	ID      uint8   `json:"id"`
+	Role    Role    `json:"role"`
+	Profile Profile `json:"profile"`
+}

@@ -3,11 +3,13 @@ import clsx from 'clsx'
 import Button from 'components/atoms/Button'
 import { faEdit, faTrash, faTag } from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
-import { useBoard } from 'composables/board'
+import { useBoard, useBoardMemberProfiles } from 'composables/board'
 import FormBoardEdit, { Form } from '../FormBoardEdit'
 import './BoardHeader.scoped.css'
 import { BoardPrimitive } from 'generated/models'
 import { useNavigate } from 'react-router-dom'
+import Avatar from 'components/molecules/Avatar'
+import DropdownMenu from 'components/molecules/DropdownMenu'
 
 type Props = {
   boardId: number | null
@@ -60,6 +62,7 @@ function useBoardDeleteModal() {
 const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
   const navigate = useNavigate()
   const { board, updateBoard } = useBoard(boardId)
+  const { memberProfiles } = useBoardMemberProfiles(boardId)
 
   function onEditBoard(form: Form, cb: () => void) {
     events.onEditBoard(form, () => {
@@ -143,6 +146,23 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
       {board && (
         <div className="board-information">
           <h1 className="title">{board.name}</h1>
+          <div className="board-members">
+            {memberProfiles.map((member) => (
+              <DropdownMenu
+                key={member.id}
+                hoverable={true}
+                items={[
+                  <div key="" className="member-info">
+                    <span className="member-role">{member.role}</span>
+                    <span>
+                      {member.profile.name} ({member.profile.email})
+                    </span>
+                  </div>
+                ]}
+                trigger={<Avatar name={member.profile.name} />}
+              />
+            ))}
+          </div>
           <div className="board-actions">
             <Button
               className="is-info is-light"

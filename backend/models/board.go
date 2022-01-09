@@ -71,6 +71,16 @@ type GetBoardTagsResponse struct {
 	Tags []TagPrimitive `json:"data"`
 }
 
+// Get Board Member Profiles
+type GetBoardMemberProfilesPayload struct {
+	BoardID uint8 `json:"boardId"`
+}
+
+type GetBoardMemberProfilesResponse struct {
+	Response
+	MemberProfiles []MemberProfile `json:"data"`
+}
+
 // Get Board States
 type GetBoardStatesPayload struct {
 	BoardID uint8 `json:"boardId"`

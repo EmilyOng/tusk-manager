@@ -68,6 +68,36 @@ func GetBoardStates(payload models.GetBoardStatesPayload) models.GetBoardStatesR
 	}
 }
 
+func GetBoardMemberProfiles(payload models.GetBoardMemberProfilesPayload) models.GetBoardMemberProfilesResponse {
+	board := models.Board{ID: payload.BoardID}
+	var members []models.MemberPrimitive
+	err := db.DB.Model(&board).Association("Members").Find(&members)
+	if err != nil {
+		return models.GetBoardMemberProfilesResponse{
+			Response: models.Response{Error: errorUtils.MakeErrStr(err)},
+		}
+	}
+	var memberProfiles []models.MemberProfile
+	for _, member := range members {
+		var profile models.Profile
+		err = db.DB.Model(&models.User{ID: *member.UserID}).Find(&profile).Error
+		memberProfiles = append(memberProfiles, models.MemberProfile{
+			ID:      member.ID,
+			Role:    member.Role,
+			Profile: profile,
+		})
+		if err != nil {
+			return models.GetBoardMemberProfilesResponse{
+				Response: models.Response{Error: errorUtils.MakeErrStr(err)},
+			}
+		}
+	}
+	return models.GetBoardMemberProfilesResponse{
+		Response:       models.Response{Error: errorUtils.MakeErrStr(err)},
+		MemberProfiles: memberProfiles,
+	}
+}
+
 func UpdateBoard(payload models.UpdateBoardPayload) models.UpdateBoardResponse {
 	board := models.Board{ID: payload.ID, Name: payload.Name, Color: payload.Color}
 	result := db.DB.Model(&models.Board{ID: board.ID}).Save(&board)
