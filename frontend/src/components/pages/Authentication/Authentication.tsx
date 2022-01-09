@@ -5,12 +5,12 @@ import FormAuthentication, {
   Form,
   FormMode
 } from 'components/organisms/FormAuthentication'
-import Message from 'components/atoms/Message'
 import clsx from 'clsx'
 import './Authentication.scoped.css'
 import { useNavigate } from 'react-router-dom'
 import { selectMe, setMe } from 'store/me'
 import { AuthAPI } from 'api/auth'
+import { NotificationType, useNotification } from 'composables/notification'
 
 function Authentication() {
   const dispatch = useDispatch()
@@ -23,7 +23,6 @@ function Authentication() {
     }
   }, [user])
 
-  const [error, setError] = useState('')
   const auth = new AuthAPI()
   const [mode, setMode] = useState<FormMode>(FormMode.SignUp)
 
@@ -33,11 +32,14 @@ function Authentication() {
         .signUp({ ...form, name: form.name! })
         .then((res) => {
           if (res.error) {
-            setError(res.error)
             return
           }
           dispatch(setMe(res.data))
           navigate('/', { replace: true })
+          useNotification({
+            type: NotificationType.Info,
+            message: 'Welcome!'
+          })
         })
         .finally(() => cb())
     } else {
@@ -45,7 +47,6 @@ function Authentication() {
         .login(form)
         .then((res) => {
           if (res.error) {
-            setError(res.error)
             return
           }
           dispatch(setMe(res.data))
@@ -94,9 +95,7 @@ function Authentication() {
           </li>
         </ul>
       </div>
-      <FormAuthentication onSubmit={onSubmit} mode={mode}>
-        <Message type="danger" text={error} />
-      </FormAuthentication>
+      <FormAuthentication onSubmit={onSubmit} mode={mode} />
     </div>
   )
 }

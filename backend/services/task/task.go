@@ -6,6 +6,7 @@ import (
 	"github.com/EmilyOng/cvwo/backend/db"
 	"github.com/EmilyOng/cvwo/backend/models"
 	datetime "github.com/EmilyOng/cvwo/backend/utils/datetime"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 )
 
 func CreateTask(payload models.CreateTaskPayload) models.CreateTaskResponse {
@@ -32,7 +33,7 @@ func CreateTask(payload models.CreateTaskPayload) models.CreateTaskResponse {
 	}
 	result := db.DB.Create(&task)
 	return models.CreateTaskResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 		Task:     task,
 	}
 }
@@ -70,13 +71,13 @@ func UpdateTask(payload models.UpdateTaskPayload) models.UpdateTaskResponse {
 		err := db.DB.Model(&task).Association("Tags").Replace(&task.Tags)
 		if err != nil {
 			return models.UpdateTaskResponse{
-				Response: models.Response{Error: err},
+				Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 			}
 		}
 	}
 	result := db.DB.Model(&task).Preload("Tags").Save(&task)
 	return models.UpdateTaskResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 		Task:     task,
 	}
 }
@@ -85,17 +86,17 @@ func DeleteTask(payload models.DeleteTaskPayload) models.DeleteTaskResponse {
 	task, err := GetTask(payload.ID)
 	if err != nil {
 		return models.DeleteTaskResponse{
-			Response: models.Response{Error: err},
+			Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		}
 	}
 	err = db.DB.Model(&task).Association("Tags").Delete(&task.Tags)
 	if err != nil {
 		return models.DeleteTaskResponse{
-			Response: models.Response{Error: err},
+			Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		}
 	}
 	result := db.DB.Delete(&task)
 	return models.DeleteTaskResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 	}
 }

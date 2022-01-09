@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { BoardAPI } from 'api/board'
-import { NotificationType, useNotification } from 'composables/notification'
 import { BoardPrimitive } from 'generated/models'
 
 type BoardsState = {
@@ -53,9 +52,6 @@ export const BoardsSlice = createSlice({
       })
       .addCase(getBoards.rejected, (state) => {
         state.loading = false
-        useNotification({
-          type: NotificationType.Error
-        })
       })
   }
 })

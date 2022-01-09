@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { AuthAPI } from 'api/auth'
-import { NotificationType, useNotification } from 'composables/notification'
 import { AuthUser } from 'generated/models'
 import { setAuthToken, removeAuthToken } from 'utils/authToken'
 
@@ -47,12 +46,8 @@ export const MeSlice = createSlice({
         state.loading = false
         setAuthToken(payload.data.token)
       })
-      .addCase(getMe.rejected, (state, { payload }) => {
+      .addCase(getMe.rejected, (state) => {
         state.loading = false
-        useNotification({
-          type: NotificationType.Error,
-          message: payload as string
-        })
       })
   }
 })

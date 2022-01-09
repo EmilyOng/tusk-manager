@@ -155,10 +155,6 @@ const BoardTabs: React.FC = () => {
     })
     auth.logout().then((res) => {
       if (res.error) {
-        useNotification({
-          type: NotificationType.Error,
-          message: res.error
-        })
         return
       }
       dispatch(resetMe())

@@ -6,6 +6,7 @@ import (
 
 	"github.com/EmilyOng/cvwo/backend/models"
 	tagService "github.com/EmilyOng/cvwo/backend/services/tag"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,7 @@ func CreateTag(c *gin.Context) {
 	}
 
 	createTagResponse := tagService.CreateTag(payload)
-	c.JSON(http.StatusOK, createTagResponse)
+	c.JSON(errorUtils.MakeResponseCode(createTagResponse.Response), createTagResponse)
 }
 
 func DeleteTag(c *gin.Context) {
@@ -28,7 +29,7 @@ func DeleteTag(c *gin.Context) {
 	fmt.Sscan(c.Param("tag_id"), &tagId)
 
 	deleteTagResponse := tagService.DeleteTag(models.DeleteTagPayload{ID: tagId})
-	c.JSON(http.StatusOK, deleteTagResponse)
+	c.JSON(errorUtils.MakeResponseCode(deleteTagResponse.Response), deleteTagResponse)
 }
 
 func UpdateTag(c *gin.Context) {
@@ -41,5 +42,5 @@ func UpdateTag(c *gin.Context) {
 	}
 
 	updateTagResponse := tagService.UpdateTag(payload)
-	c.JSON(http.StatusOK, updateTagResponse)
+	c.JSON(errorUtils.MakeResponseCode(updateTagResponse.Response), updateTagResponse)
 }

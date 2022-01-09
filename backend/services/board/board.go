@@ -5,18 +5,22 @@ import (
 	"github.com/EmilyOng/cvwo/backend/models"
 	stateService "github.com/EmilyOng/cvwo/backend/services/state"
 	taskService "github.com/EmilyOng/cvwo/backend/services/task"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 )
 
 func CreateBoard(payload models.CreateBoardPayload) models.CreateBoardResponse {
-	board := models.Board{Name: payload.Name, Color: payload.Color, UserID: &payload.UserID}
+	owner := models.Member{
+		Role:   models.Owner,
+		UserID: &payload.UserID,
+	}
+	board := models.Board{Name: payload.Name, Color: payload.Color, Members: []*models.Member{&owner}}
 	result := db.DB.Create(&board)
 	return models.CreateBoardResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 		Board: models.BoardPrimitive{
-			ID:     board.ID,
-			Name:   board.Name,
-			Color:  board.Color,
-			UserID: board.UserID,
+			ID:    board.ID,
+			Name:  board.Name,
+			Color: board.Color,
 		},
 	}
 }
@@ -25,17 +29,21 @@ func GetBoard(payload models.GetBoardPayload) models.GetBoardResponse {
 	board := models.Board{ID: payload.ID}
 	result := db.DB.Where(&board).First(&board)
 	return models.GetBoardResponse{
-		Response: models.Response{Error: result.Error},
-		Board:    board,
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
+		Board: models.BoardPrimitive{
+			ID:    board.ID,
+			Name:  board.Name,
+			Color: board.Color,
+		},
 	}
 }
 
 func GetBoardTasks(payload models.GetBoardTasksPayload) models.GetBoardTasksResponse {
 	board := models.Board{ID: payload.BoardID}
 	var tasks []models.Task
-	err := db.DB.Model(board).Order("tasks.name").Preload("Tags").Association("Tasks").Find(&tasks)
+	err := db.DB.Model(&board).Order("tasks.name").Preload("Tags").Association("Tasks").Find(&tasks)
 	return models.GetBoardTasksResponse{
-		Response: models.Response{Error: err},
+		Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		Tasks:    tasks,
 	}
 }
@@ -43,9 +51,9 @@ func GetBoardTasks(payload models.GetBoardTasksPayload) models.GetBoardTasksResp
 func GetBoardTags(payload models.GetBoardTagsPayload) models.GetBoardTagsResponse {
 	board := models.Board{ID: payload.BoardID}
 	var tags []models.TagPrimitive
-	err := db.DB.Model(board).Order("tags.id").Association("Tags").Find(&tags)
+	err := db.DB.Model(&board).Order("tags.id").Association("Tags").Find(&tags)
 	return models.GetBoardTagsResponse{
-		Response: models.Response{Error: err},
+		Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		Tags:     tags,
 	}
 }
@@ -53,23 +61,22 @@ func GetBoardTags(payload models.GetBoardTagsPayload) models.GetBoardTagsRespons
 func GetBoardStates(payload models.GetBoardStatesPayload) models.GetBoardStatesResponse {
 	board := models.Board{ID: payload.BoardID}
 	var states []models.StatePrimitive
-	err := db.DB.Model(board).Order("states.current_position").Association("States").Find(&states)
+	err := db.DB.Model(&board).Order("states.current_position").Association("States").Find(&states)
 	return models.GetBoardStatesResponse{
-		Response: models.Response{Error: err},
+		Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		States:   states,
 	}
 }
 
 func UpdateBoard(payload models.UpdateBoardPayload) models.UpdateBoardResponse {
-	board := models.Board{ID: payload.ID, Name: payload.Name, Color: payload.Color, UserID: &payload.UserID}
+	board := models.Board{ID: payload.ID, Name: payload.Name, Color: payload.Color}
 	result := db.DB.Model(&models.Board{ID: board.ID}).Save(&board)
 	return models.UpdateBoardResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 		Board: models.BoardPrimitive{
-			ID:     board.ID,
-			Name:   board.Name,
-			Color:  board.Color,
-			UserID: board.UserID,
+			ID:    board.ID,
+			Name:  board.Name,
+			Color: board.Color,
 		},
 	}
 }
@@ -77,7 +84,7 @@ func UpdateBoard(payload models.UpdateBoardPayload) models.UpdateBoardResponse {
 func DeleteBoard(payload models.DeleteBoardPayload) models.DeleteBoardResponse {
 	board := models.Board{ID: payload.ID}
 	tasksResponse := GetBoardTasks(models.GetBoardTasksPayload{BoardID: payload.ID})
-	if tasksResponse.Error != nil {
+	if len(tasksResponse.Error) > 0 {
 		return models.DeleteBoardResponse{
 			Response: models.Response{Error: tasksResponse.Error},
 		}
@@ -85,7 +92,7 @@ func DeleteBoard(payload models.DeleteBoardPayload) models.DeleteBoardResponse {
 
 	for _, task := range tasksResponse.Tasks {
 		deleteTaskResponse := taskService.DeleteTask(models.DeleteTaskPayload{ID: task.ID})
-		if deleteTaskResponse.Error != nil {
+		if len(deleteTaskResponse.Error) > 0 {
 			return models.DeleteBoardResponse{
 				Response: models.Response{Error: deleteTaskResponse.Error},
 			}
@@ -93,14 +100,14 @@ func DeleteBoard(payload models.DeleteBoardPayload) models.DeleteBoardResponse {
 	}
 
 	statesReponse := GetBoardStates(models.GetBoardStatesPayload{BoardID: payload.ID})
-	if statesReponse.Error != nil {
+	if len(statesReponse.Error) > 0 {
 		return models.DeleteBoardResponse{
 			Response: models.Response{Error: statesReponse.Error},
 		}
 	}
 	for _, state := range statesReponse.States {
 		deleteStateResponse := stateService.DeleteState(models.DeleteStatePayload{ID: state.ID})
-		if deleteStateResponse.Error != nil {
+		if len(deleteStateResponse.Error) > 0 {
 			return models.DeleteBoardResponse{
 				Response: models.Response{Error: deleteStateResponse.Error},
 			}
@@ -111,11 +118,11 @@ func DeleteBoard(payload models.DeleteBoardPayload) models.DeleteBoardResponse {
 
 	if result.Error != nil {
 		return models.DeleteBoardResponse{
-			Response: models.Response{Error: result.Error},
+			Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 		}
 	}
 	result = db.DB.Delete(&board)
 	return models.DeleteBoardResponse{
-		Response: models.Response{Error: result.Error},
+		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 	}
 }

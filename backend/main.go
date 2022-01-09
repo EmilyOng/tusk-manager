@@ -16,7 +16,14 @@ func main() {
 	if err != nil {
 		log.Fatalln("cannot create database", err)
 	}
-	db.DB.AutoMigrate(&models.User{}, &models.Task{}, &models.Tag{}, &models.Board{}, &models.State{})
+	db.DB.AutoMigrate(
+		&models.User{},
+		&models.Task{},
+		&models.Tag{},
+		&models.Board{},
+		&models.State{},
+		&models.Member{},
+	)
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:3000", "https://tusk-manager.vercel.app"},

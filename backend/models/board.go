@@ -1,20 +1,19 @@
 package models
 
 type Board struct {
-	ID     uint8    `gorm:"primary_key" json:"id"`
-	Name   string   `gorm:"not null" json:"name"`
-	Color  Color    `gorm:"not null" json:"color" ts_type:"Color"`
-	Tasks  []*Task  `gorm:"not null" json:"tasks"`  // Tasks belonging to the board
-	Tags   []*Tag   `gorm:"not null" json:"tags"`   // Tags belonging to the board
-	States []*State `gorm:"not null" json:"states"` // States belonging to the board
-	UserID *uint8   `json:"userId"`                 // Refers to the owner of the board
+	ID      uint8     `gorm:"primary_key" json:"id"`
+	Name    string    `gorm:"not null" json:"name"`
+	Color   Color     `gorm:"not null" json:"color" ts_type:"Color"`
+	Tasks   []*Task   `gorm:"not null" json:"tasks"`                       // Tasks belonging to the board
+	Tags    []*Tag    `gorm:"not null" json:"tags"`                        // Tags belonging to the board
+	States  []*State  `gorm:"not null" json:"states"`                      // States belonging to the board
+	Members []*Member `gorm:"many2many:board_members" json:"boardMembers"` // Members belonging to the board
 }
 
 type BoardPrimitive struct {
-	ID     uint8  `json:"id"`
-	Name   string `json:"name"`
-	Color  Color  `json:"color" ts_type:"Color"`
-	UserID *uint8 `json:"userId"`
+	ID    uint8  `json:"id"`
+	Name  string `json:"name"`
+	Color Color  `json:"color" ts_type:"Color"`
 }
 
 // Get Board
@@ -24,7 +23,7 @@ type GetBoardPayload struct {
 
 type GetBoardResponse struct {
 	Response
-	Board Board `json:"data"`
+	Board BoardPrimitive `json:"data"`
 }
 
 // Create Board

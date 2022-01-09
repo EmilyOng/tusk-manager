@@ -1,12 +1,12 @@
 package models
 
 type User struct {
-	ID       uint8    `gorm:"primaryKey" json:"id"`
-	Name     string   `gorm:"not null" json:"name"`
-	Email    string   `gorm:"not null" json:"email"`
-	Password string   `gorm:"not null" json:"password"`
-	Boards   []*Board `json:"boards"` // Boards that the user owns
-	Tasks    []*Task  `json:"tasks"`  // Tasks that the user owns
+	ID       uint8     `gorm:"primaryKey" json:"id"`
+	Name     string    `gorm:"not null" json:"name"`
+	Email    string    `gorm:"not null" json:"email"`
+	Password string    `gorm:"not null" json:"password"`
+	Members  []*Member `json:"boardMembers"` // Boards that the user can access
+	Tasks    []*Task   `json:"tasks"`        // Tasks that the user owns
 }
 
 type UserPrimitive struct {

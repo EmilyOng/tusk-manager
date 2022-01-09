@@ -11,6 +11,14 @@ const (
 	Red       Color = "Red"
 )
 
+type Role string
+
+const (
+	Owner  Role = "Owner"
+	Editor Role = "Editor"
+	Viewer Role = "Viewer"
+)
+
 type Response struct {
-	Error error `json:"error"`
+	Error string `json:"error"`
 }

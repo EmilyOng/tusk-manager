@@ -6,6 +6,7 @@ import (
 
 	"github.com/EmilyOng/cvwo/backend/models"
 	taskService "github.com/EmilyOng/cvwo/backend/services/task"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,7 @@ func CreateTask(c *gin.Context) {
 	}
 
 	createTaskResponse := taskService.CreateTask(payload)
-	c.JSON(http.StatusOK, createTaskResponse)
+	c.JSON(errorUtils.MakeResponseCode(createTaskResponse.Response), createTaskResponse)
 }
 
 func UpdateTask(c *gin.Context) {
@@ -33,7 +34,7 @@ func UpdateTask(c *gin.Context) {
 	}
 
 	updateTaskResponse := taskService.UpdateTask(payload)
-	c.JSON(http.StatusOK, updateTaskResponse)
+	c.JSON(errorUtils.MakeResponseCode(updateTaskResponse.Response), updateTaskResponse)
 }
 
 func DeleteTask(c *gin.Context) {
@@ -41,5 +42,5 @@ func DeleteTask(c *gin.Context) {
 	fmt.Sscan(c.Param("task_id"), &taskId)
 
 	deleteTaskResponse := taskService.DeleteTask(models.DeleteTaskPayload{ID: taskId})
-	c.JSON(http.StatusOK, deleteTaskResponse)
+	c.JSON(errorUtils.MakeResponseCode(deleteTaskResponse.Response), deleteTaskResponse)
 }

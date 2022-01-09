@@ -6,6 +6,7 @@ import (
 
 	"github.com/EmilyOng/cvwo/backend/models"
 	stateService "github.com/EmilyOng/cvwo/backend/services/state"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,7 +21,7 @@ func CreateState(c *gin.Context) {
 	}
 
 	createStateResponse := stateService.CreateState(payload)
-	c.JSON(http.StatusOK, createStateResponse)
+	c.JSON(errorUtils.MakeResponseCode(createStateResponse.Response), createStateResponse)
 }
 
 func UpdateState(c *gin.Context) {
@@ -28,12 +29,12 @@ func UpdateState(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
+		c.AbortWithStatusJSON(http.StatusBadRequest, error_UNEXPECTED)
 		return
 	}
 
 	updateStateResponse := stateService.UpdateState(payload)
-	c.JSON(http.StatusOK, updateStateResponse)
+	c.JSON(errorUtils.MakeResponseCode(updateStateResponse.Response), updateStateResponse)
 }
 
 func DeleteState(c *gin.Context) {
@@ -41,5 +42,5 @@ func DeleteState(c *gin.Context) {
 	fmt.Sscan(c.Param("state_id"), &stateID)
 
 	deleteStateResponse := stateService.DeleteState(models.DeleteStatePayload{ID: stateID})
-	c.JSON(http.StatusOK, deleteStateResponse)
+	c.JSON(errorUtils.MakeResponseCode(deleteStateResponse.Response), deleteStateResponse)
 }

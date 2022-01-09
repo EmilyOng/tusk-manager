@@ -20,7 +20,7 @@ type Props = {
   onSubmit: (form: Form, cb: () => void) => any
 }
 
-const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
+const FormAuthentication: React.FC<Props> = ({ mode, onSubmit }) => {
   const isSignUp = mode === FormMode.SignUp
   const defaultForm = {
     name: '',
@@ -97,7 +97,6 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit, children }) => {
           label={isSignUp ? 'Sign Up' : 'Login'}
         />
       </div>
-      {children}
     </form>
   )
 }

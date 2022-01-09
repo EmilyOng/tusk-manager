@@ -9,6 +9,7 @@ import (
 	boardService "github.com/EmilyOng/cvwo/backend/services/board"
 	userService "github.com/EmilyOng/cvwo/backend/services/user"
 	commonUtils "github.com/EmilyOng/cvwo/backend/utils/common"
+	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,9 +23,12 @@ func GetUserBoards(c *gin.Context) {
 	user := userInterface.(models.AuthUser)
 
 	boards, err := userService.GetUserBoards(user.ID)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: errorUtils.MakeErrStr(err)})
+		return
+	}
 	c.JSON(http.StatusOK, models.GetUserBoardsResponse{
-		Response: models.Response{Error: err},
-		Boards:   boards,
+		Boards: boards,
 	})
 }
 
@@ -40,7 +44,7 @@ func CreateBoard(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
+		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNAUTHORIZED})
 		return
 	}
 
@@ -54,11 +58,11 @@ func CreateBoard(c *gin.Context) {
 
 	res := db.DB.Create(&states)
 	if err = res.Error; err != nil {
-		return
+		c.AbortWithStatusJSON(http.StatusInternalServerError, models.Response{Error: errorUtils.MakeErrStr(err)})
 	}
 
 	createBoardResponse := boardService.CreateBoard(payload)
-	c.JSON(http.StatusOK, createBoardResponse)
+	c.JSON(errorUtils.MakeResponseCode(createBoardResponse.Response), createBoardResponse)
 }
 
 func GetBoardTags(c *gin.Context) {
@@ -72,7 +76,7 @@ func GetBoard(c *gin.Context) {
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
 	getBoardResponse := boardService.GetBoard(models.GetBoardPayload{ID: boardID})
-	c.JSON(http.StatusOK, getBoardResponse)
+	c.JSON(errorUtils.MakeResponseCode(getBoardResponse.Response), getBoardResponse)
 }
 
 func UpdateBoard(c *gin.Context) {
@@ -80,24 +84,24 @@ func UpdateBoard(c *gin.Context) {
 
 	err := c.ShouldBindJSON(&payload)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, models.Response{Error: error_UNEXPECTED})
+		c.AbortWithStatusJSON(http.StatusBadRequest, error_UNEXPECTED)
 		return
 	}
 
 	updateBoardResponse := boardService.UpdateBoard(payload)
-	c.JSON(http.StatusOK, updateBoardResponse)
+	c.JSON(errorUtils.MakeResponseCode(updateBoardResponse.Response), updateBoardResponse)
 }
 
 func DeleteBoard(c *gin.Context) {
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
 	deleteBoardResponse := boardService.DeleteBoard(models.DeleteBoardPayload{ID: boardID})
-	c.JSON(http.StatusOK, deleteBoardResponse)
+	c.JSON(errorUtils.MakeResponseCode(deleteBoardResponse.Response), deleteBoardResponse)
 }
 
 func GetBoardStates(c *gin.Context) {
 	var boardID uint8
 	fmt.Sscan(c.Param("board_id"), &boardID)
 	getBoardStatesResponse := boardService.GetBoardStates(models.GetBoardStatesPayload{BoardID: boardID})
-	c.JSON(http.StatusOK, getBoardStatesResponse)
+	c.JSON(errorUtils.MakeResponseCode(getBoardStatesResponse.Response), getBoardStatesResponse)
 }

@@ -6,7 +6,7 @@ export function guardError(res: Response | any) {
   if (res.error) {
     useNotification({
       type: NotificationType.Error,
-      message: res.error as string
+      message: res.error
     })
   }
   return res

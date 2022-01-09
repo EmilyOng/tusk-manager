@@ -71,17 +71,17 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.UserPrimitive
-	err = db.DB.Model(&models.User{}).Where("Email = ?", payload.Email).Find(&user).Error
+	err = db.DB.Debug().Model(&models.User{}).Where("email = ?", payload.Email).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// User record does not exist
-		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_INVALID_EMAIL})
+		c.AbortWithStatusJSON(http.StatusOK, models.Response{Error: error_INVALID_EMAIL})
 		return
 	}
 
 	err = authUtils.ComparePassword(user.Password, payload.Password)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_INVALID_PASSWORD})
+		c.AbortWithStatusJSON(http.StatusOK, models.Response{Error: error_INVALID_PASSWORD})
 		return
 	}
 
@@ -108,10 +108,14 @@ func SignUp(c *gin.Context) {
 		return
 	}
 
-	var user models.UserPrimitive
-	err = db.DB.Model(&models.User{}).Where("Email = ?", payload.Email).First(&user).Error
+	user := models.UserPrimitive{
+		Name:     payload.Name,
+		Email:    payload.Email,
+		Password: payload.Password,
+	}
+	err = db.DB.Model(&models.User{}).Where("email = ?", payload.Email).First(&user).Error
 
-	if err != nil {
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
 		// User record already exists
 		c.AbortWithStatusJSON(http.StatusOK, models.Response{Error: error_USER_EXISTS})
 		return

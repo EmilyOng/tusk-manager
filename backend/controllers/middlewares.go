@@ -37,8 +37,6 @@ func SetAuthUser(c *gin.Context) {
 func AuthGuard(c *gin.Context) {
 	userInterface, _ := c.Get("user")
 	if userInterface == nil {
-		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{
-			Error: error_UNAUTHORIZED,
-		})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, models.Response{Error: error_UNAUTHORIZED})
 	}
 }

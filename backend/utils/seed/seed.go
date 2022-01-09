@@ -64,13 +64,17 @@ func SeedData(user *models.UserPrimitive) (err error) {
 			return
 		}
 
-		boards = append(boards, models.Board{
-			Name:   "Board-" + fmt.Sprint(i),
+		owner := models.Member{
+			Role:   models.Owner,
 			UserID: &user.ID,
-			Color:  colors[i%6],
-			Tags:   tags,
-			Tasks:  tasks,
-			States: states,
+		}
+		boards = append(boards, models.Board{
+			Name:    "Board-" + fmt.Sprint(i),
+			Color:   colors[i%6],
+			Tags:    tags,
+			Tasks:   tasks,
+			States:  states,
+			Members: []*models.Member{&owner},
 		})
 	}
 
