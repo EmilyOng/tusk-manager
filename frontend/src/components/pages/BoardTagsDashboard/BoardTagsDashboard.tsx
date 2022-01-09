@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { faEdit, faTimes, faRedo } from '@fortawesome/free-solid-svg-icons'
-import { useTags } from 'composables/tag'
+import { useBoardTags } from 'composables/board'
 import LoadingBar from 'components/molecules/LoadingBar'
 import InputField from 'components/molecules/InputField'
 import Button from 'components/atoms/Button'
@@ -21,7 +21,7 @@ interface DeletableTag extends TagPrimitive {
 function BoardTagsDashboard() {
   const navigate = useNavigate()
   const { currentBoardId: boardId } = useSelector(selectBoards)
-  const { loading, tags: tags_ } = useTags(boardId)
+  const { loading, tags: tags_ } = useBoardTags(boardId)
   const [tags, setTags] = useState<DeletableTag[]>([])
   const [submitting, setSubmitting] = useState(false)
   const tagsAPI = new TagAPI()

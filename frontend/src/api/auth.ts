@@ -8,6 +8,7 @@ import {
 } from 'generated/models'
 import { RequestAPI } from './request'
 
+// All endpoints under the '/auth/' prefix
 export class AuthAPI {
   private req: RequestAPI
 

@@ -3,24 +3,17 @@ import {
   CreateStateResponse,
   DeleteStatePayload,
   DeleteStateResponse,
-  GetBoardStatesPayload,
-  GetBoardStatesResponse,
   UpdateStatePayload,
   UpdateStateResponse
 } from 'generated/models'
 import { RequestAPI } from './request'
 
+// All endpoints under the '/states/' prefix
 export class StateAPI {
   private req: RequestAPI
 
   constructor() {
     this.req = new RequestAPI()
-  }
-
-  async getStates(
-    payload: GetBoardStatesPayload
-  ): Promise<GetBoardStatesResponse> {
-    return this.req.get(`/boards/${payload.boardId}/states`)
   }
 
   async createState(payload: CreateStatePayload): Promise<CreateStateResponse> {

@@ -1,13 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { useTasks } from 'composables/task'
+import { useBoardTasks, useBoardStates, useBoardTags } from 'composables/board'
 import ListView from 'components/organisms/ListView'
 import { Form as CreateTaskForm } from 'components/organisms/FormTaskCreate'
 import { Form as EditTaskForm } from 'components/organisms/FormTaskEdit'
 import LoadingBar from 'components/molecules/LoadingBar'
-import { useTags } from 'composables/tag'
 import { NotificationType, useNotification } from 'composables/notification'
-import { useStates } from 'composables/state'
 import './TaskDashboard.scoped.css'
 import ListViewPlaceholder from 'components/organisms/ListViewPlaceholder'
 import { TagAPI } from 'api/tag'
@@ -22,9 +20,13 @@ function TaskDashboard() {
   const location = useLocation()
   const { user: me } = useSelector(selectMe)
   const [boardId, setBoardId] = useState<number | null>(null)
-  const { loading: tasksLoading, tasks, updateTasks } = useTasks(boardId)
-  const { loading: tagsLoading, tags, updateTags } = useTags(boardId)
-  const { loading: statesLoading, states, updateStates } = useStates(boardId)
+  const { loading: tasksLoading, tasks, updateTasks } = useBoardTasks(boardId)
+  const { loading: tagsLoading, tags, updateTags } = useBoardTags(boardId)
+  const {
+    loading: statesLoading,
+    states,
+    updateStates
+  } = useBoardStates(boardId)
 
   const numStates = useMemo(() => states.length, [states])
 

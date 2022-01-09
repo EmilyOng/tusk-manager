@@ -5,12 +5,19 @@ import {
   DeleteBoardResponse,
   GetBoardPayload,
   GetBoardResponse,
+  GetBoardStatesPayload,
+  GetBoardStatesResponse,
+  GetBoardTagsPayload,
+  GetBoardTagsResponse,
+  GetBoardTasksPayload,
+  GetBoardTasksResponse,
   GetUserBoardsResponse,
   UpdateBoardPayload,
   UpdateBoardResponse
 } from 'generated/models'
 import { RequestAPI } from './request'
 
+// All endpoints under the '/boards/' prefix
 export class BoardAPI {
   private req: RequestAPI
 
@@ -20,6 +27,22 @@ export class BoardAPI {
 
   async getBoards(): Promise<GetUserBoardsResponse> {
     return this.req.get('/boards/')
+  }
+
+  async getStates(
+    payload: GetBoardStatesPayload
+  ): Promise<GetBoardStatesResponse> {
+    return this.req.get(`/boards/${payload.boardId}/states`)
+  }
+
+  async getTags(payload: GetBoardTagsPayload): Promise<GetBoardTagsResponse> {
+    return this.req.get(`/boards/${payload.boardId}/tags`)
+  }
+
+  async getTasks(
+    payload: GetBoardTasksPayload
+  ): Promise<GetBoardTasksResponse> {
+    return this.req.get(`/boards/${payload.boardId}/tasks`)
   }
 
   async getBoard(payload: GetBoardPayload): Promise<GetBoardResponse> {

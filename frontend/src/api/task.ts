@@ -3,24 +3,17 @@ import {
   CreateTaskResponse,
   DeleteTaskPayload,
   DeleteTaskResponse,
-  GetBoardTasksPayload,
-  GetBoardTasksResponse,
   UpdateTaskPayload,
   UpdateTaskResponse
 } from 'generated/models'
 import { RequestAPI } from './request'
 
+// All endpoints under the '/tasks/' prefix
 export class TaskAPI {
   private req: RequestAPI
 
   constructor() {
     this.req = new RequestAPI()
-  }
-
-  async getTasks(
-    payload: GetBoardTasksPayload
-  ): Promise<GetBoardTasksResponse> {
-    return this.req.get(`/boards/${payload.boardId}/tasks`)
   }
 
   async createTask(payload: CreateTaskPayload): Promise<CreateTaskResponse> {
