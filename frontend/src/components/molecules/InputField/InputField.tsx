@@ -29,7 +29,7 @@ const InputField: React.FC<Props> = ({
 }) => {
   return (
     <div className="field">
-      <label className="label">{label}</label>
+      {label.length > 0 && <label className="label">{label}</label>}
       <div className={clsx({ control: true, 'has-icons-left': !!icon })}>
         <input
           className="input is-info"

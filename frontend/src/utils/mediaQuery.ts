@@ -16,7 +16,7 @@ export function useMediaQuery() {
       // Clean-up
       setIsSmall(false)
     }
-  })
+  }, [])
   return {
     isSmall
   }

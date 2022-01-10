@@ -1,7 +1,12 @@
 import React, { useState } from 'react'
 import clsx from 'clsx'
 import Button from 'components/atoms/Button'
-import { faEdit, faTrash, faTag } from '@fortawesome/free-solid-svg-icons'
+import {
+  faEdit,
+  faTrash,
+  faTag,
+  faUsers
+} from '@fortawesome/free-solid-svg-icons'
 import ModalCard from 'components/molecules/ModalCard'
 import { useBoard, useBoardMemberProfiles } from 'composables/board'
 import FormBoardEdit, { Form } from '../FormBoardEdit'
@@ -10,6 +15,8 @@ import { BoardPrimitive } from 'generated/models'
 import { useNavigate } from 'react-router-dom'
 import Avatar from 'components/molecules/Avatar'
 import DropdownMenu from 'components/molecules/DropdownMenu'
+import FormMembersManage from '../FormMembersManage'
+import { useMediaQuery } from 'utils/mediaQuery'
 
 type Props = {
   boardId: number | null
@@ -59,8 +66,25 @@ function useBoardDeleteModal() {
   }
 }
 
+function useMembersManageModal() {
+  const [visible, setVisible] = useState(false)
+
+  function openCard() {
+    setVisible(true)
+  }
+  function closeCard() {
+    setVisible(false)
+  }
+  return {
+    visible,
+    openCard,
+    closeCard
+  }
+}
+
 const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
   const navigate = useNavigate()
+  const { isSmall } = useMediaQuery()
   const { board, updateBoard } = useBoard(boardId)
   const { memberProfiles } = useBoardMemberProfiles(boardId)
 
@@ -95,8 +119,27 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     closeCard: closeBoardDeleteCard
   } = useBoardDeleteModal()
 
+  const {
+    visible: isMembersManaging,
+    openCard: openMembersManageCard,
+    closeCard: closeMembersManageCard
+  } = useMembersManageModal()
+
   return (
     <div className="board-header">
+      <ModalCard
+        visible={isMembersManaging}
+        title="Manage members"
+        events={{ onClose: closeMembersManageCard }}
+      >
+        <FormMembersManage
+          members={memberProfiles}
+          events={{
+            onSubmit: (members) => console.log(members),
+            onCancel: closeMembersManageCard
+          }}
+        />
+      </ModalCard>
       {openedBoardEdit && (
         <ModalCard
           visible={isBoardEditing}
@@ -147,27 +190,33 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
         <div className="board-information">
           <h1 className="title">{board.name}</h1>
           <div className="board-members">
-            {memberProfiles.map((member) => (
-              <DropdownMenu
-                key={member.id}
-                hoverable={true}
-                items={[
-                  <div key="" className="member-info">
-                    <span className="member-role">{member.role}</span>
-                    <span>
-                      {member.profile.name} ({member.profile.email})
-                    </span>
-                  </div>
-                ]}
-                trigger={<Avatar name={member.profile.name} />}
-              />
-            ))}
+            {!isSmall &&
+              memberProfiles.map((member) => (
+                <DropdownMenu
+                  key={member.id}
+                  hoverable={true}
+                  items={[
+                    <div key="" className="member-info">
+                      <span className="member-role">{member.role}</span>
+                      <span>
+                        {member.profile.name} ({member.profile.email})
+                      </span>
+                    </div>
+                  ]}
+                  trigger={<Avatar name={member.profile.name} />}
+                />
+              ))}
           </div>
           <div className="board-actions">
             <Button
               className="is-info is-light"
               icon={faTag}
               events={{ onClick: () => navigate(`/${board.id}/tags`) }}
+            />
+            <Button
+              className="is-link is-light"
+              icon={faUsers}
+              events={{ onClick: openMembersManageCard }}
             />
             <Button
               className="is-link is-light"

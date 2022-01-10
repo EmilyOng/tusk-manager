@@ -1,0 +1,34 @@
+.form-control {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.members-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+
+.form-fields {
+  display: flex;
+  justify-content: space-between;
+}
+
+.disabled {
+  pointer-events: none;
+}
+
+.deleted-field {
+  opacity: 0.3;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+}
+
+.member-info >>> *:not(:last-child) {
+  margin-right: 8px;
+}
