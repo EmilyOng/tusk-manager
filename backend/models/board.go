@@ -4,10 +4,10 @@ type Board struct {
 	ID      uint8     `gorm:"primary_key" json:"id"`
 	Name    string    `gorm:"not null" json:"name"`
 	Color   Color     `gorm:"not null" json:"color" ts_type:"Color"`
-	Tasks   []*Task   `gorm:"not null" json:"tasks"`                       // Tasks belonging to the board
-	Tags    []*Tag    `gorm:"not null" json:"tags"`                        // Tags belonging to the board
-	States  []*State  `gorm:"not null" json:"states"`                      // States belonging to the board
-	Members []*Member `gorm:"many2many:board_members" json:"boardMembers"` // Members belonging to the board
+	Tasks   []*Task   `gorm:"not null" json:"tasks"`  // Tasks belonging to the board
+	Tags    []*Tag    `gorm:"not null" json:"tags"`   // Tags belonging to the board
+	States  []*State  `gorm:"not null" json:"states"` // States belonging to the board
+	Members []*Member `json:"boardMembers"`           // Members belonging to the board
 }
 
 type BoardPrimitive struct {

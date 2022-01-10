@@ -50,7 +50,7 @@ export class BoardAPI {
   async getMemberProfiles(
     payload: GetBoardMemberProfilesPayload
   ): Promise<GetBoardMemberProfilesResponse> {
-    return this.req.get(`/boards/${payload.boardId}/member_profiles`)
+    return this.req.get(`/boards/${payload.boardId}/members`)
   }
 
   async getBoard(payload: GetBoardPayload): Promise<GetBoardResponse> {

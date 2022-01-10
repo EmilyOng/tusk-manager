@@ -61,7 +61,7 @@ func main() {
 				boards.GET("/:board_id/tasks", controllers.GetBoardTasks)
 				boards.GET("/:board_id/tags", controllers.GetBoardTags)
 				boards.GET("/:board_id/states", controllers.GetBoardStates)
-				boards.GET("/:board_id/member_profiles", controllers.GetBoardMemberProfiles)
+				boards.GET("/:board_id/members", controllers.GetBoardMemberProfiles)
 			}
 			tasks := guard.Group("/tasks")
 			{
