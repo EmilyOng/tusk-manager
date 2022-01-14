@@ -44,7 +44,7 @@ const FormMembersUpdate: React.FC<Props> = ({
           ...member,
           // Only owners can edit others' role, and owner cannot edit themselves.
           editable: canUpdateSharings && member.role !== Role.Owner,
-          deleted: false
+          deleted: false,
         }
       })
     )
@@ -110,7 +110,7 @@ const FormMembersUpdate: React.FC<Props> = ({
 
   return (
     <form className="control" onSubmit={onSubmit}>
-      <p className="has-text-weight-bold">Update board members</p>
+      <p className="has-text-weight-bold">{canUpdateSharings ? 'Update board members' : 'Board members'}</p>
       <div className="members-container">
         {members.map((member) => (
           <div

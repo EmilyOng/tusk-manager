@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { MemberProfile } from 'generated/models'
 import FormMembersShare, {
   Form as ShareForm_
@@ -8,6 +8,7 @@ import FormMembersUpdate, {
 } from 'components/molecules/FormMembersUpdate'
 import { useSelector } from 'react-redux'
 import { selectMe } from 'store/me'
+import { Role } from 'generated/types'
 
 export type ShareForm = ShareForm_
 
@@ -26,14 +27,21 @@ const FormMembersManage: React.FC<Props> = ({
   events
 }) => {
   const { user: me } = useSelector(selectMe)
+  const [canUpdateSharings, setCanUpdateSharings] = useState(false)
+  useEffect(() => {
+    const meMember = members_.find(m => m.profile.id === me?.id)
+    setCanUpdateSharings(meMember?.role === Role.Owner)
+    return () => {
+      setCanUpdateSharings(false)
+    }
+  }, [members_])
 
   return (
     <div>
-      <FormMembersShare
+      {canUpdateSharings && <><FormMembersShare
         boardId={boardId}
         events={{ onSubmit: events.onShare }}
-      />
-      <hr />
+      /><hr /></>}
       <FormMembersUpdate
         members={members_}
         me={me}
