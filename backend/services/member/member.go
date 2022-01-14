@@ -68,7 +68,7 @@ func DeleteMember(payload models.DeleteMemberPayload) models.DeleteMemberRespons
 			Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		}
 	}
-	result = db.DB.Debug().Delete(&member)
+	result = db.DB.Delete(&member)
 	return models.DeleteMemberResponse{
 		Response: models.Response{Error: errorUtils.MakeErrStr(result.Error)},
 	}

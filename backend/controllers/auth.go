@@ -71,7 +71,7 @@ func Login(c *gin.Context) {
 	}
 
 	var user models.UserPrimitive
-	err = db.DB.Debug().Model(&models.User{}).Where("email = ?", payload.Email).First(&user).Error
+	err = db.DB.Model(&models.User{}).Where("email = ?", payload.Email).First(&user).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
 		// User record does not exist
