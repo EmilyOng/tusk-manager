@@ -1,7 +1,7 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { AuthAPI } from 'api/auth'
 import { AuthUser } from 'generated/models'
-import { setAuthToken, removeAuthToken } from 'utils/authToken'
+import { removeAuthToken, setAuthToken } from 'utils/authToken'
 
 type MeState = {
   user: AuthUser | null

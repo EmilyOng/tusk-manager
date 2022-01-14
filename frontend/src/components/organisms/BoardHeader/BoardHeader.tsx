@@ -1,23 +1,23 @@
-import React, { useState } from 'react'
-import clsx from 'clsx'
-import Button from 'components/atoms/Button'
 import {
   faEdit,
-  faTrash,
   faTag,
+  faTrash,
   faUsers
 } from '@fortawesome/free-solid-svg-icons'
-import ModalCard from 'components/molecules/ModalCard'
-import { useBoard, useBoardMemberProfiles } from 'composables/board'
-import FormBoardEdit, { Form } from '../FormBoardEdit'
-import './BoardHeader.scoped.css'
-import { BoardPrimitive, MemberProfile } from 'generated/models'
+import clsx from 'clsx'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { BoardPrimitive, MemberProfile } from 'generated/models'
+import { useMediaQuery } from 'utils/mediaQuery'
+import { useBoard, useBoardMemberProfiles } from 'composables/board'
+import Button from 'components/atoms/Button'
 import Avatar from 'components/molecules/Avatar'
 import DropdownMenu from 'components/molecules/DropdownMenu'
-import FormMembersManage, { ShareForm } from '../FormMembersManage'
-import { useMediaQuery } from 'utils/mediaQuery'
 import { EditableMemberProfile } from 'components/molecules/FormMembersUpdate'
+import ModalCard from 'components/molecules/ModalCard'
+import FormBoardEdit, { Form } from '../FormBoardEdit'
+import FormMembersManage, { ShareForm } from '../FormMembersManage'
+import './BoardHeader.scoped.css'
 
 type Props = {
   boardId: number | null

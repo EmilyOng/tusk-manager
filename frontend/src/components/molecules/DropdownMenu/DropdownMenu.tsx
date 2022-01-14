@@ -1,6 +1,6 @@
-import React, { createRef, Key, useEffect, useRef, useState } from 'react'
-import Portal from '../Portal'
+import React, { Key, createRef, useEffect, useRef, useState } from 'react'
 import DropdownItem from '../DropdownItem'
+import Portal from '../Portal'
 import './DropdownMenu.scoped.css'
 
 type Props = {

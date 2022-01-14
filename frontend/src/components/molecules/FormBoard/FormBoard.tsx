@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
-import Button from 'components/atoms/Button'
-import InputField from '../InputField'
-import DropdownColor from '../DropdownColor'
-import './FormBoard.scoped.css'
+import clsx from 'clsx'
+import React, { useEffect, useState } from 'react'
 import { Color } from 'generated/types'
+import Button from 'components/atoms/Button'
+import DropdownColor from '../DropdownColor'
+import InputField from '../InputField'
+import './FormBoard.scoped.css'
 
 export type Form = {
   id?: number

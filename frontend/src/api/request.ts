@@ -1,5 +1,5 @@
-import { getAuthToken } from 'utils/authToken'
 import { Response } from 'generated/models'
+import { getAuthToken } from 'utils/authToken'
 import { NotificationType, useNotification } from 'composables/notification'
 
 export function guardError(res: Response | any) {

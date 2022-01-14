@@ -1,6 +1,6 @@
+import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 import React from 'react'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/atoms/Button'
 import './ModalCard.scoped.css'
 

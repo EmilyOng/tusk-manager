@@ -1,5 +1,5 @@
-import React, { Key, useState } from 'react'
 import { faAngleDown } from '@fortawesome/free-solid-svg-icons'
+import React, { Key, useState } from 'react'
 import Button from 'components/atoms/Button'
 import DropdownMenu from '../DropdownMenu'
 import './DropdownSelect.scoped.css'

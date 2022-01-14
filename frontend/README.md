@@ -4,6 +4,8 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+(In order to use [react-scoped-css](https://github.com/gaoxiaoliangz/react-scoped-css), this application uses [craco](https://github.com/gsoft-inc/craco) instead.)
+
 - `yarn start`: Runs the app in the development mode on [http://localhost:3000](http://localhost:3000)
 
 - `yarn lint`: Performs code linting

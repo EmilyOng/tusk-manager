@@ -1,10 +1,10 @@
 import { Route, Routes } from 'react-router-dom'
-import Authentication from 'components/pages/Authentication'
-import HomeDashboard from 'components/pages/HomeDashboard'
-import TaskDashboard from 'components/pages/TaskDashboard'
-import BoardTagsDashboard from 'components/pages/BoardTagsDashboard'
 import DashboardLayout from 'components/layouts/DashboardLayout'
 import RequireAuth from 'components/organisms/RequireAuth'
+import Authentication from 'components/pages/Authentication'
+import BoardTagsDashboard from 'components/pages/BoardTagsDashboard'
+import HomeDashboard from 'components/pages/HomeDashboard'
+import TaskDashboard from 'components/pages/TaskDashboard'
 
 function App() {
   return (

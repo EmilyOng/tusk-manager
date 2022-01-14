@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
 import { faPen } from '@fortawesome/free-solid-svg-icons'
-import InputField from '../InputField'
-import Button from 'components/atoms/Button'
-import './ListViewHeader.scoped.css'
+import React, { useState } from 'react'
 import { StatePrimitive } from 'generated/models'
+import Button from 'components/atoms/Button'
+import InputField from '../InputField'
+import './ListViewHeader.scoped.css'
 
 type Props = {
   state: StatePrimitive

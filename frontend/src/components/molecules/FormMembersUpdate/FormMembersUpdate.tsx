@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import clsx from 'clsx'
 import { faRedo, faTimes } from '@fortawesome/free-solid-svg-icons'
-import Button from 'components/atoms/Button'
-import './FormMembersUpdate.scoped.css'
+import clsx from 'clsx'
+import React, { useEffect, useMemo, useState } from 'react'
+import { AuthUser, MemberProfile } from 'generated/models'
 import { Role } from 'generated/types'
 import { Roles } from 'utils/role'
-import { AuthUser, MemberProfile } from 'generated/models'
+import Button from 'components/atoms/Button'
 import Avatar from 'components/molecules/Avatar'
 import DropdownSelect from 'components/molecules/DropdownSelect'
+import './FormMembersUpdate.scoped.css'
 
 export interface EditableMemberProfile extends MemberProfile {
   deleted: boolean
@@ -44,7 +44,7 @@ const FormMembersUpdate: React.FC<Props> = ({
           ...member,
           // Only owners can edit others' role, and owner cannot edit themselves.
           editable: canUpdateSharings && member.role !== Role.Owner,
-          deleted: false,
+          deleted: false
         }
       })
     )
@@ -110,7 +110,9 @@ const FormMembersUpdate: React.FC<Props> = ({
 
   return (
     <form className="control" onSubmit={onSubmit}>
-      <p className="has-text-weight-bold">{canUpdateSharings ? 'Update board members' : 'Board members'}</p>
+      <p className="has-text-weight-bold">
+        {canUpdateSharings ? 'Update board members' : 'Board members'}
+      </p>
       <div className="members-container">
         {members.map((member) => (
           <div

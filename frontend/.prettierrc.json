@@ -1,5 +1,16 @@
 {
   "singleQuote": true,
   "semi": false,
-  "trailingComma": "none"
+  "trailingComma": "none",
+  "importOrder": [
+    "<THIRD_PARTY_MODULES>",
+    "^generated/(.*)$",
+    "^store/(.*)$",
+    "^utils/(.*)$",
+    "^assets/(.*)$",
+    "^composables/(.*)$",
+    "^components/(.*)$",
+    "^[./]"
+  ],
+  "importOrderSortSpecifiers": true
 }

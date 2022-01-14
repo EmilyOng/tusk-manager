@@ -1,15 +1,12 @@
-docker/build-image:
-	docker build -t cvwo-backend .
-
-docker/run-image:
-	docker run -d -p 5000:5000 cvwo-backend
-
+# Builds the application
 build:
 	go build -o main .
 
+# Start up a development server with live-reload utility
 start:
 	$(shell go env GOPATH)/bin/air
 
+# Generate types to be used on frontend
 generate-types:
 	rm -rf ../frontend/src/generated
 	mkdir ../frontend/src/generated
@@ -31,6 +28,7 @@ generate-types:
 		models/task.go \
 		models/user.go
 
+# Deploy application to Heroku
 push/heroku:
 	heroku container:login
 	heroku container:push web -a tusk-manager-backend

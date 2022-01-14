@@ -1,15 +1,15 @@
-import React, { createRef, useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { faAngleDown, faTimes } from '@fortawesome/free-solid-svg-icons'
+import clsx from 'clsx'
+import React, { createRef, useEffect, useState } from 'react'
+import { TagPrimitive } from 'generated/models'
+import { Color } from 'generated/types'
 import { Colors } from 'utils/color'
-import DropdownItem from '../DropdownItem'
+import Button from 'components/atoms/Button'
 import Icon from 'components/atoms/Icon'
 import TagItem from 'components/atoms/TagItem'
-import Button from 'components/atoms/Button'
+import DropdownItem from '../DropdownItem'
 import TagItemAddon from '../TagItemAddon'
 import './TagsSelect.scoped.css'
-import { Color } from 'generated/types'
-import { TagPrimitive } from 'generated/models'
 
 type Props = {
   tags: SelectableTag[]

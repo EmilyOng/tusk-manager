@@ -1,24 +1,24 @@
-import React, { createRef, useEffect, useState } from 'react'
+import {
+  faArrowLeft,
+  faArrowRight,
+  faPlus,
+  faTrash
+} from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 import { compareAsc } from 'date-fns'
-import {
-  faPlus,
-  faTrash,
-  faArrowLeft,
-  faArrowRight
-} from '@fortawesome/free-solid-svg-icons'
-import CardTask from 'components/molecules/CardTask'
-import FormTaskCreate, { Form as CreateTaskForm } from '../FormTaskCreate'
-import Button from 'components/atoms/Button'
-import LoadingBar from 'components/molecules/LoadingBar'
-import ModalCard from 'components/molecules/ModalCard'
-import FormTaskEdit, { Form as EditTaskForm } from '../FormTaskEdit'
-import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
-import FilterReverse from 'components/molecules/FilterReverse'
-import ListViewHeader from 'components/molecules/ListViewHeader'
-import './ListView.scoped.css'
+import React, { createRef, useEffect, useState } from 'react'
 import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
 import { Color } from 'generated/types'
+import Button from 'components/atoms/Button'
+import CardTask from 'components/molecules/CardTask'
+import FilterReverse from 'components/molecules/FilterReverse'
+import FilterSort, { TaskSortBy } from 'components/molecules/FilterSort'
+import ListViewHeader from 'components/molecules/ListViewHeader'
+import LoadingBar from 'components/molecules/LoadingBar'
+import ModalCard from 'components/molecules/ModalCard'
+import FormTaskCreate, { Form as CreateTaskForm } from '../FormTaskCreate'
+import FormTaskEdit, { Form as EditTaskForm } from '../FormTaskEdit'
+import './ListView.scoped.css'
 
 type Props = {
   tasks: Task[]

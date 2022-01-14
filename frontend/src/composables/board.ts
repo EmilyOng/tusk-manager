@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react'
 import { BoardAPI } from 'api/board'
+import { useEffect, useState } from 'react'
 import {
   BoardPrimitive,
   MemberProfile,

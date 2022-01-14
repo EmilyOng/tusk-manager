@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
-import { faUser, faEnvelope, faLock } from '@fortawesome/free-solid-svg-icons'
-import InputField from 'components/molecules/InputField'
+import React, { useEffect, useState } from 'react'
 import Button from 'components/atoms/Button'
+import InputField from 'components/molecules/InputField'
 
 export type Form = {
   name?: string

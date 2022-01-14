@@ -1,9 +1,9 @@
-import React from 'react'
+import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import {
   FontAwesomeIcon,
   FontAwesomeIconProps
 } from '@fortawesome/react-fontawesome'
-import { IconDefinition } from '@fortawesome/fontawesome-common-types'
+import React from 'react'
 
 type Props = {
   icon: IconDefinition

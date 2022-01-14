@@ -1,7 +1,7 @@
-import React from 'react'
 import clsx from 'clsx'
-import { getSelectorHash } from 'utils/selectorHash'
+import React from 'react'
 import { BoardPrimitive } from 'generated/models'
+import { getSelectorHash } from 'utils/selectorHash'
 
 type Props = {
   board: BoardPrimitive

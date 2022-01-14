@@ -1,10 +1,10 @@
 import {
-  Response,
-  SignUpResponse,
   AuthUserResponse,
+  LoginPayload,
   LoginResponse,
+  Response,
   SignUpPayload,
-  LoginPayload
+  SignUpResponse
 } from 'generated/models'
 import { RequestAPI } from './request'
 

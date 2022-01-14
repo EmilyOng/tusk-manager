@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { MemberProfile } from 'generated/models'
+import { Role } from 'generated/types'
+import { selectMe } from 'store/me'
 import FormMembersShare, {
   Form as ShareForm_
 } from 'components/molecules/FormMembersShare'
 import FormMembersUpdate, {
   EditableMemberProfile
 } from 'components/molecules/FormMembersUpdate'
-import { useSelector } from 'react-redux'
-import { selectMe } from 'store/me'
-import { Role } from 'generated/types'
 
 export type ShareForm = ShareForm_
 
@@ -29,7 +29,7 @@ const FormMembersManage: React.FC<Props> = ({
   const { user: me } = useSelector(selectMe)
   const [canUpdateSharings, setCanUpdateSharings] = useState(false)
   useEffect(() => {
-    const meMember = members_.find(m => m.profile.id === me?.id)
+    const meMember = members_.find((m) => m.profile.id === me?.id)
     setCanUpdateSharings(meMember?.role === Role.Owner)
     return () => {
       setCanUpdateSharings(false)
@@ -38,10 +38,15 @@ const FormMembersManage: React.FC<Props> = ({
 
   return (
     <div>
-      {canUpdateSharings && <><FormMembersShare
-        boardId={boardId}
-        events={{ onSubmit: events.onShare }}
-      /><hr /></>}
+      {canUpdateSharings && (
+        <>
+          <FormMembersShare
+            boardId={boardId}
+            events={{ onSubmit: events.onShare }}
+          />
+          <hr />
+        </>
+      )}
       <FormMembersUpdate
         members={members_}
         me={me}

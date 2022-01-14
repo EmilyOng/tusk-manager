@@ -1,6 +1,6 @@
 import FormAuthentication, {
-  Form as Form_,
-  FormMode
+  FormMode,
+  Form as Form_
 } from './FormAuthentication'
 
 export type Form = Form_

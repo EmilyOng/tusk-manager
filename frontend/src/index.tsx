@@ -1,12 +1,12 @@
-import ReactDOM from 'react-dom'
-import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import reportWebVitals from './reportWebVitals'
 import 'bulma/css/bulma.min.css'
 import 'react-datepicker/dist/react-datepicker.css'
-import './index.css'
+import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
+import { BrowserRouter } from 'react-router-dom'
 import { store } from 'store'
 import App from './App'
+import './index.css'
+import reportWebVitals from './reportWebVitals'
 
 ReactDOM.render(
   <Provider store={store}>

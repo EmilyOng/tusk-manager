@@ -1,6 +1,6 @@
-import React from 'react'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import clsx from 'clsx'
+import React from 'react'
 import Icon from 'components/atoms/Icon'
 
 type Props = {

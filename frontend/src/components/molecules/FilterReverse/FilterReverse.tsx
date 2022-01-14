@@ -1,5 +1,5 @@
+import { faSortDown, faSortUp } from '@fortawesome/free-solid-svg-icons'
 import React, { useState } from 'react'
-import { faSortUp, faSortDown } from '@fortawesome/free-solid-svg-icons'
 import Button from 'components/atoms/Button'
 
 type Props = {

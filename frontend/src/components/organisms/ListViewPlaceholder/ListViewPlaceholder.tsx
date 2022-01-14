@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import clsx from 'clsx'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import clsx from 'clsx'
+import React, { useState } from 'react'
 import Button from 'components/atoms/Button'
 import Icon from 'components/atoms/Icon'
 import './ListViewPlaceholder.scoped.css'

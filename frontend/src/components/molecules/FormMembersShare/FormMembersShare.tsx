@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
-import Button from 'components/atoms/Button'
-import './FormMembersShare.scoped.css'
+import React, { useEffect, useState } from 'react'
 import { Role } from 'generated/types'
 import { Roles } from 'utils/role'
+import Button from 'components/atoms/Button'
 import DropdownSelect from 'components/molecules/DropdownSelect'
 import InputField from 'components/molecules/InputField'
+import './FormMembersShare.scoped.css'
 
 export type Form = {
   boardId: number

@@ -1,8 +1,8 @@
-import React, { RefObject } from 'react'
-import clsx from 'clsx'
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
-import Icon from 'components/atoms/Icon'
+import clsx from 'clsx'
+import React, { RefObject } from 'react'
 import { getSelectorHash } from 'utils/selectorHash'
+import Icon from 'components/atoms/Icon'
 
 type Props = {
   label?: string

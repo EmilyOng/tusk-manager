@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react'
-import clsx from 'clsx'
-import { format } from 'date-fns'
 import {
   faClock,
   faEllipsisV,
   faTrash
 } from '@fortawesome/free-solid-svg-icons'
-import TagItem from 'components/atoms/TagItem'
-import Icon from 'components/atoms/Icon'
+import clsx from 'clsx'
+import { format } from 'date-fns'
+import React, { useEffect, useState } from 'react'
+import { Task } from 'generated/models'
 import Button from 'components/atoms/Button'
+import Icon from 'components/atoms/Icon'
+import TagItem from 'components/atoms/TagItem'
 import DropdownMenu from '../DropdownMenu'
 import './CardTask.scoped.css'
-import { Task } from 'generated/models'
 
 type Props = {
   task: Task

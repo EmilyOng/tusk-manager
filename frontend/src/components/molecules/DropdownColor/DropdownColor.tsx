@@ -1,5 +1,5 @@
-import { Color } from 'generated/types'
 import React, { Key } from 'react'
+import { Color } from 'generated/types'
 import { Colors } from 'utils/color'
 import DropdownSelect from '../DropdownSelect'
 import SquareColor from '../SquareColor'

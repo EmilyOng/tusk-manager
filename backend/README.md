@@ -12,3 +12,4 @@ Sample data is seeded upon sign up. Details are at [models/seed.go](models/seed.
 
 ### Setting up your environment
 - (in `.env`) `AUTH_SECRET_KEY`: Requires any string
+- (in `.env`) `DATABASE_URL`: Refer to this [article](https://devcenter.heroku.com/articles/connecting-to-heroku-postgres-databases-from-outside-of-heroku)

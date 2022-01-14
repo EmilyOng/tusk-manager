@@ -1,6 +1,6 @@
 import React from 'react'
-import FormBoard, { Form as Form_ } from 'components/molecules/FormBoard'
 import { BoardPrimitive } from 'generated/models'
+import FormBoard, { Form as Form_ } from 'components/molecules/FormBoard'
 
 export type Form = Form_
 

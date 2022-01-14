@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import clsx from 'clsx'
 import { faEdit } from '@fortawesome/free-solid-svg-icons'
+import clsx from 'clsx'
+import React, { useEffect, useState } from 'react'
+import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
+import { Color } from 'generated/types'
 import Button from 'components/atoms/Button'
-import InputField from 'components/molecules/InputField'
-import DropdownSelect from 'components/molecules/DropdownSelect'
 import DatePicker from 'components/molecules/DatePicker'
+import DropdownSelect from 'components/molecules/DropdownSelect'
+import InputField from 'components/molecules/InputField'
 import TagsSelect from 'components/molecules/TagsSelect'
 import TextArea from 'components/molecules/TextArea'
 import './FormTaskEdit.scoped.css'
-import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
-import { Color } from 'generated/types'
 
 export type Form = {
   id: number
