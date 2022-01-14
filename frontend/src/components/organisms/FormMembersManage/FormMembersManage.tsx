@@ -1,41 +1,43 @@
 import React from 'react'
 import { MemberProfile } from 'generated/models'
 import FormMembersShare, {
-  Form as ShareForm
+  Form as ShareForm_
 } from 'components/molecules/FormMembersShare'
-import FormMembersUpdate from 'components/molecules/FormMembersUpdate'
+import FormMembersUpdate, {
+  EditableMemberProfile
+} from 'components/molecules/FormMembersUpdate'
 import { useSelector } from 'react-redux'
 import { selectMe } from 'store/me'
 
+export type ShareForm = ShareForm_
+
 type Props = {
+  boardId: number
   members: MemberProfile[]
   events: {
-    onSubmit: (members: MemberProfile[], cb: () => void) => any
-    onCancel: () => any
+    onShare: (form: ShareForm, cb: () => void) => any
+    onUpdateSharings: (members: EditableMemberProfile[], cb: () => void) => any
   }
 }
 
-const FormMembersManage: React.FC<Props> = ({ members: members_ }) => {
+const FormMembersManage: React.FC<Props> = ({
+  boardId,
+  members: members_,
+  events
+}) => {
   const { user: me } = useSelector(selectMe)
-
-  function onShare(form: ShareForm, cb: () => void) {
-    console.log(form)
-    cb()
-  }
-
-  function onUpdateSharings(members: MemberProfile[], cb: () => void) {
-    console.log(members)
-    cb()
-  }
 
   return (
     <div>
-      <FormMembersShare events={{ onSubmit: onShare }} />
+      <FormMembersShare
+        boardId={boardId}
+        events={{ onSubmit: events.onShare }}
+      />
       <hr />
       <FormMembersUpdate
         members={members_}
         me={me}
-        events={{ onSubmit: onUpdateSharings }}
+        events={{ onSubmit: events.onUpdateSharings }}
       />
     </div>
   )

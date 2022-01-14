@@ -69,11 +69,17 @@ func main() {
 				tasks.PUT("/", controllers.UpdateTask)
 				tasks.DELETE("/:task_id", controllers.DeleteTask)
 			}
-			tags := guard.Group(("/tags"))
+			tags := guard.Group("/tags")
 			{
 				tags.POST("/", controllers.CreateTag)
 				tags.DELETE("/:tag_id", controllers.DeleteTag)
 				tags.PUT("/", controllers.UpdateTag)
+			}
+			members := guard.Group("/members")
+			{
+				members.POST("/", controllers.CreateMember)
+				members.PUT("/", controllers.UpdateMember)
+				members.DELETE("/:member_id", controllers.DeleteMember)
 			}
 		}
 	}

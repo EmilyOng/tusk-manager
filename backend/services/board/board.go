@@ -3,6 +3,7 @@ package services
 import (
 	"github.com/EmilyOng/cvwo/backend/db"
 	"github.com/EmilyOng/cvwo/backend/models"
+	memberService "github.com/EmilyOng/cvwo/backend/services/member"
 	stateService "github.com/EmilyOng/cvwo/backend/services/state"
 	taskService "github.com/EmilyOng/cvwo/backend/services/task"
 	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
@@ -79,18 +80,13 @@ func GetBoardMemberProfiles(payload models.GetBoardMemberProfilesPayload) models
 	}
 	var memberProfiles []models.MemberProfile
 	for _, member := range members {
-		var profile models.Profile
-		err = db.DB.Model(&models.User{ID: *member.UserID}).Find(&profile).Error
-		memberProfiles = append(memberProfiles, models.MemberProfile{
-			ID:      member.ID,
-			Role:    member.Role,
-			Profile: profile,
-		})
+		memberProfile, err := memberService.MakeMemberProfile(member)
 		if err != nil {
 			return models.GetBoardMemberProfilesResponse{
 				Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 			}
 		}
+		memberProfiles = append(memberProfiles, memberProfile)
 	}
 	return models.GetBoardMemberProfilesResponse{
 		Response:       models.Response{Error: errorUtils.MakeErrStr(err)},

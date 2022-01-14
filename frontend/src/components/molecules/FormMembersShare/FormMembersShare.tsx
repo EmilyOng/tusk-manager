@@ -8,19 +8,21 @@ import DropdownSelect from 'components/molecules/DropdownSelect'
 import InputField from 'components/molecules/InputField'
 
 export type Form = {
+  boardId: number
   email: string
   role: Role
 }
 
 type Props = {
+  boardId: number
   events: {
     onSubmit: (form: Form, cb: () => void) => any
   }
 }
 
-const FormMembersShare: React.FC<Props> = ({ events }) => {
+const FormMembersShare: React.FC<Props> = ({ boardId, events }) => {
   const [submitting, setSubmitting] = useState(false)
-  const defaultInvitee: Form = { email: '', role: Role.Viewer }
+  const defaultInvitee: Form = { boardId, email: '', role: Role.Viewer }
   const [invitee, setInvitee] = useState(defaultInvitee)
 
   useEffect(() => {
@@ -45,13 +47,13 @@ const FormMembersShare: React.FC<Props> = ({ events }) => {
   }
 
   return (
-    <form className="control">
+    <form className="control" onSubmit={onSubmit}>
       <p className="has-text-weight-bold">Share board</p>
       <div className="invite-container">
         <div className="invitee-email-field">
           <InputField
             name="invite"
-            type="text"
+            type="email"
             label=""
             value={invitee.email}
             events={{ onChange: onInviteeEmailChange }}
@@ -73,9 +75,6 @@ const FormMembersShare: React.FC<Props> = ({ events }) => {
               'is-loading': submitting
             })}
             label="Share"
-            events={{
-              onClick: onSubmit
-            }}
           />
         </div>
       </div>

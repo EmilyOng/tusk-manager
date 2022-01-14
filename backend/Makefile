@@ -25,6 +25,7 @@ generate-types:
 		-interface \
 		models/board.go \
 		models/common.go \
+		models/member.go \
 		models/state.go \
 		models/tag.go \
 		models/task.go \

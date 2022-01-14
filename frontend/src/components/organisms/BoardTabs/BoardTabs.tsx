@@ -24,6 +24,10 @@ import DropdownSelect from 'components/molecules/DropdownSelect'
 import DropdownMenu from 'components/molecules/DropdownMenu'
 import './BoardTabs.scoped.css'
 import { BoardAPI } from 'api/board'
+import { ShareForm } from '../FormMembersManage'
+import { MemberAPI } from 'api/member'
+import { MemberProfile } from 'generated/models'
+import { EditableMemberProfile } from 'components/molecules/FormMembersUpdate'
 
 function useBoardCreateModal() {
   const [visible, setVisible] = useState(false)
@@ -53,6 +57,7 @@ const BoardTabs: React.FC = () => {
   const { user: me } = useSelector(selectMe)
 
   const boardAPI = new BoardAPI()
+  const memberAPI = new MemberAPI()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -126,6 +131,58 @@ const BoardTabs: React.FC = () => {
         )
       })
       .finally(() => cb())
+  }
+
+  function shareBoard(
+    sharing: ShareForm,
+    cb: (newMember?: MemberProfile) => void
+  ) {
+    memberAPI.createMember(sharing).then((res) => {
+      if (res.error) {
+        cb()
+        return
+      }
+      useNotification({
+        type: NotificationType.Success,
+        message: 'Board has been shared with ' + res.data.profile.name
+      })
+      cb(res.data)
+    })
+  }
+
+  function updateSharings(
+    members: EditableMemberProfile[],
+    cb: (updatedMembers?: MemberProfile[]) => void
+  ) {
+    Promise.all(
+      members.map((member) =>
+        member.deleted
+          ? memberAPI.deleteMember({ id: member.id })
+          : memberAPI.editMember({
+              id: member.id,
+              role: member.role
+            })
+      )
+    ).then((results) => {
+      const success = results.every((result) => !result.error)
+      if (!success) {
+        cb()
+        return
+      }
+      cb(
+        members.reduce((acc, member) => {
+          if (member.deleted) {
+            return acc
+          }
+          acc.push({
+            id: member.id,
+            role: member.role,
+            profile: member.profile
+          })
+          return acc
+        }, [] as MemberProfile[])
+      )
+    })
   }
 
   function deleteBoard(boardId: number, cb: () => void) {
@@ -246,7 +303,12 @@ const BoardTabs: React.FC = () => {
       {currentBoardId && (
         <BoardHeader
           boardId={currentBoardId}
-          events={{ onEditBoard: editBoard, onDeleteBoard: deleteBoard }}
+          events={{
+            onEditBoard: editBoard,
+            onDeleteBoard: deleteBoard,
+            onShareBoard: shareBoard,
+            onUpdateSharings: updateSharings
+          }}
         />
       )}
     </div>

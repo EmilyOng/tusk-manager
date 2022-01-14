@@ -9,17 +9,17 @@ import { AuthUser, MemberProfile } from 'generated/models'
 import Avatar from 'components/molecules/Avatar'
 import DropdownSelect from 'components/molecules/DropdownSelect'
 
+export interface EditableMemberProfile extends MemberProfile {
+  deleted: boolean
+  editable: boolean // Whether the member profile can be edited by the current user
+}
+
 type Props = {
   members: MemberProfile[]
   me: AuthUser | null
   events: {
-    onSubmit: (members: MemberProfile[], cb: () => void) => any
+    onSubmit: (members: EditableMemberProfile[], cb: () => void) => any
   }
-}
-
-interface EditableMemberProfile extends MemberProfile {
-  deleted: boolean
-  editable: boolean // Whether the member profile can be edited by the current user
 }
 
 const FormMembersUpdate: React.FC<Props> = ({
@@ -33,14 +33,17 @@ const FormMembersUpdate: React.FC<Props> = ({
     [members_]
   )
   const [members, setMembers] = useState<EditableMemberProfile[]>([])
+  const [canUpdateSharings, setCanUpdateSharings] = useState(false)
 
   useEffect(() => {
+    const canUpdateSharings = meMember?.role === Role.Owner
+    setCanUpdateSharings(canUpdateSharings)
     setMembers(
       members_.map((member) => {
         return {
           ...member,
           // Only owners can edit others' role, and owner cannot edit themselves.
-          editable: meMember?.role === Role.Owner && member.role !== Role.Owner,
+          editable: canUpdateSharings && member.role !== Role.Owner,
           deleted: false
         }
       })
@@ -51,6 +54,7 @@ const FormMembersUpdate: React.FC<Props> = ({
       // Clean-up
       setSubmitting(false)
       setMembers([])
+      setCanUpdateSharings(false)
     }
   }, [])
 
@@ -151,7 +155,7 @@ const FormMembersUpdate: React.FC<Props> = ({
             'is-link': true,
             'is-loading': submitting
           })}
-          attr={{ disabled: submitting }}
+          attr={{ disabled: submitting || !canUpdateSharings }}
           label="Save Changes"
         />
       </div>

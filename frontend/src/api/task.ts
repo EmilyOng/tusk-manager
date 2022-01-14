@@ -8,23 +8,23 @@ import {
 } from 'generated/models'
 import { RequestAPI } from './request'
 
-// All endpoints under the '/tasks/' prefix
+// All endpoints under the '/tasks' prefix
 export class TaskAPI {
   private req: RequestAPI
 
   constructor() {
-    this.req = new RequestAPI()
+    this.req = new RequestAPI('/tasks')
   }
 
   async createTask(payload: CreateTaskPayload): Promise<CreateTaskResponse> {
-    return this.req.post('/tasks/', payload)
+    return this.req.post('/', payload)
   }
 
   async editTask(payload: UpdateTaskPayload): Promise<UpdateTaskResponse> {
-    return this.req.put('/tasks/', payload)
+    return this.req.put('/', payload)
   }
 
   async deleteTask(payload: DeleteTaskPayload): Promise<DeleteTaskResponse> {
-    return this.req.delete(`/tasks/${payload.id}`)
+    return this.req.delete(`/${payload.id}`)
   }
 }

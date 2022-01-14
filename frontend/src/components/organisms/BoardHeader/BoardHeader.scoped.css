@@ -40,6 +40,10 @@
   flex-direction: column;
 }
 
+.member-avatar > *:not(:last-child) {
+  margin-right: 4px;
+}
+
 .member-role {
   font-weight: bold;
 }

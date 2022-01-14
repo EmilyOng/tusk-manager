@@ -21,12 +21,14 @@ enum Method {
 
 export class RequestAPI {
   private url: string
+  private prefix: string
 
-  constructor() {
+  constructor(prefix: string) {
     const { REACT_APP_SERVER_URL } = process.env
     if (!REACT_APP_SERVER_URL) {
       throw new Error('Expected REACT_APP_SERVER_URL but not set')
     }
+    this.prefix = prefix
     this.url = REACT_APP_SERVER_URL
   }
 
@@ -48,7 +50,7 @@ export class RequestAPI {
 
   private async request(method: Method, path: string, body: any = {}) {
     const token = getAuthToken()
-    return fetch(this.url + path, {
+    return fetch(this.url + this.prefix + path, {
       method,
       headers: {
         Accept: 'application/json',

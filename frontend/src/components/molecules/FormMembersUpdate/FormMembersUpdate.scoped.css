@@ -11,6 +11,10 @@
   margin-top: 8px;
 }
 
+.members-container > *:not(:last-child) {
+  margin-bottom: 8px;
+}
+
 .form-fields {
   display: flex;
   justify-content: space-between;

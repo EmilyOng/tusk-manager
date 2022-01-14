@@ -11,18 +11,27 @@ import ModalCard from 'components/molecules/ModalCard'
 import { useBoard, useBoardMemberProfiles } from 'composables/board'
 import FormBoardEdit, { Form } from '../FormBoardEdit'
 import './BoardHeader.scoped.css'
-import { BoardPrimitive } from 'generated/models'
+import { BoardPrimitive, MemberProfile } from 'generated/models'
 import { useNavigate } from 'react-router-dom'
 import Avatar from 'components/molecules/Avatar'
 import DropdownMenu from 'components/molecules/DropdownMenu'
-import FormMembersManage from '../FormMembersManage'
+import FormMembersManage, { ShareForm } from '../FormMembersManage'
 import { useMediaQuery } from 'utils/mediaQuery'
+import { EditableMemberProfile } from 'components/molecules/FormMembersUpdate'
 
 type Props = {
   boardId: number | null
   events: {
     onEditBoard: (form: Form, cb: () => void) => any
     onDeleteBoard: (boardId: number, cb: () => void) => any
+    onShareBoard: (
+      sharing: ShareForm,
+      cb: (newMember?: MemberProfile) => void
+    ) => any
+    onUpdateSharings: (
+      members: EditableMemberProfile[],
+      cb: (updatedMembers?: MemberProfile[]) => void
+    ) => any
   }
 }
 
@@ -86,7 +95,8 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
   const navigate = useNavigate()
   const { isSmall } = useMediaQuery()
   const { board, updateBoard } = useBoard(boardId)
-  const { memberProfiles } = useBoardMemberProfiles(boardId)
+  const { memberProfiles, updateMemberProfiles } =
+    useBoardMemberProfiles(boardId)
 
   function onEditBoard(form: Form, cb: () => void) {
     events.onEditBoard(form, () => {
@@ -102,6 +112,26 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
     events.onDeleteBoard(boardId, () => {
       setDeletingBoard(false)
       closeBoardDeleteCard()
+    })
+  }
+
+  function onShareBoard(sharing: ShareForm, cb: () => void) {
+    events.onShareBoard(sharing, (newMember) => {
+      cb()
+      if (!newMember) {
+        return
+      }
+      updateMemberProfiles([...memberProfiles, newMember])
+    })
+  }
+
+  function onUpdateSharings(members: EditableMemberProfile[], cb: () => void) {
+    events.onUpdateSharings(members, (updatedMembers) => {
+      cb()
+      if (!updatedMembers) {
+        return
+      }
+      updateMemberProfiles(updatedMembers)
     })
   }
 
@@ -133,10 +163,11 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
         events={{ onClose: closeMembersManageCard }}
       >
         <FormMembersManage
+          boardId={boardId!}
           members={memberProfiles}
           events={{
-            onSubmit: (members) => console.log(members),
-            onCancel: closeMembersManageCard
+            onShare: onShareBoard,
+            onUpdateSharings
           }}
         />
       </ModalCard>
@@ -192,19 +223,20 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
           <div className="board-members">
             {!isSmall &&
               memberProfiles.map((member) => (
-                <DropdownMenu
-                  key={member.id}
-                  hoverable={true}
-                  items={[
-                    <div key="" className="member-info">
-                      <span className="member-role">{member.role}</span>
-                      <span>
-                        {member.profile.name} ({member.profile.email})
-                      </span>
-                    </div>
-                  ]}
-                  trigger={<Avatar name={member.profile.name} />}
-                />
+                <div key={member.id} className="member-avatar">
+                  <DropdownMenu
+                    hoverable={true}
+                    items={[
+                      <div key="" className="member-info">
+                        <span className="member-role">{member.role}</span>
+                        <span>
+                          {member.profile.name} ({member.profile.email})
+                        </span>
+                      </div>
+                    ]}
+                    trigger={<Avatar name={member.profile.name} />}
+                  />
+                </div>
               ))}
           </div>
           <div className="board-actions">
