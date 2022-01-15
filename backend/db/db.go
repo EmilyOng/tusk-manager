@@ -15,8 +15,8 @@ func OpenDB() (err error) {
 	err = godotenv.Load()
 
 	if err != nil {
-		log.Fatalln("Error loading .env file")
-		return
+		// It is only loaded in development environment
+		log.Println("Error loading .env file")
 	}
 
 	DB_URL := os.Getenv("DATABASE_URL")

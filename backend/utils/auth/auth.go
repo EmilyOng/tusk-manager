@@ -28,8 +28,8 @@ func GetSecretKey() (secretKey string, err error) {
 	err = godotenv.Load()
 
 	if err != nil {
-		log.Fatalln("Error loading .env file")
-		return
+		// It is only loaded in development environment
+		log.Println("Error loading .env file")
 	}
 
 	secretKey = os.Getenv("AUTH_SECRET_KEY")
