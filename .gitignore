@@ -8,3 +8,4 @@ cvwo.db
 .env.development
 .env.production
 .gitignore
+.docusaurus
