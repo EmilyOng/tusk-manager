@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"log"
 	"os"
 	"time"
 
@@ -25,12 +24,7 @@ type Claim struct {
 }
 
 func GetSecretKey() (secretKey string, err error) {
-	err = godotenv.Load()
-
-	if err != nil {
-		// It is only loaded in development environment
-		log.Println("Error loading .env file")
-	}
+	godotenv.Load()
 
 	secretKey = os.Getenv("AUTH_SECRET_KEY")
 	return

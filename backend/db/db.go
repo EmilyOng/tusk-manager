@@ -1,7 +1,6 @@
 package db
 
 import (
-	"log"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -12,12 +11,7 @@ import (
 var DB *gorm.DB
 
 func OpenDB() (err error) {
-	err = godotenv.Load()
-
-	if err != nil {
-		// It is only loaded in development environment
-		log.Println("Error loading .env file")
-	}
+	godotenv.Load()
 
 	DB_URL := os.Getenv("DATABASE_URL")
 	DB, err = gorm.Open(postgres.Open(DB_URL), &gorm.Config{})
