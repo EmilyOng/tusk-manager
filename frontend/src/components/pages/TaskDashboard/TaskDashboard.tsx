@@ -150,13 +150,36 @@ function TaskDashboard() {
       if (!task.current) {
         return
       }
-      editTask(
-        {
-          ...task.current,
-          stateId: state.id
-        },
-        () => (task.current = null)
+
+      const initialTask = { ...task.current }
+      // Update the task first so the action is non-blocking
+      updateTasks(
+        tasks.map((t) =>
+          t.id === task.current?.id ? { ...task.current, stateId: state.id } : t
+        )
       )
+
+      taskAPI
+        .editTask({
+          ...task.current,
+          stateId: state.id,
+          boardId: boardId!,
+          userId: me!.id
+        })
+        .then((res) => {
+          if (res.error) {
+            // Rollback
+            updateTasks(
+              tasks.map((t) => (t.id === task.current?.id ? initialTask : t))
+            )
+            useNotification({
+              type: NotificationType.Error,
+              message: "Something went wrong in updating the task's state."
+            })
+            return
+          }
+        })
+        .finally(() => (task.current = null))
     }
 
     return {
