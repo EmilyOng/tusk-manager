@@ -7,14 +7,11 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Tusk Manager',
-  url: 'http://emilyong.github.io/',
-  baseUrl: '/cvwo/',
+  url: 'https://tusk-manager-docs.vercel.app/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
   favicon: 'img/favicon.ico',
-  organizationName: 'EmilyOng', // Usually your GitHub org/user name.
-  projectName: 'cvwo', // Usually your repo name.
-  deploymentBranch: 'main',
 
   presets: [
     [
