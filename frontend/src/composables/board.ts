@@ -92,7 +92,7 @@ export function useBoardTags(boardId: number | null) {
     setTags(tags)
   }
 
-  useEffect(() => {
+  function refetch() {
     if (!boardId) {
       return
     }
@@ -106,6 +106,10 @@ export function useBoardTags(boardId: number | null) {
         }
       })
       .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    refetch()
     return () => {
       // Clean-up
       setLoading(false)
@@ -116,7 +120,8 @@ export function useBoardTags(boardId: number | null) {
   return {
     loading,
     tags,
-    updateTags
+    updateTags,
+    refetch
   }
 }
 

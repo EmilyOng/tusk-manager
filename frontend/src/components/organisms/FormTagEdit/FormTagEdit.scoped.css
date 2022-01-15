@@ -1,0 +1,29 @@
+.color-field {
+  display: flex;
+  align-items: center;
+}
+
+.tags-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.tag-action-field {
+  display: flex;
+  justify-content: space-between !important;
+}
+
+.tag-action-field > *:not(:last-child) {
+  margin-right: 8px;
+}
+
+.deleted-field {
+  opacity: 0.3;
+}
+
+.form-control {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}

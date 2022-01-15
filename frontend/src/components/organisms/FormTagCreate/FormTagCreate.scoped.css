@@ -1,0 +1,26 @@
+.tag-container {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  margin-bottom: 24px;
+}
+
+.invitee-name-field {
+  flex: 1;
+}
+
+@media only screen and (max-width: 768px) {
+  .tag-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tag-name-field {
+    width: 100%;
+  }
+
+  .tag-actions {
+    margin-top: 8px;
+    display: flex;
+  }
+}

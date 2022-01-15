@@ -7,6 +7,7 @@ import (
 	stateService "github.com/EmilyOng/cvwo/backend/services/state"
 	taskService "github.com/EmilyOng/cvwo/backend/services/task"
 	errorUtils "github.com/EmilyOng/cvwo/backend/utils/error"
+	"gorm.io/gorm"
 )
 
 func CreateBoard(payload models.CreateBoardPayload) models.CreateBoardResponse {
@@ -42,7 +43,9 @@ func GetBoard(payload models.GetBoardPayload) models.GetBoardResponse {
 func GetBoardTasks(payload models.GetBoardTasksPayload) models.GetBoardTasksResponse {
 	board := models.Board{ID: payload.BoardID}
 	var tasks []models.Task
-	err := db.DB.Model(&board).Order("tasks.name").Preload("Tags").Association("Tasks").Find(&tasks)
+	err := db.DB.Model(&board).Order("tasks.name").Preload("Tags", func(db *gorm.DB) *gorm.DB {
+		return db.Order("tags.id")
+	}).Association("Tasks").Find(&tasks)
 	return models.GetBoardTasksResponse{
 		Response: models.Response{Error: errorUtils.MakeErrStr(err)},
 		Tasks:    tasks,
