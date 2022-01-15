@@ -10,15 +10,15 @@ Your project workflow can be as simple or complicated as you like. In either cas
 
 To create a state, click on the giant "+" icon as shown below.
 
-![Create a State](/img/user-guide/create-state.png)
+![Create a State](/img/user-guide/state/create-state.png)
 
 This will create a new state from the right.
 
-![Create a State](/img/user-guide/create-state-specific.png)
+![Create a State](/img/user-guide/state/create-state-specific.png)
 
 Next, you can rename the state.
 
-![Edit a State](/img/user-guide/edit-state.png)
+![Edit a State](/img/user-guide/state/edit-state.png)
 
 ## Editing a State
 
@@ -26,13 +26,13 @@ Next, you can rename the state.
 
 To rename a state, click on the pencil icon to the right of the name of the state, then key in the new state name.
 
-![Edit a State](/img/user-guide/edit-state.png)
+![Edit a State](/img/user-guide/state/edit-state.png)
 
 ### Moving the position of state
 
 Click on the left or right arrows to move the entire state list to the left or right respectively.
 
-![Edit a State](/img/user-guide/edit-state-position.png)
+![Edit a State](/img/user-guide/state/edit-state-position.png)
 
 ## Deleting a State
 
@@ -43,8 +43,8 @@ This action is permanent! It is not possible to undo a state deletion. Deleting 
 
 Click on the delete icon as shown below.
 
-![Delete a State](/img/user-guide/delete-state.png)
+![Delete a State](/img/user-guide/state/delete-state.png)
 
 Then, click on the "Delete" button to confirm your deletion.
 
-![Delete a State](/img/user-guide/delete-state-specific.png)
+![Delete a State](/img/user-guide/state/delete-state-specific.png)

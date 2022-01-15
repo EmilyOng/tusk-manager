@@ -7,13 +7,14 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'Tusk Manager',
-  url: 'http://tusk-manager.vercel.app/',
-  baseUrl: '/',
+  url: 'http://emilyong.github.io/',
+  baseUrl: '/cvwo/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'throw',
   favicon: 'img/favicon.ico',
   organizationName: 'EmilyOng', // Usually your GitHub org/user name.
   projectName: 'cvwo', // Usually your repo name.
+  deploymentBranch: 'main',
 
   presets: [
     [
@@ -23,13 +24,13 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/EmilyOng/cvwo/docs',
+          editUrl: 'https://github.com/EmilyOng/cvwo/tree/main/docs',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
           editUrl:
-            'https://github.com/EmilyOng/cvwo/docs',
+            'https://github.com/EmilyOng/cvwo/tree/main/docs',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
@@ -56,7 +57,7 @@ const config = {
           },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
-            href: 'https://github.com/EmilyOng/cvwo/docs',
+            href: 'https://github.com/EmilyOng/cvwo/tree/main/docs',
             label: 'GitHub',
             position: 'right',
           },

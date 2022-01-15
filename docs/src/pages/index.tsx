@@ -13,12 +13,21 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">{siteConfig.title}</h1>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
-        <div className={styles.buttons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/introduction">
-            What is it?
-          </Link>
+        <div className={styles.buttonsContainer}>
+          <div className={styles.buttons}>
+            <Link
+              className="button button--secondary button--lg"
+              to="https://tusk-manager.vercel.app/">
+              Try it out
+            </Link>
+          </div>
+          <div className={styles.buttons}>
+            <Link
+              className="button button--light button--lg"
+              to="/docs/introduction">
+              What is it?
+            </Link>
+          </div>
         </div>
       </div>
     </header>

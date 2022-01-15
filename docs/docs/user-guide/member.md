@@ -10,7 +10,7 @@ Once you have gotten your boards up and running, start to invite members over to
 
 To start sharing your board, click on the members icon as shown below.
 
-![Share a Board](/img/user-guide/share-board.png)
+![Share a Board](/img/user-guide/member/share-board.png)
 
 Key in the email address of the user that you wish to invite, and set his/her role.
 
@@ -21,7 +21,7 @@ Currently, there are 2 available roles:
 - Viewer: Grants the member viewing rights- the member can only view all aspects of the project.
 :::
 
-![Share a Board](/img/user-guide/share-board-specific.png)
+![Share a Board](/img/user-guide/member/share-board-specific.png)
 
 :::info
 
@@ -34,23 +34,23 @@ Then, click on the "Share" button.
 
 To manage existing members, click on the members icon as shown below.
 
-![Manage Members](/img/user-guide/share-board.png)
+![Manage Members](/img/user-guide/member/share-board.png)
 
-### Update member's role
+### Updating member's role
 
 Click on the dropdown to select the member's role, and click on "Save Changes".
 
-![Manage Members](/img/user-guide/manage-members-specific.png)
+![Manage Members](/img/user-guide/member/manage-members-specific.png)
 
-### Delete member
+### Deleting a member
 
 Click on the cross icon to delete the member.
 
-![Delete Member](/img/user-guide/delete-members.png)
+![Delete a Member](/img/user-guide/member/delete-members.png)
 
 The row will appear with a lower opacity. To undo the deletion, click on the undo icon as shown below.
 
-![Delete Member](/img/user-guide/delete-members-specific.png)
+![Delete a Member](/img/user-guide/member/delete-members-specific.png)
 
 :::danger
 
