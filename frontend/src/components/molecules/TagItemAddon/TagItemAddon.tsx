@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import React from 'react'
 import { getSelectorHash } from 'utils/selectorHash'
+import './TagItemAddon.scoped.css'
 
 type Props = {
   className?: string

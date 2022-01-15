@@ -74,6 +74,7 @@ const FormMembersShare: React.FC<Props> = ({ boardId, events }) => {
               'is-link': true,
               'is-loading': submitting
             })}
+            attr={{ disabled: submitting }}
             label="Share"
           />
         </div>

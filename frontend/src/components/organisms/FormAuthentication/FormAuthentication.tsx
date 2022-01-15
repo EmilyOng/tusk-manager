@@ -1,6 +1,7 @@
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 import React, { useEffect, useState } from 'react'
+import { NotificationType, useNotification } from 'composables/notification'
 import Button from 'components/atoms/Button'
 import InputField from 'components/molecules/InputField'
 
@@ -48,6 +49,12 @@ const FormAuthentication: React.FC<Props> = ({ mode, onSubmit }) => {
   function onSubmit_(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setSubmitting(true)
+    if (isSignUp) {
+      useNotification({
+        type: NotificationType.Info,
+        message: 'Setting things up...'
+      })
+    }
     onSubmit(form, () => setSubmitting(false))
   }
 

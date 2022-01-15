@@ -11,6 +11,7 @@ type Props = {
   required?: boolean
   placeholder?: string
   icon?: IconDefinition
+  disabled?: boolean
   events?: {
     onChange?: (e: React.ChangeEvent<HTMLInputElement>) => any
     onBlur?: () => any
@@ -19,7 +20,17 @@ type Props = {
 
 const InputField = forwardRef<HTMLInputElement, Props>(
   (
-    { name, type, value, label, required = true, placeholder, icon, events },
+    {
+      name,
+      type,
+      value,
+      label,
+      required = true,
+      placeholder,
+      icon,
+      disabled,
+      events
+    },
     ref
   ) => {
     return (
@@ -34,6 +45,7 @@ const InputField = forwardRef<HTMLInputElement, Props>(
             required={required}
             placeholder={placeholder}
             value={value}
+            disabled={!!disabled}
             {...events}
           />
           {icon && (

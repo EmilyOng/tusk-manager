@@ -11,6 +11,11 @@
   margin-right: 8px;
 }
 
+.color-field {
+  display: flex;
+  align-items: center;
+}
+
 .tags-container {
   display: flex;
   flex-direction: column;

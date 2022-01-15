@@ -7,11 +7,14 @@ import { useNavigate } from 'react-router-dom'
 import { TagPrimitive } from 'generated/models'
 import { Color } from 'generated/types'
 import { selectBoards } from 'store/boards'
+import { selectMeMember } from 'store/members'
+import { canEdit } from 'utils/role'
 import { useBoardTags } from 'composables/board'
 import Button from 'components/atoms/Button'
 import DropdownColor from 'components/molecules/DropdownColor'
 import InputField from 'components/molecules/InputField'
 import LoadingBar from 'components/molecules/LoadingBar'
+import SquareColor from 'components/molecules/SquareColor'
 import './BoardTagsDashboard.scoped.css'
 
 interface DeletableTag extends TagPrimitive {
@@ -36,6 +39,13 @@ function BoardTagsDashboard() {
       setTags([])
     }
   }, [tags_])
+
+  const [meCanEdit, setMeCanEdit] = useState(false)
+  const meMember = useSelector(selectMeMember)
+
+  useEffect(() => {
+    setMeCanEdit(canEdit(meMember?.role))
+  }, [meMember])
 
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { name, value } = e.target
@@ -90,17 +100,27 @@ function BoardTagsDashboard() {
                 type="text"
                 icon={faEdit}
                 value={tag.name}
+                disabled={!meCanEdit}
                 events={{ onChange: onInputChange }}
               />
-              <DropdownColor
-                initialColor={tag.color}
-                events={{ onSelect: (key) => (tag.color = key as Color) }}
-              />
-              <Button
-                className="is-danger is-inverted"
-                icon={tag.deleted ? faRedo : faTimes}
-                events={{ onClick: () => onToggleDeleteTag(tag.id) }}
-              />
+              {meCanEdit ? (
+                <DropdownColor
+                  initialColor={tag.color}
+                  events={{ onSelect: (key) => (tag.color = key as Color) }}
+                />
+              ) : (
+                <div className="color-field">
+                  <SquareColor color={tag.color} />
+                  <span>{tag.color}</span>
+                </div>
+              )}
+              {meCanEdit && (
+                <Button
+                  className="is-danger is-inverted"
+                  icon={tag.deleted ? faRedo : faTimes}
+                  events={{ onClick: () => onToggleDeleteTag(tag.id) }}
+                />
+              )}
             </div>
           ))}
         </div>
@@ -117,7 +137,7 @@ function BoardTagsDashboard() {
               'is-link': true,
               'is-loading': submitting
             })}
-            attr={{ disabled: submitting }}
+            attr={{ disabled: submitting || !meCanEdit }}
             label="Save Changes"
           />
         </div>

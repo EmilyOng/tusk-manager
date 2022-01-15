@@ -7,6 +7,8 @@ import { useLocation } from 'react-router-dom'
 import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
 import { Color } from 'generated/types'
 import { selectMe } from 'store/me'
+import { selectMeMember } from 'store/members'
+import { canEdit } from 'utils/role'
 import { useBoardStates, useBoardTags, useBoardTasks } from 'composables/board'
 import { NotificationType, useNotification } from 'composables/notification'
 import LoadingBar from 'components/molecules/LoadingBar'
@@ -37,6 +39,8 @@ function TaskDashboard() {
     }
     setBoardId(parseInt(id))
   }, [location])
+
+  const meMember = useSelector(selectMeMember)
 
   const taskAPI = new TaskAPI()
   const tagAPI = new TagAPI()
@@ -292,6 +296,7 @@ function TaskDashboard() {
                 loading={tasksLoading || tagsLoading}
                 tags={tags}
                 state={state}
+                meMember={meMember}
                 position={{
                   current: state.currentPosition,
                   limit: numStates - 1
@@ -313,7 +318,9 @@ function TaskDashboard() {
             )
           })
         )}
-        <ListViewPlaceholder events={{ createState }} />
+        {canEdit(meMember?.role) && (
+          <ListViewPlaceholder events={{ createState }} />
+        )}
       </div>
     </div>
   )

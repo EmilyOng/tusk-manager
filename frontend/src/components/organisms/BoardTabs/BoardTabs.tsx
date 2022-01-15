@@ -12,8 +12,14 @@ import React, { Key, useEffect, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { MemberProfile } from 'generated/models'
-import { selectBoards, setCurrentBoardId, updateBoards } from 'store/boards'
+import {
+  resetBoards,
+  selectBoards,
+  setCurrentBoardId,
+  updateBoards
+} from 'store/boards'
 import { resetMe, selectMe } from 'store/me'
+import { resetMembers } from 'store/members'
 import { useMediaQuery } from 'utils/mediaQuery'
 import { NotificationType, useNotification } from 'composables/notification'
 import Button from 'components/atoms/Button'
@@ -214,12 +220,14 @@ const BoardTabs: React.FC = () => {
       if (res.error) {
         return
       }
+      navigate('/')
       dispatch(resetMe())
+      dispatch(resetBoards())
+      dispatch(resetMembers())
       useNotification({
         type: NotificationType.Info,
         message: 'Goodbye!'
       })
-      navigate('/')
     })
   }
 
@@ -269,15 +277,17 @@ const BoardTabs: React.FC = () => {
         {loading ? (
           <LoadingBar />
         ) : isSmall ? (
-          <DropdownSelect
-            initial={currentBoardId?.toString() as Key}
-            items={boards.map((board) => {
-              return <span key={board.id}>{board.name}</span>
-            })}
-            events={{
-              onSelect: (key: Key | null) => selectBoard(key as number)
-            }}
-          />
+          boards.length > 1 && (
+            <DropdownSelect
+              initial={currentBoardId?.toString() as Key}
+              items={boards.map((board) => {
+                return <span key={board.id}>{board.name}</span>
+              })}
+              events={{
+                onSelect: (key: Key | null) => selectBoard(key as number)
+              }}
+            />
+          )
         ) : (
           <Tabs>
             {boards.map((board) => {

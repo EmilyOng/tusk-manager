@@ -1,0 +1,14 @@
+.tags-container {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  overflow: auto;
+  width: 100%;
+  flex-wrap: wrap;
+  margin-top: 16px;
+  margin-bottom: 16px;
+}
+
+.tags-container > *:not(:last-child) {
+  margin-right: 4px;
+}

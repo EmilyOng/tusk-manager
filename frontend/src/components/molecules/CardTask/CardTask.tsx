@@ -7,6 +7,7 @@ import clsx from 'clsx'
 import { format } from 'date-fns'
 import React, { useEffect, useState } from 'react'
 import { Task } from 'generated/models'
+import { DATE_FORMAT } from 'utils/date'
 import Button from 'components/atoms/Button'
 import Icon from 'components/atoms/Icon'
 import TagItem from 'components/atoms/TagItem'
@@ -14,6 +15,7 @@ import DropdownMenu from '../DropdownMenu'
 import './CardTask.scoped.css'
 
 type Props = {
+  canEdit: boolean
   task: Task
   events: {
     onTaskEditing: (task: Task) => void
@@ -21,7 +23,7 @@ type Props = {
   }
 }
 
-const CardTask: React.FC<Props> = ({ task, events }) => {
+const CardTask: React.FC<Props> = ({ canEdit, task, events }) => {
   function useDeleteTask() {
     const [deleting, setDeleting] = useState(false)
     const [confirmingDelete, setConfirmingDelete] = useState(false)
@@ -74,33 +76,35 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
             ))}
           </div>
           <div className="action-menu">
-            <DropdownMenu
-              closeOnContentClick={false}
-              items={[
-                <Button
-                  key="delete"
-                  icon={faTrash}
-                  label={confirmingDelete ? 'Really delete?' : 'Delete'}
-                  className={clsx({
-                    'is-danger': true,
-                    'is-loading': deleting
-                  })}
-                  attr={{
-                    onClick: () =>
-                      confirmingDelete
-                        ? onDeleteTask(task.id)
-                        : onConfirmingDeleteTask(),
-                    disabled: deleting
-                  }}
-                />
-              ]}
-              trigger={
-                <Button
-                  icon={faEllipsisV}
-                  attr={{ onClick: abortDeleteTask }}
-                />
-              }
-            />
+            {canEdit && (
+              <DropdownMenu
+                closeOnContentClick={false}
+                items={[
+                  <Button
+                    key="delete"
+                    icon={faTrash}
+                    label={confirmingDelete ? 'Really delete?' : 'Delete'}
+                    className={clsx({
+                      'is-danger': true,
+                      'is-loading': deleting
+                    })}
+                    attr={{
+                      onClick: () =>
+                        confirmingDelete
+                          ? onDeleteTask(task.id)
+                          : onConfirmingDeleteTask(),
+                      disabled: deleting
+                    }}
+                  />
+                ]}
+                trigger={
+                  <Button
+                    icon={faEllipsisV}
+                    attr={{ onClick: abortDeleteTask }}
+                  />
+                }
+              />
+            )}
           </div>
         </div>
         <div className="content">{task.name}</div>
@@ -110,7 +114,7 @@ const CardTask: React.FC<Props> = ({ task, events }) => {
           <span className="card-footer-item due-at">
             <code>
               <Icon icon={faClock} />{' '}
-              {format(new Date(task.dueAt), 'E, LLL d yyyy')}
+              {format(new Date(task.dueAt), DATE_FORMAT)}
             </code>
           </span>
         )}

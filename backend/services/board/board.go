@@ -70,9 +70,8 @@ func GetBoardStates(payload models.GetBoardStatesPayload) models.GetBoardStatesR
 }
 
 func GetBoardMemberProfiles(payload models.GetBoardMemberProfilesPayload) models.GetBoardMemberProfilesResponse {
-	board := models.Board{ID: payload.BoardID}
 	var members []models.MemberPrimitive
-	err := db.DB.Model(&board).Association("Members").Find(&members)
+	err := db.DB.Model(&models.Board{ID: payload.BoardID}).Association("Members").Find(&members)
 	if err != nil {
 		return models.GetBoardMemberProfilesResponse{
 			Response: models.Response{Error: errorUtils.MakeErrStr(err)},

@@ -19,13 +19,20 @@
   margin-left: auto;
 }
 
+.board-actions > *:not(:last-child) {
+  margin-right: 8px;
+}
+
 .board-header {
   height: 40px;
   margin: 8px 16px;
 }
 
-.board-actions > *:not(:last-child) {
-  margin-right: 8px;
+.title {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  margin-bottom: 0 !important;
 }
 
 .form-control {
@@ -42,6 +49,12 @@
 
 .member-avatar > *:not(:last-child) {
   margin-right: 4px;
+}
+
+.member-avatar.is-me {
+  margin-right: 16px;
+  border-right: 1px solid hsl(0, 0%, 71%);
+  padding-right: 16px;
 }
 
 .member-role {

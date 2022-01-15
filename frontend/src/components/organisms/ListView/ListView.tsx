@@ -7,8 +7,14 @@ import {
 import clsx from 'clsx'
 import { compareAsc } from 'date-fns'
 import React, { createRef, useEffect, useState } from 'react'
-import { StatePrimitive, TagPrimitive, Task } from 'generated/models'
+import {
+  MemberProfile,
+  StatePrimitive,
+  TagPrimitive,
+  Task
+} from 'generated/models'
 import { Color } from 'generated/types'
+import { canEdit } from 'utils/role'
 import Button from 'components/atoms/Button'
 import CardTask from 'components/molecules/CardTask'
 import FilterReverse from 'components/molecules/FilterReverse'
@@ -18,6 +24,7 @@ import LoadingBar from 'components/molecules/LoadingBar'
 import ModalCard from 'components/molecules/ModalCard'
 import FormTaskCreate, { Form as CreateTaskForm } from '../FormTaskCreate'
 import FormTaskEdit, { Form as EditTaskForm } from '../FormTaskEdit'
+import StaticViewTask from '../StaticViewTask'
 import './ListView.scoped.css'
 
 type Props = {
@@ -30,6 +37,7 @@ type Props = {
     current: number
     limit: number
   }
+  meMember: MemberProfile | null
   events: {
     onEditTask: (form: EditTaskForm, cb: () => void) => void
     onCreateTask: (form: CreateTaskForm, cb: () => void) => void
@@ -125,6 +133,7 @@ const ListView: React.FC<Props> = ({
   states,
   state,
   position,
+  meMember,
   loading,
   events
 }) => {
@@ -134,6 +143,14 @@ const ListView: React.FC<Props> = ({
     sortBy: TaskSortBy.Name,
     reversed: TaskSortDirection.Ascending
   })
+  const [meCanEdit, setMeCanEdit] = useState(false)
+
+  useEffect(() => {
+    setMeCanEdit(canEdit(meMember?.role))
+    return () => {
+      setMeCanEdit(false)
+    }
+  }, [meMember])
 
   useEffect(() => {
     // Sorts in ascending order
@@ -327,63 +344,70 @@ const ListView: React.FC<Props> = ({
           title={openedTaskEdit.name}
           events={{ onClose: closeTaskEditCard }}
         >
-          <FormTaskEdit
-            task={openedTaskEdit}
-            states={states}
-            tags={tags}
-            events={{
-              onSubmit: editTask,
-              onCancel: closeTaskEditCard,
-              onCreateTag: events.onCreateTag
-            }}
-          />
+          {meCanEdit ? (
+            <FormTaskEdit
+              task={openedTaskEdit}
+              states={states}
+              tags={tags}
+              events={{
+                onSubmit: editTask,
+                onCancel: closeTaskEditCard,
+                onCreateTag: events.onCreateTag
+              }}
+            />
+          ) : (
+            <StaticViewTask task={openedTaskEdit} states={states} />
+          )}
         </ModalCard>
       )}
       <div className="list-view-header">
         <ListViewHeader
+          canEdit={meCanEdit}
           state={state}
           events={{ onEditState: events.onEditState }}
         />
-        <div className="list-view-actions">
-          {position.current > 0 && (
+        {meCanEdit && (
+          <div className="list-view-actions">
+            {position.current > 0 && (
+              <Button
+                icon={faArrowLeft}
+                className={clsx({
+                  'is-loading': movingState === -1
+                })}
+                events={{
+                  onClick: () => {
+                    setMovingState(-1)
+                    events.onMoveStateLeft(state, () => setMovingState(null))
+                  }
+                }}
+              />
+            )}
+            {position.current < position.limit && (
+              <Button
+                icon={faArrowRight}
+                className={clsx({
+                  'is-loading': movingState === 1
+                })}
+                events={{
+                  onClick: () => {
+                    setMovingState(1)
+                    events.onMoveStateRight(state, () => setMovingState(null))
+                  }
+                }}
+              />
+            )}
             <Button
-              icon={faArrowLeft}
-              className={clsx({
-                'is-loading': movingState === -1
-              })}
-              events={{
-                onClick: () => {
-                  setMovingState(-1)
-                  events.onMoveStateLeft(state, () => setMovingState(null))
-                }
-              }}
+              className="is-link is-light"
+              icon={faPlus}
+              events={{ onClick: openTaskCreateCard }}
             />
-          )}
-          {position.current < position.limit && (
             <Button
-              icon={faArrowRight}
-              className={clsx({
-                'is-loading': movingState === 1
-              })}
-              events={{
-                onClick: () => {
-                  setMovingState(1)
-                  events.onMoveStateRight(state, () => setMovingState(null))
-                }
-              }}
+              className="is-danger is-light"
+              icon={faTrash}
+              events={{ onClick: () => openStateDeleteCard(state) }}
             />
-          )}
-          <Button
-            className="is-link is-light"
-            icon={faPlus}
-            events={{ onClick: openTaskCreateCard }}
-          />
-          <Button
-            className="is-danger is-light"
-            icon={faTrash}
-            events={{ onClick: () => openStateDeleteCard(state) }}
-          />
-        </div>
+          </div>
+        )}
       </div>
       <div className="list-view-filter">
         <FilterSort events={{ onFilterSort }} />
@@ -396,11 +420,12 @@ const ListView: React.FC<Props> = ({
           {tasks.map((task) => (
             <div
               key={task.id}
-              draggable={true}
+              draggable={meCanEdit}
               onDragStart={() => events.onDragTask(task)}
             >
               <CardTask
                 task={task}
+                canEdit={meCanEdit}
                 events={{
                   onTaskEditing: openTaskEditCard,
                   onDeleteTask: events.onDeleteTask

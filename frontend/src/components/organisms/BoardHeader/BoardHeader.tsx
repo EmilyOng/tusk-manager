@@ -5,11 +5,19 @@ import {
   faUsers
 } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import { BoardPrimitive, MemberProfile } from 'generated/models'
+import {
+  getMembers,
+  selectMeMember,
+  selectMembers,
+  updateMembers
+} from 'store/members'
 import { useMediaQuery } from 'utils/mediaQuery'
-import { useBoard, useBoardMemberProfiles } from 'composables/board'
+import { canEdit } from 'utils/role'
+import { useBoard } from 'composables/board'
 import Button from 'components/atoms/Button'
 import Avatar from 'components/molecules/Avatar'
 import DropdownMenu from 'components/molecules/DropdownMenu'
@@ -94,9 +102,27 @@ function useMembersManageModal() {
 const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
   const navigate = useNavigate()
   const { isSmall } = useMediaQuery()
+  const dispatch = useDispatch()
   const { board, updateBoard } = useBoard(boardId)
-  const { memberProfiles, updateMemberProfiles } =
-    useBoardMemberProfiles(boardId)
+  const [meCanEdit, setMeCanEdit] = useState(false)
+
+  useEffect(() => {
+    if (!boardId) {
+      return
+    }
+    dispatch(getMembers(boardId))
+  }, [boardId])
+
+  const { members: memberProfiles } = useSelector(selectMembers)
+  const meMember = useSelector(selectMeMember)
+
+  const otherMemberProfiles = memberProfiles.filter(
+    (m) => m.id !== meMember?.id
+  )
+
+  useEffect(() => {
+    setMeCanEdit(canEdit(meMember?.role))
+  }, [meMember])
 
   function onEditBoard(form: Form, cb: () => void) {
     events.onEditBoard(form, () => {
@@ -121,7 +147,7 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
       if (!newMember) {
         return
       }
-      updateMemberProfiles([...memberProfiles, newMember])
+      dispatch(updateMembers([...memberProfiles, newMember]))
     })
   }
 
@@ -131,7 +157,7 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
       if (!updatedMembers) {
         return
       }
-      updateMemberProfiles(updatedMembers)
+      dispatch(updateMembers(updatedMembers))
     })
   }
 
@@ -222,22 +248,31 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
           <h1 className="title">{board.name}</h1>
           <div className="board-members">
             {!isSmall &&
-              memberProfiles.map((member) => (
-                <div key={member.id} className="member-avatar">
-                  <DropdownMenu
-                    hoverable={true}
-                    items={[
-                      <div key="" className="member-info">
-                        <span className="member-role">{member.role}</span>
-                        <span>
-                          {member.profile.name} ({member.profile.email})
-                        </span>
-                      </div>
-                    ]}
-                    trigger={<Avatar name={member.profile.name} />}
-                  />
-                </div>
-              ))}
+              [meMember, ...otherMemberProfiles].map(
+                (member) =>
+                  member && (
+                    <div
+                      key={member.id}
+                      className={clsx({
+                        'member-avatar': true,
+                        'is-me': meMember?.id === member.id
+                      })}
+                    >
+                      <DropdownMenu
+                        hoverable={true}
+                        items={[
+                          <div key="" className="member-info">
+                            <span className="member-role">{member.role}</span>
+                            <span>
+                              {member.profile.name} ({member.profile.email})
+                            </span>
+                          </div>
+                        ]}
+                        trigger={<Avatar name={member.profile.name} />}
+                      />
+                    </div>
+                  )
+              )}
           </div>
           <div className="board-actions">
             <Button
@@ -250,16 +285,20 @@ const BoardHeader: React.FC<Props> = ({ boardId, events }) => {
               icon={faUsers}
               events={{ onClick: openMembersManageCard }}
             />
-            <Button
-              className="is-link is-light"
-              icon={faEdit}
-              events={{ onClick: () => openBoardEditCard(board) }}
-            />
-            <Button
-              className="is-danger is-light"
-              icon={faTrash}
-              events={{ onClick: () => openBoardDeleteCard(board) }}
-            />
+            {meCanEdit && (
+              <>
+                <Button
+                  className="is-link is-light"
+                  icon={faEdit}
+                  events={{ onClick: () => openBoardEditCard(board) }}
+                />
+                <Button
+                  className="is-danger is-light"
+                  icon={faTrash}
+                  events={{ onClick: () => openBoardDeleteCard(board) }}
+                />
+              </>
+            )}
           </div>
         </div>
       )}

@@ -7,13 +7,14 @@ import InputField from '../InputField'
 import './ListViewHeader.scoped.css'
 
 type Props = {
+  canEdit: boolean
   state: StatePrimitive
   events: {
     onEditState: (newState: StatePrimitive, cb: () => void) => void
   }
 }
 
-const ListViewHeader: React.FC<Props> = ({ state, events }) => {
+const ListViewHeader: React.FC<Props> = ({ canEdit, state, events }) => {
   const [editingStateName, setEditingStateName] = useState(false)
   const [submittingStateName, setSubmittingStateName] = useState(false)
   const [stateName, setStateName] = useState(state.name)
@@ -58,14 +59,16 @@ const ListViewHeader: React.FC<Props> = ({ state, events }) => {
   ) : (
     <div className="list-view-wrap">
       <span className="list-view-title">{state.name}</span>
-      <Button
-        className={clsx({
-          'is-ghost': true,
-          'is-loading': submittingStateName
-        })}
-        icon={faPen}
-        events={{ onClick: () => setEditingStateName(true) }}
-      />
+      {canEdit && (
+        <Button
+          className={clsx({
+            'is-ghost': true,
+            'is-loading': submittingStateName
+          })}
+          icon={faPen}
+          events={{ onClick: () => setEditingStateName(true) }}
+        />
+      )}
     </div>
   )
 }

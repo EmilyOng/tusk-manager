@@ -3,7 +3,7 @@ import { AuthAPI } from 'api/auth'
 import { AuthUser } from 'generated/models'
 import { removeAuthToken, setAuthToken } from 'utils/authToken'
 
-type MeState = {
+export type MeState = {
   user: AuthUser | null
   loading: boolean
 }
