@@ -1,4 +1,5 @@
 import { faPen } from '@fortawesome/free-solid-svg-icons'
+import clsx from 'clsx'
 import React, { createRef, useEffect, useState } from 'react'
 import { StatePrimitive } from 'generated/models'
 import Button from 'components/atoms/Button'
@@ -8,12 +9,13 @@ import './ListViewHeader.scoped.css'
 type Props = {
   state: StatePrimitive
   events: {
-    onEditState: (newState: StatePrimitive) => void
+    onEditState: (newState: StatePrimitive, cb: () => void) => void
   }
 }
 
 const ListViewHeader: React.FC<Props> = ({ state, events }) => {
   const [editingStateName, setEditingStateName] = useState(false)
+  const [submittingStateName, setSubmittingStateName] = useState(false)
   const [stateName, setStateName] = useState(state.name)
   const inputRef = createRef<HTMLInputElement>()
 
@@ -27,10 +29,14 @@ const ListViewHeader: React.FC<Props> = ({ state, events }) => {
     if (stateName === state.name) {
       return
     }
-    events.onEditState({
-      ...state,
-      name: stateName
-    })
+    setSubmittingStateName(true)
+    events.onEditState(
+      {
+        ...state,
+        name: stateName
+      },
+      () => setSubmittingStateName(false)
+    )
   }
 
   useEffect(() => {
@@ -53,7 +59,10 @@ const ListViewHeader: React.FC<Props> = ({ state, events }) => {
     <div className="list-view-wrap">
       <span className="list-view-title">{state.name}</span>
       <Button
-        className="is-ghost"
+        className={clsx({
+          'is-ghost': true,
+          'is-loading': submittingStateName
+        })}
         icon={faPen}
         events={{ onClick: () => setEditingStateName(true) }}
       />

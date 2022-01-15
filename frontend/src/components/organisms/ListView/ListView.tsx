@@ -49,10 +49,10 @@ type Props = {
       e: React.DragEvent<HTMLDivElement>,
       state: StatePrimitive
     ) => void
-    onEditState: (newState: StatePrimitive) => void
+    onEditState: (newState: StatePrimitive, cb: () => void) => void
     onDeleteState: (stateId: number, cb: () => void) => void
-    onMoveStateLeft: (state: StatePrimitive) => void
-    onMoveStateRight: (state: StatePrimitive) => void
+    onMoveStateLeft: (state: StatePrimitive, cb: () => void) => void
+    onMoveStateRight: (state: StatePrimitive, cb: () => void) => void
   }
 }
 
@@ -255,8 +255,11 @@ const ListView: React.FC<Props> = ({
     closeCard: closeStateDeleteCard
   } = useStateDeleteModal()
   const [deletingState, setDeletingState] = useState(false)
+  // 1: move right, -1: move left
+  const [movingState, setMovingState] = useState<1 | -1 | null>(null)
 
   function onDeleteState(stateId: number) {
+    setDeletingState(true)
     events.onDeleteState(stateId, () => {
       closeStateDeleteCard()
       setDeletingState(false)
@@ -345,13 +348,29 @@ const ListView: React.FC<Props> = ({
           {position.current > 0 && (
             <Button
               icon={faArrowLeft}
-              events={{ onClick: () => events.onMoveStateLeft(state) }}
+              className={clsx({
+                'is-loading': movingState === -1
+              })}
+              events={{
+                onClick: () => {
+                  setMovingState(-1)
+                  events.onMoveStateLeft(state, () => setMovingState(null))
+                }
+              }}
             />
           )}
           {position.current < position.limit && (
             <Button
               icon={faArrowRight}
-              events={{ onClick: () => events.onMoveStateRight(state) }}
+              className={clsx({
+                'is-loading': movingState === 1
+              })}
+              events={{
+                onClick: () => {
+                  setMovingState(1)
+                  events.onMoveStateRight(state, () => setMovingState(null))
+                }
+              }}
             />
           )}
           <Button

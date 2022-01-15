@@ -189,15 +189,18 @@ function TaskDashboard() {
     }
   }
 
-  function editState(newState: StatePrimitive) {
-    stateAPI.editState({ ...newState, boardId: boardId! }).then((res) => {
-      if (res.error) {
-        return
-      }
-      updateStates(
-        states.map((state) => (state.id === res.data.id ? res.data : state))
-      )
-    })
+  function editState(newState: StatePrimitive, cb: () => void) {
+    stateAPI
+      .editState({ ...newState, boardId: boardId! })
+      .then((res) => {
+        if (res.error) {
+          return
+        }
+        updateStates(
+          states.map((state) => (state.id === res.data.id ? res.data : state))
+        )
+      })
+      .finally(() => cb())
   }
 
   function deleteState(stateId: number, cb: () => void) {
@@ -216,7 +219,7 @@ function TaskDashboard() {
       .finally(() => cb())
   }
 
-  function onMoveStateLeft(state: StatePrimitive) {
+  function onMoveStateLeft(state: StatePrimitive, cb: () => void) {
     for (let i = 0; i < states.length; i++) {
       const s = states[i]
       if (s.id === state.id) {
@@ -230,21 +233,21 @@ function TaskDashboard() {
           currentPosition: state.currentPosition - 1,
           boardId: boardId!
         }
-        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)]).then(
-          () => {
+        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)])
+          .then(() => {
             const copied = states.map((s) =>
               s.id === prev.id ? prev : s.id === curr.id ? curr : s
             )
             copied.sort((a, b) => a.currentPosition - b.currentPosition)
             updateStates(copied)
-          }
-        )
+          })
+          .finally(() => cb())
         break
       }
     }
   }
 
-  function onMoveStateRight(state: StatePrimitive) {
+  function onMoveStateRight(state: StatePrimitive, cb: () => void) {
     for (let i = 0; i < states.length; i++) {
       const s = states[i]
       if (s.id === state.id) {
@@ -258,15 +261,15 @@ function TaskDashboard() {
           currentPosition: state.currentPosition + 1,
           boardId: boardId!
         }
-        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)]).then(
-          () => {
+        Promise.all([stateAPI.editState(prev), stateAPI.editState(curr)])
+          .then(() => {
             const copied = states.map((s) =>
               s.id === prev.id ? prev : s.id === curr.id ? curr : s
             )
             copied.sort((a, b) => a.currentPosition - b.currentPosition)
             updateStates(copied)
-          }
-        )
+          })
+          .finally(() => cb())
         break
       }
     }

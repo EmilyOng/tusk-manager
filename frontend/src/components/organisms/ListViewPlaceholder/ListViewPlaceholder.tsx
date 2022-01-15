@@ -1,4 +1,4 @@
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import clsx from 'clsx'
 import React, { useState } from 'react'
 import Button from 'components/atoms/Button'
@@ -14,6 +14,7 @@ type Props = {
 const ListViewPlaceholder: React.FC<Props> = ({ events }) => {
   const [creatingState, setCreatingState] = useState(false)
   function createState() {
+    setCreatingState(true)
     events.createState(() => setCreatingState(false))
   }
 
@@ -22,12 +23,14 @@ const ListViewPlaceholder: React.FC<Props> = ({ events }) => {
       <Button
         className={clsx({
           'is-ghost': true,
-          'create-state-button': true,
-          'is-loading': creatingState
+          'create-state-button': true
         })}
         attr={{ onClick: createState, disabled: creatingState }}
       >
-        <Icon icon={faPlus} attr={{ size: '10x' }} />
+        <Icon
+          icon={creatingState ? faSpinner : faPlus}
+          attr={{ size: '10x' }}
+        />
       </Button>
     </div>
   )
