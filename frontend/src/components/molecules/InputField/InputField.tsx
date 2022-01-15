@@ -1,6 +1,6 @@
 import { IconDefinition } from '@fortawesome/fontawesome-common-types'
 import clsx from 'clsx'
-import React from 'react'
+import React, { forwardRef } from 'react'
 import Icon from 'components/atoms/Icon'
 
 type Props = {
@@ -17,7 +17,7 @@ type Props = {
   }
 }
 
-const InputField: React.FC<Props> = ({
+const InputField = forwardRef<HTMLInputElement, Props>(({
   name,
   type,
   value,
@@ -26,12 +26,13 @@ const InputField: React.FC<Props> = ({
   placeholder,
   icon,
   events
-}) => {
+}, ref) => {
   return (
     <div className="field">
       {label.length > 0 && <label className="label">{label}</label>}
       <div className={clsx({ control: true, 'has-icons-left': !!icon })}>
         <input
+          ref={ref}
           className="input is-info"
           type={type}
           name={name}
@@ -48,6 +49,7 @@ const InputField: React.FC<Props> = ({
       </div>
     </div>
   )
-}
+})
 
+InputField.displayName = 'InputField'
 export default InputField
