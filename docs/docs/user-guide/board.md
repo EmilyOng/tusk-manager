@@ -32,6 +32,8 @@ This opens up a modal for you to edit the board
 
 ### Managing board members
 
+Find out more at this [article](./member).
+
 ### Managing board tags
 
 ## Deleting a board
