@@ -125,6 +125,22 @@ func DeleteBoard(payload models.DeleteBoardPayload) models.DeleteBoardResponse {
 		}
 	}
 
+	membersResponse := GetBoardMemberProfiles(models.GetBoardMemberProfilesPayload{BoardID: payload.ID})
+	if len(membersResponse.Error) > 0 {
+		return models.DeleteBoardResponse{
+			Response: models.Response{Error: membersResponse.Error},
+		}
+	}
+
+	for _, member := range membersResponse.MemberProfiles {
+		deleteMemberResponse := memberService.DeleteMember(models.DeleteMemberPayload{ID: member.ID})
+		if len(deleteMemberResponse.Error) > 0 {
+			return models.DeleteBoardResponse{
+				Response: models.Response{Error: deleteMemberResponse.Error},
+			}
+		}
+	}
+
 	statesReponse := GetBoardStates(models.GetBoardStatesPayload{BoardID: payload.ID})
 	if len(statesReponse.Error) > 0 {
 		return models.DeleteBoardResponse{
