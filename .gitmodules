@@ -1,0 +1,9 @@
+[submodule "cvwo-backend"]
+	path = cvwo-backend
+	url = https://github.com/EmilyOng/cvwo-backend.git
+[submodule "cvwo-frontend"]
+	path = cvwo-frontend
+	url = https://github.com/EmilyOng/cvwo-frontend.git
+[submodule "cvwo-docs"]
+	path = cvwo-docs
+	url = https://github.com/EmilyOng/cvwo-docs.git
