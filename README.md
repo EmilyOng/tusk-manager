@@ -13,6 +13,6 @@ This repository serves as a monorepo for both the frontend and backend code. The
 
 ![Vercel](https://vercelbadge.vercel.app/api/EmilyOng/cvwo)
 
-- Documentation (Vercel): https://tusk-manager-docs.vercel.app/
-- Frontend (Vercel): https://tusk-manager.vercel.app/
+- Documentation (Vercel): https://www.tuskmanager.rocks/
+- Frontend (Vercel): https://www.app.tuskmanager.rocks/
 - Backend (Heroku): https://tusk-manager-backend.herokuapp.com/
