@@ -29,7 +29,7 @@ func main() {
 	}
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "https://tusk-manager.vercel.app"},
+		AllowOrigins:     []string{"http://localhost:3000", "https://tusk-manager.vercel.app", "https://app.tuskmanager.rocks"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
 		AllowHeaders:     []string{"Content-Type", "Authorization"},
 		AllowCredentials: true,
