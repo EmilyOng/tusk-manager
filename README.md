@@ -12,11 +12,23 @@ Visit https://www.tuskmanager.rocks/ to try it out.
 
 ![Basic Terminologies](assets/basic-terminologies.png)
 
-## Quick Links
+## Deliverables
+
+### Write-Ups
+- **Mid Assignment Submission**: [Mid-Assignment-Submission/EmilyOngHuiQi_A0240634M.pdf](Mid-Assignment-Submission/EmilyOngHuiQi_A0240634M.pdf)
+- **Final-Assignment Submission**: [Final-Assignment-Submission/EmilyOngHuiQi_A0240634M_FinalWriteup.pdf](Final-Assignment-Submission/EmilyOngHuiQi_A0240634M_FinalWriteup.pdf)
+- **User Guide**: https://www.tuskmanager.rocks/
+
+### Deployments
+- **Frontend**: https://app.tuskmanager.rocks/
+- **Backend**: https://tusk-manager-backend.herokuapp.com/
+- **Documentation**: https://www.tuskmanager.rocks/
+
+### Quick Links
 
 This repository serves as a central repository for the following submodules:
 
-- **Documentation** https://github.com/EmilyOng/cvwo-docs
+- **Documentation**: https://github.com/EmilyOng/cvwo-docs
 - **Frontend**: https://github.com/EmilyOng/cvwo-frontend
 - **Backend**: https://github.com/EmilyOng/cvwo-backend
 
