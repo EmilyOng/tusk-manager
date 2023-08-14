@@ -1,8 +1,7 @@
 <h1 align="center">Tusk Manager</h1>
 <p align="center"><img src="assets/mosnter.png" width="30%"/></p>
 <div align="center">Icons made by <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>
-<p align="center">Emily Ong Hui Qi (A0240634M)</p>
-<p align="center"><a href="https://www.tuskmanager.rocks/">Try it out</a></p>
+<p align="center"><a href="https://tusk-manager.vercel.app ">Try it out</a></p>
 
 ## Overview
 
