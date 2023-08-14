@@ -11,7 +11,7 @@ Visit https://tusk-manager.vercel.app to try it out.
 
 ![Basic Terminologies](assets/basic-terminologies.png)
 
-- **User Guide**: https://tusk-manager.vercel.app
+- **User Guide**: https://tusk-manager-docs.vercel.app
 
 ### Deployments
 - **Frontend**: https://tusk-manager.vercel.app
