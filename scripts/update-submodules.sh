@@ -4,4 +4,3 @@ now=$(date +'%m/%d/%Y %r')
 
 git add .
 git commit -m "[${now}] Update submodules"
-git push origin main
