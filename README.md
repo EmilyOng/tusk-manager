@@ -8,29 +8,24 @@
 
 A fully-featured, clutter-free task management application that can run *anytime*, *anywhere*, and enables you to work with *anyone*.
 
-Visit https://www.tuskmanager.rocks/ to try it out.
+Visit https://tusk-manager.vercel.app to try it out.
 
 ![Basic Terminologies](assets/basic-terminologies.png)
 
-## Deliverables
-
-### Write-Ups
-- **Mid Assignment Submission**: [Mid-Assignment-Submission/EmilyOngHuiQi_A0240634M.pdf](Mid-Assignment-Submission/EmilyOngHuiQi_A0240634M.pdf)
-- **Final-Assignment Submission**: [Final-Assignment-Submission/EmilyOngHuiQi_A0240634M_FinalWriteup.pdf](Final-Assignment-Submission/EmilyOngHuiQi_A0240634M_FinalWriteup.pdf)
-- **User Guide**: https://www.tuskmanager.rocks/
+- **User Guide**: https://tusk-manager.vercel.app
 
 ### Deployments
-- **Frontend**: https://app.tuskmanager.rocks/
-- **Backend**: https://tusk-manager-backend.herokuapp.com/
-- **Documentation**: https://www.tuskmanager.rocks/
+- **Frontend**: https://tusk-manager.vercel.app
+- **Backend**: https://tusk-manager-backend.onrender.com
+- **Documentation**: https://tusk-manager-docs.vercel.app
 
 ### Quick Links
 
 This repository serves as a central repository for the following submodules:
 
-- **Documentation**: https://github.com/EmilyOng/cvwo-docs
-- **Frontend**: https://github.com/EmilyOng/cvwo-frontend
-- **Backend**: https://github.com/EmilyOng/cvwo-backend
+- **Documentation**: https://github.com/EmilyOng/tusk-manager-docs
+- **Frontend**: https://github.com/EmilyOng/tusk-manager-frontend
+- **Backend**: https://github.com/EmilyOng/tusk-manager-backend
 
 ## Getting Started
 
@@ -38,7 +33,7 @@ This repository serves as a central repository for the following submodules:
 Clone the repository. The `recursive` flag is needed due to the use of submodules in this repository.
 
 ```shell
-git clone --recursive https://github.com/EmilyOng/cvwo.git
+git clone --recursive https://github.com/EmilyOng/tusk-manager.git
 ```
 
 ### Updating submodules

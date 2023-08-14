@@ -1,9 +1,9 @@
-[submodule "cvwo-backend"]
-	path = cvwo-backend
-	url = https://github.com/EmilyOng/cvwo-backend.git
-[submodule "cvwo-frontend"]
-	path = cvwo-frontend
-	url = https://github.com/EmilyOng/cvwo-frontend.git
-[submodule "cvwo-docs"]
-	path = cvwo-docs
-	url = https://github.com/EmilyOng/cvwo-docs.git
+[submodule "tusk-manager-backend"]
+	path = tusk-manager-backend
+	url = https://github.com/EmilyOng/tusk-manager-backend.git
+[submodule "tusk-manager-frontend"]
+	path = tusk-manager-frontend
+	url = https://github.com/EmilyOng/tusk-manager-frontend.git
+[submodule "tusk-manager-docs"]
+	path = tusk-manager-docs
+	url = https://github.com/EmilyOng/tusk-manager-docs.git
